@@ -10,4 +10,10 @@
     <ProjectReference Include="..\BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj" />
     <ProjectReference Include="..\BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Logics\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logics\" />
+  </ItemGroup>
 </Project>
