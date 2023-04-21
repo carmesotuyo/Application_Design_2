@@ -1,11 +1,14 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using BlogsApp.Domain.Entities;
 
 namespace BlogsApp.DataAccess
 {
 	public class Context : DbContext
     {
+        public DbSet<Article> Articles { get; set; }
+
         public Context(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) { }

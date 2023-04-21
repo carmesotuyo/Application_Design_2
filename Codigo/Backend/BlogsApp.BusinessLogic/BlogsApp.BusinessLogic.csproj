@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj" />
     <ProjectReference Include="..\BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj" />
+    <ProjectReference Include="..\BlogsApp.Domain\BlogsApp.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Logics\" />

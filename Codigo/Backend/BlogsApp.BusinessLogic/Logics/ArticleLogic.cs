@@ -1,11 +1,19 @@
 ﻿using System;
+using BlogsApp.IBusinessLogic.Interfaces;
+using BlogsApp.IDataAccess.Interfaces;
+
 namespace BlogsApp.BusinessLogic.Logics
 {
-	public class ArticleLogic
+	public class ArticleLogic : IArticleLogic
 	{
-		public ArticleLogic()
-		{
-		}
-	}
+        private readonly IArticleRepository articleRepository;
+
+        public ArticleLogic(IArticleRepository articleRepository)
+        {
+            this.articleRepository = articleRepository;
+        }
+
+        //...MOVIE_LOGIC CODE
+    }
 }
 
