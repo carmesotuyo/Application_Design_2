@@ -27,6 +27,9 @@
     <ProjectReference Include="..\BlogsApp.DataAccess\BlogsApp.DataAccess.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\BlogsApp.Factory\BlogsApp.Factory.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controllers\" />
