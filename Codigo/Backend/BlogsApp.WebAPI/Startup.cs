@@ -7,18 +7,18 @@ using BlogsApp.DataAccess;
 namespace BlogsApp.WebAPI
 {
 	public class Startup
-	{
-        public Startup(IConfiguration configuration)
+    {
+        public IConfigurationRoot Configuration { get; }
+
+        public Startup(IConfigurationRoot configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // EN ESTE METODÓ SE REGISTRAN LOS SERVICIOS
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(); //YA ESTA EN PROGRAM
             // REGISTRO EL CONTEXTO
             //services.AddDbContext<DbContext, Context>(o => o.UseSqlServer(Configuration.GetConnectionString("BlogsAppDBCarme")));
             // REGISTRO EL REPOSITORIO Y SU LÓGICA
@@ -30,7 +30,7 @@ namespace BlogsApp.WebAPI
             factory.AddDbContextService(this.Configuration.GetConnectionString("BlogsAppDBCarme"));
         }
 
-        //A CHEQUEAR:
+        // TODO A CHEQUEAR: YA ESTA EN EL PROGRAM CON SWAGGER ?
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

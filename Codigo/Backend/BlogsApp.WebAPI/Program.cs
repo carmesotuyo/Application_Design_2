@@ -1,15 +1,16 @@
-﻿using BlogsApp.DataAccess; // creo que la WebAPI no deberia depender del DataAccess, pero fue lo que hicimos en clase
+﻿using BlogsApp.DataAccess; // TODO SACAR ESTA DEPENDENCIA
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(); // TODO AVERIGUAR ACA O EN STARTUP?
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<Context>();
+builder.Services.AddDbContext<Context>(); //TODO SE DEBERIA HACER EN STARTUP EN LA FACTORY
 
 var app = builder.Build();
 

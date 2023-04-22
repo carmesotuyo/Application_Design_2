@@ -13,7 +13,7 @@ namespace BlogsApp.BusinessLogic.Logics
             this.articleRepository = articleRepository;
         }
 
-        //...MOVIE_LOGIC CODE
+        //...ARTICLE LOGIC CODE
     }
 }
 

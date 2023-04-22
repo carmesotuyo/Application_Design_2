@@ -16,7 +16,7 @@ namespace BlogsApp.DataAccess.Repositories
             this.articles = context.Set<Article>();
         }
 
-        //.../MOVIE_REPOSITORY CODE
+        //.../ARTICLE REPOSITORY CODE
     }
 }
 

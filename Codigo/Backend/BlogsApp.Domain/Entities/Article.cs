@@ -12,7 +12,7 @@ namespace BlogsApp.Domain.Entities
         public DateTime DateDeleted { get; set; }
         // public User User { get; set; }
         // public List<Comment> Comments;
-        public IEnumerable<int> Template { get; set; }
+        //public IEnumerable<int> Template { get; set; }
         public string Image { get; set; }
 
 
