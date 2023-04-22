@@ -1,11 +1,10 @@
-﻿using System;
-namespace BlogsApp.IBusinessLogic.Interfaces
+﻿namespace BlogsApp.IBusinessLogic.Interfaces
 {
-	public class IArticleLogic
-	{
-		public IArticleLogic()
-		{
-		}
-	}
+    public class IArticleLogic
+    {
+        public IArticleLogic()
+        {
+        }
+    }
 }
 

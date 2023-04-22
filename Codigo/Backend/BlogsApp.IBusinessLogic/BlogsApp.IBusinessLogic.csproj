@@ -10,9 +10,6 @@
     <None Remove="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BlogsApp.Domain\BlogsApp.Domain.csproj" />
   </ItemGroup>
 </Project>

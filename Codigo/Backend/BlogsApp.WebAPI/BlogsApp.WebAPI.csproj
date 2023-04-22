@@ -24,9 +24,6 @@
     <ProjectReference Include="..\BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-    <ProjectReference Include="..\BlogsApp.DataAccess\BlogsApp.DataAccess.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
     <ProjectReference Include="..\BlogsApp.Factory\BlogsApp.Factory.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>

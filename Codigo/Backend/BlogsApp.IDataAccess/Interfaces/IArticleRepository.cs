@@ -1,11 +1,10 @@
-﻿using System;
-namespace BlogsApp.IDataAccess.Interfaces
+﻿namespace BlogsApp.IDataAccess.Interfaces
 {
-	public class IArticleRepository
-	{
-		public IArticleRepository()
-		{
-		}
-	}
+    public class IArticleRepository
+    {
+        public IArticleRepository()
+        {
+        }
+    }
 }
 

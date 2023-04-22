@@ -1,21 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1705.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.WebAPI", "BlogsApp.WebAPI\BlogsApp.WebAPI.csproj", "{809B3264-C955-4D6C-BB71-168A0646FFAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.WebAPI", "BlogsApp.WebAPI\BlogsApp.WebAPI.csproj", "{809B3264-C955-4D6C-BB71-168A0646FFAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.Domain", "BlogsApp.Domain\BlogsApp.Domain.csproj", "{EB68E572-DFBF-455A-AB83-9DE224FDC9B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.Domain", "BlogsApp.Domain\BlogsApp.Domain.csproj", "{EB68E572-DFBF-455A-AB83-9DE224FDC9B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.BusinessLogic", "BlogsApp.BusinessLogic\BlogsApp.BusinessLogic.csproj", "{0704DB84-694A-4BC6-A247-7F8DF688F415}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.BusinessLogic", "BlogsApp.BusinessLogic\BlogsApp.BusinessLogic.csproj", "{0704DB84-694A-4BC6-A247-7F8DF688F415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.DataAccess", "BlogsApp.DataAccess\BlogsApp.DataAccess.csproj", "{E402AA43-7222-4DF2-B294-EE8538A806B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.DataAccess", "BlogsApp.DataAccess\BlogsApp.DataAccess.csproj", "{E402AA43-7222-4DF2-B294-EE8538A806B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.IBusinessLogic", "BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj", "{7AA9B27D-4B3E-4A9E-B548-D9C585A2270C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.IBusinessLogic", "BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj", "{7AA9B27D-4B3E-4A9E-B548-D9C585A2270C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.IDataAccess", "BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj", "{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.IDataAccess", "BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj", "{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.Factory", "BlogsApp.Factory\BlogsApp.Factory.csproj", "{573D8E85-A721-48C0-8231-EE7919C61D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsApp.Factory", "BlogsApp.Factory\BlogsApp.Factory.csproj", "{573D8E85-A721-48C0-8231-EE7919C61D6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "Domain.Tests\Domain.Tests.csproj", "{53F2CE6F-5F31-4E6F-A157-F075DF833D78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Test", "WebApi.Test\WebApi.Test.csproj", "{CD8F79A9-AD41-4BE5-BC38-01CFF43C2B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Test", "DataAccess.Test\DataAccess.Test.csproj", "{B57A26D3-3419-4E73-8993-B3A9C3B675F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic.Test", "BusinessLogic.Test\BusinessLogic.Test.csproj", "{1F077B67-6AC3-4675-A770-91FE76711116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +59,22 @@ Global
 		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53F2CE6F-5F31-4E6F-A157-F075DF833D78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53F2CE6F-5F31-4E6F-A157-F075DF833D78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53F2CE6F-5F31-4E6F-A157-F075DF833D78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53F2CE6F-5F31-4E6F-A157-F075DF833D78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD8F79A9-AD41-4BE5-BC38-01CFF43C2B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD8F79A9-AD41-4BE5-BC38-01CFF43C2B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD8F79A9-AD41-4BE5-BC38-01CFF43C2B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD8F79A9-AD41-4BE5-BC38-01CFF43C2B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B57A26D3-3419-4E73-8993-B3A9C3B675F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B57A26D3-3419-4E73-8993-B3A9C3B675F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B57A26D3-3419-4E73-8993-B3A9C3B675F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B57A26D3-3419-4E73-8993-B3A9C3B675F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F077B67-6AC3-4675-A770-91FE76711116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F077B67-6AC3-4675-A770-91FE76711116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F077B67-6AC3-4675-A770-91FE76711116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F077B67-6AC3-4675-A770-91FE76711116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

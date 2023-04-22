@@ -1,5 +1,4 @@
 ﻿using BlogsApp.Factory;
-using BlogsApp.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
