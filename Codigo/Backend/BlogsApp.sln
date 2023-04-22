@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.IBusinessLogic", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.IDataAccess", "BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj", "{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogsApp.Factory", "BlogsApp.Factory\BlogsApp.Factory.csproj", "{573D8E85-A721-48C0-8231-EE7919C61D6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFD0D8EC-E286-45B8-9C40-99B07D66D7EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{573D8E85-A721-48C0-8231-EE7919C61D6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
