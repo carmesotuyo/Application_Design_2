@@ -1,5 +1,4 @@
-﻿//using BlogsApp.DataAccess; // WEBAPI YA NO DEPENDE DE DATA ACCESS, DESACOPLAMOS DE LA IMPLEMENTACION
-using BlogsApp.Factory;
+﻿using BlogsApp.Factory;
 using BlogsApp.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddDbContext<Context>();
+//builder.Services.AddDbContext<Context>(); SE SUSTITUYE POR FACTORY PARA DESACOPLAR DE DATA ACCESS
 ServiceFactory factory = new ServiceFactory(builder.Services);
 factory.AddCustomServices();
-factory.AddDbContextService(builder.Configuration.GetConnectionString("BlogsAppDBCarme"));
+factory.AddDbContextService(); //builder.Configuration.GetConnectionString("BlogsAppDBCarme")
 
 var app = builder.Build();
 
