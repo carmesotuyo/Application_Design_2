@@ -2,5 +2,8 @@
 {
     public class IUserLogic
     {
+        public IUserLogic()
+        {
+        }
     }
 }

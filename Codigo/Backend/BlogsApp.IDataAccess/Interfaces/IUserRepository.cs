@@ -2,5 +2,8 @@
 {
     public class IUserRepository
     {
+        public IUserRepository()
+        {
+        }
     }
 }

@@ -2,5 +2,8 @@
 {
     public class ISessionRepository
     {
+        public ISessionRepository()
+        {
+        }
     }
 }

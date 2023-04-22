@@ -2,5 +2,8 @@
 {
     public class ICommentRepository
     {
+        public ICommentRepository()
+        {
+        }
     }
 }
