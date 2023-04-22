@@ -2,12 +2,16 @@
 {
     public class Session
     {
-        public User user { get; set; }
-        public string token { get; set; }
-        public DateTime dateTimeLogin { get; set; }
-        public DateTime dateTimeLogout { get; set; }
-        public Session()
+        public User User { get; set; }
+        public string Token { get; set; }
+        public DateTime DateTimeLogin { get; set; }
+        public DateTime? DateTimeLogout { get; set; }
+
+        public Session(User user, string token)
         {
+            User = user;
+            Token = token;
+            DateTimeLogin = DateTime.Now;
         }
     }
 }
