@@ -2,9 +2,10 @@
 {
     public class Session
     {
-        public User User { get; set; }
-        public string Token { get; set; }
-        public DateTime DateTimeLogin { get; set; }
+        public int Id { get; private set; }
+        public User User { get; private set; }
+        public string Token { get; private set; }
+        public DateTime DateTimeLogin { get; private set; }
         public DateTime? DateTimeLogout { get; set; }
 
         public Session(User user, string token)
@@ -13,5 +14,7 @@
             Token = token;
             DateTimeLogin = DateTime.Now;
         }
+
+        public Session() { }
     }
 }

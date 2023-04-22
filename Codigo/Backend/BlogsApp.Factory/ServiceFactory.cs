@@ -19,12 +19,12 @@ namespace BlogsApp.Factory
 
         public void AddCustomServices()
         {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<IArticleLogic, ArticleLogic>();
             services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<ISessionLogic, SessionLogic>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ICommentLogic, CommentLogic>();
             services.AddScoped<IReplyRepository, ReplyRepository>();

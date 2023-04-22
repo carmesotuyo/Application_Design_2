@@ -2,6 +2,7 @@
 {
     public class User
     {
+        public int Id { get; private set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
@@ -10,22 +11,24 @@
         public bool Blogger { get; set; }
         public bool Admin { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public List<Article> Articles { get; set; }
-        public List<Comment> Comments { get; set; }
-        public List<Reply> Replies { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Reply> Replies { get; set; }
 
-        public User(string username, string pwd, string email, string name, string lastname, bool blogger, bool admin)    
+        public User(string username, string password, string email, string name, string lastName, bool blogger, bool admin)    
         {
             Username = username;
-            Password = pwd;
+            Password = password;
             Email = email;
             Name = name;
-            LastName = lastname;
+            LastName = lastName;
             Blogger = blogger;
             Admin = admin;
             Articles = new List<Article>();
             Comments = new List<Comment>();
             Replies = new List<Reply>();
         }
+
+        public User() { }
     }
 }
