@@ -15,28 +15,23 @@ namespace BlogsApp.WebAPI
             Configuration = configuration;
         }
 
-        // EN ESTE METODÓ SE REGISTRAN LOS SERVICIOS
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(); //YA ESTA EN PROGRAM
-            // REGISTRO EL CONTEXTO
-            //services.AddDbContext<DbContext, Context>(o => o.UseSqlServer(Configuration.GetConnectionString("BlogsAppDBCarme")));
-            // REGISTRO EL REPOSITORIO Y SU LÓGICA
-            //services.AddScoped<IMoviesService, MoviesService>();
-            //services.AddScoped<IMoviesManagment, MoviesManagment>();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
             ServiceFactory factory = new ServiceFactory(services);
             factory.AddCustomServices();
             factory.AddDbContextService(this.Configuration.GetConnectionString("BlogsAppDBCarme"));
         }
 
-        // TODO A CHEQUEAR: YA ESTA EN EL PROGRAM CON SWAGGER ?
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app) //, IWebHostEnvironment env
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
             app.UseHttpsRedirection();
             app.UseRouting();
 
