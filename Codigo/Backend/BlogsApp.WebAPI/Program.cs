@@ -1,15 +1,19 @@
-﻿using BlogsApp.DataAccess; // creo que la WebAPI no deberia depender del DataAccess, pero fue lo que hicimos en clase
+﻿using BlogsApp.Factory;
+using BlogsApp.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<Context>();
+//builder.Services.AddDbContext<Context>(); SE SUSTITUYE POR FACTORY PARA DESACOPLAR DE DATA ACCESS
+ServiceFactory factory = new ServiceFactory(builder.Services);
+factory.AddCustomServices();
+factory.AddDbContextService(); //builder.Configuration.GetConnectionString("BlogsAppDBCarme")
 
 var app = builder.Build();
 
