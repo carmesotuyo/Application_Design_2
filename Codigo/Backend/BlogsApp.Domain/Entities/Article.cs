@@ -8,11 +8,11 @@
         public bool Private { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
-        public Nullable<DateTime> DateDeleted { get; set; }
+        public DateTime? DateDeleted { get; set; }
         public User User { get; set; }
         public List<Comment> Comments;
         public int Template { get; set; }
-        public Nullable<string> Image { get; set; }
+        public string? Image { get; set; }
 
 
         public Article(string name, string body, int template, User user)
