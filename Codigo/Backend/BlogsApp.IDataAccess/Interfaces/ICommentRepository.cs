@@ -1,10 +1,9 @@
 ﻿namespace BlogsApp.IDataAccess.Interfaces
 {
-    public class IArticleRepository
+    public class ICommentRepository
     {
-        public IArticleRepository()
+        public ICommentRepository()
         {
         }
     }
 }
-

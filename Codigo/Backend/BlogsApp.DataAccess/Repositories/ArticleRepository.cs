@@ -1,12 +1,10 @@
-﻿using System;
-using BlogsApp.IDataAccess.Interfaces;
-using BlogsApp.Domain.Entities;
+﻿using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogsApp.DataAccess.Repositories
 {
-	public class ArticleRepository : IArticleRepository
-	{
+    public class ArticleRepository : IArticleRepository
+    {
         //private readonly DbSet<Article> articles;
         private readonly DbContext context;
 

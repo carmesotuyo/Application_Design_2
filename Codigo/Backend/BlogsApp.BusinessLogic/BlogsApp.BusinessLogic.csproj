@@ -14,7 +14,4 @@
   <ItemGroup>
     <None Remove="Logics\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logics\" />
-  </ItemGroup>
 </Project>

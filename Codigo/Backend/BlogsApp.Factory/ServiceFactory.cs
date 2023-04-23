@@ -1,13 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using BlogsApp.BusinessLogic;
-using BlogsApp.BusinessLogic.Logics;
-using BlogsApp.IBusinessLogic;
+﻿using BlogsApp.BusinessLogic.Logics;
+using BlogsApp.DataAccess;
+using BlogsApp.DataAccess.Repositories;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
-using BlogsApp.DataAccess.Repositories;
-using BlogsApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogsApp.Factory
 {
@@ -22,8 +19,16 @@ namespace BlogsApp.Factory
 
         public void AddCustomServices()
         {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<IArticleLogic, ArticleLogic>();
+            services.AddScoped<ISessionRepository, SessionRepository>();
+            services.AddScoped<ISessionLogic, SessionLogic>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentLogic, CommentLogic>();
+            services.AddScoped<IReplyRepository, ReplyRepository>();
+            services.AddScoped<IReplyLogic, ReplyLogic>();
         }
 
         public void AddDbContextService() //string connectionString
