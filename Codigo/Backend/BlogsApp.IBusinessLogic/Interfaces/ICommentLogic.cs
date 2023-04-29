@@ -1,9 +1,7 @@
 ﻿namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class ICommentLogic
+    public interface ICommentLogic
     {
-        public ICommentLogic()
-        {
-        }
+
     }
 }
