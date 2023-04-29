@@ -31,9 +31,9 @@ namespace BlogsApp.Factory
             services.AddScoped<IReplyLogic, ReplyLogic>();
         }
 
-        public void AddDbContextService() //string connectionString
+        public void AddDbContextService()
         {
-            services.AddDbContext<DbContext, Context>(); //options => options.UseSqlServer(connectionString)
+            services.AddDbContext<DbContext, Context>();
         }
     }
 }
