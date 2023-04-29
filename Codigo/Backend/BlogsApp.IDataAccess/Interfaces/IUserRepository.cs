@@ -1,9 +1,10 @@
-﻿namespace BlogsApp.IDataAccess.Interfaces
+﻿using BlogsApp.Domain.Entities;
+
+namespace BlogsApp.IDataAccess.Interfaces
 {
-    public class IUserRepository
+    public interface IUserRepository
     {
-        public IUserRepository()
-        {
-        }
+        public IEnumerable<User>? GetUsers();
+        void InsertUser(User user);
     }
 }

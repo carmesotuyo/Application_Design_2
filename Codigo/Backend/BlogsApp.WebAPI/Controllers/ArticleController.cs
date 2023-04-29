@@ -1,4 +1,7 @@
+using BlogsApp.BusinessLogic.Logics;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
+using BlogsApp.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogsApp.WebAPI.Controllers
@@ -13,36 +16,55 @@ namespace BlogsApp.WebAPI.Controllers
             this.articleLogic = articleLogic;
         }
 
-        // GET: api/Article
+        //// GET: api/Article
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        [ProducesResponseType(typeof(IEnumerable<Article>), 200)]
+        [ProducesResponseType(typeof(MessageResponseDTO), 500)]
+        public IActionResult GetUsers()
         {
-            return new string[] { "value1", "value2" };
+            MessageResponseDTO response = new MessageResponseDTO(true, "");
+            try
+            {
+                return Ok(articleLogic.GetArticles());
+            }
+            catch (Exception)
+            {
+                response.Success = false;
+                response.Message = "Algo salió mal.";
+                return StatusCode(500, response);
+            }
+
         }
 
-        // GET: api/Article/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //// GET: api/Article/5
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
-        // POST: api/Article
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST: api/Article
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
 
-        // PUT: api/Article/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT: api/Article/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE: api/Article/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE: api/Article/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

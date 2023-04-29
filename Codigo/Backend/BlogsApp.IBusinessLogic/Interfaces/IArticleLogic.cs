@@ -1,10 +1,10 @@
-﻿namespace BlogsApp.IBusinessLogic.Interfaces
+﻿using BlogsApp.Domain.Entities;
+
+namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class IArticleLogic
+    public interface IArticleLogic
     {
-        public IArticleLogic()
-        {
-        }
+        public IEnumerable<Article> GetArticles();
     }
 }
 

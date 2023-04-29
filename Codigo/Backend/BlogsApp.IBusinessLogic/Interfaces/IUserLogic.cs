@@ -1,9 +1,10 @@
-﻿namespace BlogsApp.IBusinessLogic.Interfaces
+﻿using BlogsApp.Domain.Entities;
+
+namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class IUserLogic
+    public interface IUserLogic
     {
-        public IUserLogic()
-        {
-        }
+        public IEnumerable<User> GetUsers();
+        User? InsertUser(User? movie);
     }
 }

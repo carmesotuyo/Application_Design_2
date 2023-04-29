@@ -11,9 +11,9 @@
         public bool Blogger { get; set; }
         public bool Admin { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public ICollection<Article> Articles { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        public ICollection<Reply> Replies { get; set; }
+        public ICollection<Article>? Articles { get; set; }
+        public ICollection<Comment>? Comments { get; set; }
+        public ICollection<Reply>? Replies { get; set; }
 
         private string _username;
         private string _email;
