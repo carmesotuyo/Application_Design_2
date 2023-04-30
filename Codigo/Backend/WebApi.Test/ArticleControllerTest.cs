@@ -19,7 +19,7 @@ namespace WebApi.Test
         private ArticleController controller;
 
         private static readonly Article article = new Article() { };
-        private static readonly KeyValuePair<string, int> stat = new KeyValuePair<string, int>() { };
+        private KeyValuePair<string, int> stat = new KeyValuePair<string, int>() { };
         private IEnumerable<Article> articles;
         private StatsModel yearlyStats;
 
@@ -29,7 +29,7 @@ namespace WebApi.Test
             articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
             controller = new ArticleController(articleLogicMock.Object);
             articles = new List<Article>() { article };
-            yearlyStats = new StatsModel() { stat };
+            yearlyStats = new StatsModel() { Jan = stat };
         }
 
         [TestMethod]
@@ -83,8 +83,16 @@ namespace WebApi.Test
         [TestMethod]
         public void GetArticlesStats()
         {
-            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>())).Returns(articles);
+            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>())).Returns(yearlyStats);
 
+            IActionResult result = controller!.GetStatsByYear(2020);
+            articleLogicMock.VerifyAll();
+            OkObjectResult objectResult = result as OkObjectResult;
+
+            Assert.IsNotNull(result);
+            articleLogicMock.VerifyAll();
+
+            Assert.IsTrue(objectResult.Value.Equals(yearlyStats));
         }
 	}
 }
