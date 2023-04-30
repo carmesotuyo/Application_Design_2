@@ -1,9 +1,11 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using BlogsApp.WebAPI.Filters;
 
 namespace BlogsApp.WebAPI.Controllers
 {
     [Route("api/articles")]
+    [ServiceFilter(typeof(AuthorizationFilter))]
     public class ArticleController : BlogsAppControllerBase
     {
         private readonly IArticleLogic articleLogic;
