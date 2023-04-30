@@ -17,9 +17,9 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string? search)
         {
-            return new OkObjectResult(articleLogic.GetArticles());
+            return new OkObjectResult(articleLogic.GetArticles(search));
         }
 
         [HttpGet("{id}")]

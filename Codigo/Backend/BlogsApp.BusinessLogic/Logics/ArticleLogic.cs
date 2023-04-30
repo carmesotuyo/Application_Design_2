@@ -18,7 +18,7 @@ namespace BlogsApp.BusinessLogic.Logics
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Article> GetArticles()
+        public IEnumerable<Article> GetArticles(string? searchText)
         {
             throw new NotImplementedException();
         }

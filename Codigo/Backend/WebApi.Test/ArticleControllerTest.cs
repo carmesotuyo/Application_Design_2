@@ -8,6 +8,7 @@ using BlogsApp.Domain.Entities;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
+using BlogsApp.WebAPI.Models;
 
 namespace WebApi.Test
 {
@@ -18,7 +19,9 @@ namespace WebApi.Test
         private ArticleController controller;
 
         private static readonly Article article = new Article() { };
+        private static readonly KeyValuePair<string, int> stat = new KeyValuePair<string, int>() { };
         private IEnumerable<Article> articles;
+        private StatsModel yearlyStats;
 
         [TestInitialize]
 		public void InitTest()
@@ -26,14 +29,18 @@ namespace WebApi.Test
             articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
             controller = new ArticleController(articleLogicMock.Object);
             articles = new List<Article>() { article };
+            yearlyStats = new StatsModel() { stat };
         }
 
         [TestMethod]
         public void GetAllArticles()
         {
-            articleLogicMock.Setup(m => m.GetArticles()).Returns(articles);
+            // si le paso default falla, pero si le paso It.IsAny<string>() no, deberia poder ser opcional el campo
+            // casi de arriba era cuando tenia definico string? search = "" tanto en IArticleLogic como en ArticleController
+            // ahora le saque el "" y me anda con el default, A CHEQUEAR
+            articleLogicMock.Setup(m => m.GetArticles(default)).Returns(articles);
 
-            IActionResult result = controller!.Get();
+            IActionResult result = controller!.Get(default);
             articleLogicMock.VerifyAll();
             OkObjectResult objectResult = result as OkObjectResult;
 
@@ -41,7 +48,6 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
 
             Assert.IsTrue(objectResult.Value.Equals(articles));
-
         }
 
         [TestMethod]
@@ -57,6 +63,28 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
 
             Assert.IsTrue(objectResult.Value.Equals(article));
+        }
+
+        [TestMethod]
+        public void GetArticlesBySearch()
+        {
+            articleLogicMock.Setup(m => m.GetArticles(It.IsAny<string>())).Returns(articles);
+
+            IActionResult result = controller!.Get("search text");
+            articleLogicMock.VerifyAll();
+            OkObjectResult objectResult = result as OkObjectResult;
+
+            Assert.IsNotNull(result);
+            articleLogicMock.VerifyAll();
+
+            Assert.IsTrue(objectResult.Value.Equals(articles));
+        }
+
+        [TestMethod]
+        public void GetArticlesStats()
+        {
+            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>())).Returns(articles);
+
         }
 	}
 }
