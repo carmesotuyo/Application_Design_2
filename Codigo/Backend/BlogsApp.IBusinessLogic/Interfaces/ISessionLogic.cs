@@ -1,9 +1,7 @@
 ﻿namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class ISessionLogic
+    public interface ISessionLogic
     {
-        public ISessionLogic()
-        {
-        }
+        bool IsValidToken(string token);
     }
 }

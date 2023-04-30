@@ -1,9 +1,7 @@
 ﻿namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class IReplyLogic
+    public interface IReplyLogic
     {
-        public IReplyLogic()
-        {
-        }
+        
     }
 }

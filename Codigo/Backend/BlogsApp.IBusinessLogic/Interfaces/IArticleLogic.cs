@@ -1,10 +1,8 @@
 ﻿namespace BlogsApp.IBusinessLogic.Interfaces
 {
-    public class IArticleLogic
+    public interface IArticleLogic
     {
-        public IArticleLogic()
-        {
-        }
+        
     }
 }
 
