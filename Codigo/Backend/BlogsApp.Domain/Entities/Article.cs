@@ -10,7 +10,7 @@
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
         public User User { get; private set; }
-        public ICollection<Comment> Comments;
+        public ICollection<Comment>? Comments;
         public int Template { get; set; }
         public string? Image { get; set; }
 
