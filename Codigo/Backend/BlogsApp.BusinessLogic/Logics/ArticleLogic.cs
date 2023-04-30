@@ -23,6 +23,11 @@ namespace BlogsApp.BusinessLogic.Logics
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Article> GetArticlesByUser(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<int> GetStatsByYear(int year)
         {
             throw new NotImplementedException();

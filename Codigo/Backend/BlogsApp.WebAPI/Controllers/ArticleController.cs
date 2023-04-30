@@ -28,7 +28,15 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(articleLogic.GetArticleById(id));
         }
 
-        public IActionResult GetStatsByYear(int year)
+        // CHEQUEAR, LA RUTA NO ESTA BIEN, DEBERIA IR EN USERS?
+        [HttpGet("/users/{id}/articles")]
+        public IActionResult GetByUser([FromRoute]int userId)
+        {
+            return new OkObjectResult(articleLogic.GetArticlesByUser(userId));
+        }
+
+        [HttpGet("/stats")]
+        public IActionResult GetStatsByYear([FromQuery]int year)
         {
             return new OkObjectResult(articleLogic.GetStatsByYear(year));
         }
