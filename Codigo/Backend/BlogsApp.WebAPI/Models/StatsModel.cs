@@ -5,21 +5,24 @@ namespace BlogsApp.WebAPI.Models
 {
 	public class StatsModel
 	{
-		public KeyValuePair<string, int> Jan { get; set; }
-        public KeyValuePair<string, int> Feb { get; set; }
-        public KeyValuePair<string, int> Mar { get; set; }
-        public KeyValuePair<string, int> Apr { get; set; }
-        public KeyValuePair<string, int> May { get; set; }
-        public KeyValuePair<string, int> Jun { get; set; }
-        public KeyValuePair<string, int> Jul { get; set; }
-        public KeyValuePair<string, int> Aug { get; set; }
-        public KeyValuePair<string, int> Sep { get; set; }
-        public KeyValuePair<string, int> Oct { get; set; }
-        public KeyValuePair<string, int> Nov { get; set; }
-        public KeyValuePair<string, int> Dec { get; set; }
+		public int Jan { get; set; }
+        public int Feb { get; set; }
+        public int Mar { get; set; }
+        public int Apr { get; set; }
+        public int May { get; set; }
+        public int Jun { get; set; }
+        public int Jul { get; set; }
+        public int Aug { get; set; }
+        public int Sep { get; set; }
+        public int Oct { get; set; }
+        public int Nov { get; set; }
+        public int Dec { get; set; }
+
+        public IEnumerable<int> stats;
 
         public StatsModel()
 		{
+            this.stats = new List<int>() { Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec };
 		}
     }
 }

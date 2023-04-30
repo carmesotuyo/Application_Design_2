@@ -27,5 +27,10 @@ namespace BlogsApp.WebAPI.Controllers
         {
             return new OkObjectResult(articleLogic.GetArticleById(id));
         }
+
+        public IActionResult GetStatsByYear(int year)
+        {
+            return new OkObjectResult(articleLogic.GetStatsByYear(year));
+        }
     }
 }

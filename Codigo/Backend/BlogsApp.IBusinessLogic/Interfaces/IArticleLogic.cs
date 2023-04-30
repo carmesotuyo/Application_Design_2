@@ -5,6 +5,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     {
         Article GetArticleById(int id);
         IEnumerable<Article> GetArticles(string? search);
+        IEnumerable<int> GetStatsByYear(int year);
     }
 }
 
