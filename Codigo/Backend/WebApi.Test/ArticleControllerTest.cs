@@ -21,6 +21,7 @@ namespace WebApi.Test
         private static readonly Article article = new Article() { };
         private IEnumerable<Article> articles;
         private StatsModel yearlyStats;
+        private User user;
 
         [TestInitialize]
 		public void InitTest()
@@ -29,6 +30,7 @@ namespace WebApi.Test
             controller = new ArticleController(articleLogicMock.Object);
             articles = new List<Article>() { article };
             yearlyStats = new StatsModel();
+            user = new User() { };
         }
 
         [TestMethod]
@@ -93,6 +95,22 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
 
             Assert.IsTrue(objectResult.Value.Equals(yearlyStats.stats));
+        }
+
+        [TestMethod]
+        public void GetArticlesByUser()
+        {
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>())).Returns(articles);
+
+            IActionResult result = controller!.GetByUser(user.Id);
+            articleLogicMock.VerifyAll();
+
+            OkObjectResult objectResult = result as OkObjectResult;
+
+            Assert.IsNotNull(result);
+            articleLogicMock.VerifyAll();
+
+            Assert.IsTrue(objectResult.Value.Equals(articles));
         }
 	}
 }
