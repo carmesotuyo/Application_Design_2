@@ -28,8 +28,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(articleLogic.GetArticleById(id));
         }
 
-        // CHEQUEAR, LA RUTA NO ESTA BIEN, DEBERIA IR EN USERS?
-        [HttpGet("/users/{id}/articles")]
+        [HttpGet("{userId}")]
         public IActionResult GetByUser([FromRoute]int userId)
         {
             return new OkObjectResult(articleLogic.GetArticlesByUser(userId));
