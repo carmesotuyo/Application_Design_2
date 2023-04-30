@@ -1,9 +1,7 @@
 ﻿namespace BlogsApp.IDataAccess.Interfaces
 {
-    public class IUserRepository
+    public interface IUserRepository
     {
-        public IUserRepository()
-        {
-        }
+        
     }
 }

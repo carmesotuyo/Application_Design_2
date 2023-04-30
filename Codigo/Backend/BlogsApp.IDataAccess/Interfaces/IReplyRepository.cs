@@ -1,9 +1,7 @@
 ﻿namespace BlogsApp.IDataAccess.Interfaces
 {
-    public class IReplyRepository
+    public interface IReplyRepository
     {
-        public IReplyRepository()
-        {
-        }
+
     }
 }
