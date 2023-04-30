@@ -12,6 +12,11 @@ namespace BlogsApp.BusinessLogic.Logics
             _sessionRepository = sessionRepository;
         }
 
+        public bool IsValidToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
         //...Session LOGIC CODE
     }
 }

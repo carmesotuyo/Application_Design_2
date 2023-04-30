@@ -1,4 +1,5 @@
-﻿using BlogsApp.IBusinessLogic.Interfaces;
+﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 
 namespace BlogsApp.BusinessLogic.Logics
@@ -10,6 +11,11 @@ namespace BlogsApp.BusinessLogic.Logics
         public ArticleLogic(IArticleRepository articleRepository)
         {
             _articleRepository = articleRepository;
+        }
+
+        public Article GetArticleById(int id)
+        {
+            throw new NotImplementedException();
         }
 
         //...ARTICLE LOGIC CODE
