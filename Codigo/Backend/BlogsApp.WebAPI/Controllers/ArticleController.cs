@@ -16,6 +16,12 @@ namespace BlogsApp.WebAPI.Controllers
             this.articleLogic = articleLogic;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return new OkObjectResult(articleLogic.GetArticles());
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetArticleById([FromRoute] int id)
         {

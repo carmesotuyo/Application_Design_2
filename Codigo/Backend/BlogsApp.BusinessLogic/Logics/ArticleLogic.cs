@@ -18,6 +18,11 @@ namespace BlogsApp.BusinessLogic.Logics
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Article> GetArticles()
+        {
+            throw new NotImplementedException();
+        }
+
         //...ARTICLE LOGIC CODE
     }
 }
