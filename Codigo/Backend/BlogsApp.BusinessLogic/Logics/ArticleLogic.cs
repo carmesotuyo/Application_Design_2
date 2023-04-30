@@ -36,12 +36,14 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public IEnumerable<Article> GetArticlesByUser(int userId)
         {
-            throw new NotImplementedException();
+            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId);
         }
 
         public IEnumerable<int> GetStatsByYear(int year)
         {
-            throw new NotImplementedException();
+            return _articleRepository.GetAll(m => m.DateCreated.Year == year)
+                                     .GroupBy(m => m.DateCreated.Month)
+                                     .Select(m => m.Count());
         }
 
         private Func<Article, bool> ArticleById(int id)
