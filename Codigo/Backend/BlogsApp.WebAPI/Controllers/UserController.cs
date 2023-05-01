@@ -9,9 +9,9 @@ namespace BlogsApp.WebAPI.Controllers
     public class UserController: BlogsAppControllerBase
     {
         private readonly IUserLogic userLogic;
-        public UserController(IUserLogic UserLogic) 
+        public UserController(IUserLogic userLogic) 
         {
-            this.userLogic = UserLogic;
+            this.userLogic = userLogic;
         }
 
         [HttpPost]
@@ -21,7 +21,7 @@ namespace BlogsApp.WebAPI.Controllers
         public IActionResult PostUser([FromBody] CreateUserRequestDTO userDTO)
         {
             MessageResponseDTO response = new MessageResponseDTO(true, "");
-            return Ok(userLogic.InsertUser(userDTO.TransformToUser()));
+            return Ok(userLogic.CreateUser(userDTO.TransformToUser()));
         }
 
         //public IActionResult PatchUser([FromBody] User aUser)
