@@ -120,14 +120,14 @@ namespace WebApi.Test
         [TestMethod]
         public void DeleteArticleOk()
         {
-            articleLogicMock.Setup(m => m.DeleteArticle(article.Id, userBlogger));
+            articleLogicMock!.Setup(m => m.DeleteArticle(article.Id, userBlogger));
 
-            var result = controller.DeleteArticle(article.Id);
+            var result = controller!.DeleteArticle(article.Id);
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
-            Assert.IsNotNull(result);
+            Assert.IsNotNull(objectResult);
             Assert.AreEqual(200, statusCode);
         }
 
@@ -159,6 +159,34 @@ namespace WebApi.Test
 
             articleLogicMock.VerifyAll();
             Assert.AreEqual(404, statusCode);
+        }
+
+        [TestMethod]
+        public void PostArticleOk()
+        {
+            articleLogicMock!.Setup(m => m.CreateArticle(It.IsAny<Article>(), It.IsAny<User>())).Returns(article);
+
+            var result = controller!.PostArticle(article);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(objectResult.Value, article);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void PostArticleWithoutPermissions()
+        {
+            articleLogicMock.Setup(m => m.CreateArticle(It.IsAny<Article>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
+
+            var result = controller.PostArticle(It.IsAny<Article>());
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(500, statusCode);
         }
     }
 }
