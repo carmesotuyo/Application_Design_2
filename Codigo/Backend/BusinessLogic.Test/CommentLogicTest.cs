@@ -28,7 +28,6 @@ namespace BusinessLogic.Test
         public void CreateComment()
         {
             commentRepository.Setup(x => x.Add(It.IsAny<Comment>())).Returns(comment);
-            commentRepository.Setup(x => x.Exists(It.IsAny<Func<Comment, bool>>())).Returns(false);
 
             Comment result = commentLogic.CreateComment(comment, userBlogger);
 

@@ -1,4 +1,5 @@
-﻿using BlogsApp.Domain.Entities;
+﻿using System.Data;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 
@@ -15,7 +16,13 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public Comment CreateComment(Comment comment, User loggedUser)
         {
-            throw new NotImplementedException();
+            if (loggedUser.Blogger)
+            {
+                this._commentRepository.Add(comment);
+                return comment;
+            }
+
+            throw new UnauthorizedAccessException("Sólo Bloggers pueden hacer comentarios");
         }
     }
 }
