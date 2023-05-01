@@ -59,6 +59,7 @@ namespace DataAccess.Test
 
             Assert.ThrowsException<AlreadyExistsDbException>(() => articleRepository.Add(anArticle));
         }
+
         [TestMethod]
         public void GetArticleOk()
         {

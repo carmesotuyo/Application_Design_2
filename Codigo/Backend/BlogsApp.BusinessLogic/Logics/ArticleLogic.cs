@@ -23,9 +23,10 @@ namespace BlogsApp.BusinessLogic.Logics
                 this._articleRepository.Add(article);
                 
                 return article;
+            } else
+            {
+                throw new UnauthorizedAccessException("Sólo los Bloggers pueden crear artículos");
             }
-
-            throw new UnauthorizedAccessException("Solo los Bloggers pueden crear articulos.");
         }
 
         public void DeleteArticle(int articleId, User loggedUser)
@@ -37,8 +38,8 @@ namespace BlogsApp.BusinessLogic.Logics
                 this._articleRepository.Update(article);
             } else
             {
-                throw new UnauthorizedAccessException("Sólo el creador del artículo puede modificarlo")
-            }
+                throw new UnauthorizedAccessException("Sólo el creador del artículo puede eliminarlo");
+            };
         }
 
         public Article GetArticleById(int id)
@@ -81,14 +82,20 @@ namespace BlogsApp.BusinessLogic.Logics
         public Article UpdateArticle(int articleId, Article anArticle, User loggedUser)
         {
             Article article = _articleRepository.Get(ArticleById(articleId));
-            article.Name = anArticle.Name;
-            article.Body = anArticle.Body;
-            article.Private = anArticle.Private;
-            article.DateModified = DateTime.Now;
-            article.Template = anArticle.Template;
-            article.Image = anArticle.Image;
-            this._articleRepository.Update(article);
-            return article;
+            if(loggedUser.Id == article.UserId)
+            {
+                article.Name = anArticle.Name;
+                article.Body = anArticle.Body;
+                article.Private = anArticle.Private;
+                article.DateModified = DateTime.Now;
+                article.Template = anArticle.Template;
+                article.Image = anArticle.Image;
+                this._articleRepository.Update(article);
+                return article;
+            } else
+            {
+                throw new UnauthorizedAccessException("Sólo el creador del artículo puede modificarlo");
+            };
         }
 
         private Func<Article, bool> ArticleById(int id)

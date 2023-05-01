@@ -34,7 +34,7 @@ namespace BusinessLogic.Test
 
         private readonly Article Articulo10 = new Article { Id = 10, Name = "Test Article 10", DateCreated = DateTime.Parse("2022-06-05") };
 
-        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", DateCreated = DateTime.Parse("2022-07-05"), User = user };
+        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", DateCreated = DateTime.Parse("2022-07-05"), User = user, UserId = user.Id };
 
         private readonly Article Articulo12 = new Article { Id = 12, Name = "Test Article 12", Body = "Text1" , DateCreated = DateTime.Parse("2022-07-05") };
 
@@ -44,7 +44,7 @@ namespace BusinessLogic.Test
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
         private readonly User userBlogger = new User() { Blogger = true };
-        private readonly User userAdmin = new User() { Blogger = false };
+        private readonly User userAdmin = new User() { Blogger = false, Admin = true };
 
         [TestInitialize]
         public void TestInitialize()
@@ -169,7 +169,15 @@ namespace BusinessLogic.Test
             articleRepository.VerifyAll();
             Assert.AreEqual(result, Articulo11);
         }
-        //CREAR TEST DE CREATE WITHOUT PERMISSIONS
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void CreateArticleWithoutPermissionsTest()
+        {
+            articleRepository.Setup(x => x.Add(It.IsAny<Article>())).Returns(Articulo11);
+
+            articleLogic.CreateArticle(Articulo11, userAdmin);
+        }
 
         [TestMethod]
         public void DeleteArticleTest()
@@ -198,11 +206,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleNameTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Old name" };
-            Article updatedArticle = new Article { Name = "New name"};
+            Article existingArticle = new Article { Id = articleId, Name = "Old name", UserId = user.Id };
+            Article updatedArticle = new Article { Name = "New name" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
             articleRepository.Verify(repo => repo.Update(existingArticle), Times.Once);
             Assert.AreEqual(updatedArticle.Name, result.Name);
@@ -210,45 +218,93 @@ namespace BusinessLogic.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateArticleNameWithoutPermissionsTest()
+        {
+            int articleId = 1;
+            Article existingArticle = new Article { Id = articleId, Name = "Old name", UserId = userBlogger.Id };
+            Article updatedArticle = new Article { Name = "New name" };
+            articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+        }
+
+        [TestMethod]
         public void UpdateArticleBodyTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Body = "Old body" };
+            Article existingArticle = new Article { Id = articleId, Body = "Old body", UserId = user.Id };
             Article updatedArticle = new Article { Body = "New body" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
             articleRepository.Verify(repo => repo.Update(existingArticle), Times.Once);
             Assert.AreEqual(updatedArticle.Body, result.Body);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateArticleBodyWithoutPermissionsTest()
+        {
+            int articleId = 1;
+            Article existingArticle = new Article { Id = articleId, Body = "Old body", UserId = userBlogger.Id };
+            Article updatedArticle = new Article { Body = "New body" };
+            articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+        }
+
+        [TestMethod]
         public void UpdateArticleImageTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg" };
+            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg", UserId = user.Id };
             Article updatedArticle = new Article { Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
             articleRepository.Verify(repo => repo.Update(existingArticle), Times.Once);
             Assert.AreEqual(updatedArticle.Image, result.Image);
         }
 
         [TestMethod]
-        public void UpdateArticleDateModifiedTest()
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateArticleImageWithoutPermissionsTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg", DateModified = DateTime.Parse("2022-01-05") };
+            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg", UserId = userBlogger.Id };
             Article updatedArticle = new Article { Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+        }
+
+        [TestMethod]
+        public void UpdateArticleDateModifiedTest()
+        {
+            int articleId = 1;
+            Article existingArticle = new Article { Id = articleId, DateModified = DateTime.Parse("2022-01-05"), UserId = user.Id };
+            Article updatedArticle = new Article { DateModified = DateTime.Parse("2023-02-06") };
+            articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
             articleRepository.Verify(repo => repo.Update(existingArticle), Times.Once);
             Assert.AreNotEqual(updatedArticle.DateModified, result.DateModified);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateArticleDateModifiedWithoutPermissionsTest()
+        {
+            int articleId = 1;
+            Article existingArticle = new Article { Id = articleId, DateModified = DateTime.Parse("2022-01-05"), UserId = userBlogger.Id };
+            Article updatedArticle = new Article { DateModified = DateTime.Parse("2023-02-06") };
+            articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
         }
 
     }
