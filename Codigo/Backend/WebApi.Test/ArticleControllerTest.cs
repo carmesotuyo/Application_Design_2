@@ -55,7 +55,7 @@ namespace WebApi.Test
             // si le paso default falla, pero si le paso It.IsAny<string>() no, deberia poder ser opcional el campo
             // casi de arriba era cuando tenia definico string? search = "" tanto en IArticleLogic como en ArticleController
             // ahora le saque el "" y me anda con el default, A CHEQUEAR
-            articleLogicMock.Setup(m => m.GetArticles(default)).Returns(articles);
+            articleLogicMock.Setup(m => m.GetArticles(userBlogger, null)).Returns(articles);
 
             IActionResult result = controller!.Get(default);
             articleLogicMock.VerifyAll();
@@ -85,7 +85,7 @@ namespace WebApi.Test
         [TestMethod]
         public void GetArticlesBySearch()
         {
-            articleLogicMock.Setup(m => m.GetArticles(It.IsAny<string>())).Returns(articles);
+            articleLogicMock.Setup(m => m.GetArticles(It.IsAny<User>(), It.IsAny<string>())).Returns(articles);
 
             IActionResult result = controller!.Get("search text");
             articleLogicMock.VerifyAll();

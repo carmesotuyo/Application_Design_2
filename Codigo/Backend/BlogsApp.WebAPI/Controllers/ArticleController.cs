@@ -19,7 +19,8 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] string? search)
         {
-            return new OkObjectResult(articleLogic.GetArticles(search));
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            return new OkObjectResult(articleLogic.GetArticles(loggedUser, search));
         }
 
         [HttpGet("{id}")]

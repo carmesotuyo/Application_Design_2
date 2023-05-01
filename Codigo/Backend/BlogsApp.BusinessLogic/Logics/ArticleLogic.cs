@@ -72,8 +72,7 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 return _articleRepository.GetAll(m => m.DateCreated.Year == year)
                                          .GroupBy(m => m.DateCreated.Month)
-                                         .Select(m => m.Count())
-                                         .ToList();
+                                         .Select(m => m.Count());
             } else
             {
                 throw new UnauthorizedAccessException("Se necesitan permisos de administrador");
