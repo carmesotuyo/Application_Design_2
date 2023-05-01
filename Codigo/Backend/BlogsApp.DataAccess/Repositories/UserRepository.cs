@@ -1,4 +1,5 @@
 using BlogsApp.Domain.Entities;
+using BlogsApp.IDataAccess;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.DataAccess;
@@ -13,14 +14,14 @@ namespace BlogsApp.DataAccess.Repositories
 
         public UserRepository(Context context)
         {
-            Context = context;
-            //this.users = context.Set<User>();
+            context = context;
         }
 
-        public void InsertUser(User user)
+        public User Add(User user)
         {
             context.Users?.Add(user);
             context.SaveChanges();
+            return user;
         }
 
         public void Update(User value)

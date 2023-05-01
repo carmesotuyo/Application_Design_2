@@ -2,6 +2,7 @@
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 using BlogsApp.DataAccess.Repositories;
 using BlogsApp.Domain.Entities;
+using BlogsApp.IDataAccess;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
