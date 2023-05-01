@@ -59,6 +59,27 @@ namespace BlogsApp.BusinessLogic.Tests
 
             Assert.ThrowsException<AlreadyExistsDbException>(() => articleRepository.Add(anArticle));
         }
+        [TestMethod]
+        public void GetArticleOk()
+        {
+            IArticleRepository articleRepository = CreateRepositoryWithArticle();
+            getById = GetArticleById(anArticle.Id);
+
+            Article articleInDb = articleRepository.Get(getById);
+
+            Assert.IsNotNull(articleInDb);
+            Assert.AreEqual(anArticle.Id, articleInDb.Id);
+        }
+
+        [TestMethod]
+        public void GetArticleFail()
+        {
+            var context = CreateContext();
+            IArticleRepository articleRepository = new ArticleRepository(context);
+            getById = GetArticleById(anArticle.Id);
+
+            Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Get(getById));
+        }
 
         private Context GetMemoryContext(string nameBd)
         {

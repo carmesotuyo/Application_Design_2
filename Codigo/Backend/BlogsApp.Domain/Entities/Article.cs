@@ -1,4 +1,6 @@
-﻿namespace BlogsApp.Domain.Entities
+﻿using BlogsApp.Domain.Exceptions;
+
+namespace BlogsApp.Domain.Entities
 {
     public class Article
     {
@@ -29,6 +31,23 @@
         }
 
         public Article() { }
+
+        public void IsValid()
+        {
+            if (Name == null || Name.Trim() == "") { throw new BadInputException("Debe ingresar un nombre."); }
+            if (Body == null || Body.Trim() == "") { throw new BadInputException("Debe ingresar un contenido."); }
+        }
+        public override bool Equals(object obj)
+        {
+            var item = obj as Article;
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            return Id.Equals(item.Id);
+        }
     }
 }
 
