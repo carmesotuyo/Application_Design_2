@@ -15,6 +15,7 @@ namespace BusinessLogic.Test
         private ICollection<Comment> comments;
         private readonly Comment comment = new Comment();
         private readonly User userBlogger = new User() { Blogger = true };
+        private readonly User userAdmin = new User() { Blogger = false };
 
         [TestInitialize]
         public void TestInitialize()
@@ -33,6 +34,12 @@ namespace BusinessLogic.Test
 
             commentRepository.VerifyAll();
             Assert.AreEqual(result, comment);
+        }
+
+        [TestMethod]
+        public void CreateCommentWithoutPermissions()
+        {
+            Assert.ThrowsException<UnauthorizedAccessException>(() => commentLogic.CreateComment(comment, userAdmin));
         }
     }
 }
