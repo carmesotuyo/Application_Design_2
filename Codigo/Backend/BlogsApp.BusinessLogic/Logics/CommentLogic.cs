@@ -24,5 +24,10 @@ namespace BlogsApp.BusinessLogic.Logics
 
             throw new UnauthorizedAccessException("Sólo Bloggers pueden hacer comentarios");
         }
+
+        public void DeleteComment(int commentId)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

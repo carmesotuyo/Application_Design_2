@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using BlogsApp.DataAccess;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.DataAccess.Repositories;
 using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BlogsApp.Domain;
-using System.Linq.Expressions;
-using BlogsApp.DataAccess;
-using BlogsApp.DataAccess.Repositories;
-using BlogsApp.DataAccess.Interfaces.Exceptions;
-
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DataAccess.Test
 {

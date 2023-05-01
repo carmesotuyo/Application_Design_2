@@ -34,23 +34,28 @@ namespace BusinessLogic.Test
 
         private readonly Article Articulo10 = new Article { Id = 10, Name = "Test Article 10", DateCreated = DateTime.Parse("2022-06-05") };
 
-        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", DateCreated = DateTime.Parse("2022-07-05"), User = user, UserId = user.Id };
+        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", DateCreated = DateTime.Parse("2022-07-05"), User = user, UserId = user.Id};
 
         private readonly Article Articulo12 = new Article { Id = 12, Name = "Test Article 12", Body = "Text1" , DateCreated = DateTime.Parse("2022-07-05") };
+        private readonly Article articuloTest = new Article("Nombre", "Body", 1, user);
 
+        private readonly ICollection<Comment> comments = new List<Comment>();
 
         private Mock<IArticleRepository> articleRepository;
+        private Mock<ICommentLogic> commentLogic;
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
         private readonly User userBlogger = new User() { Blogger = true };
         private readonly User userAdmin = new User() { Blogger = false, Admin = true };
 
+
         [TestInitialize]
         public void TestInitialize()
         {
             articleRepository = new Mock<IArticleRepository>(MockBehavior.Default);
-            articleLogic = new ArticleLogic(articleRepository.Object);
+            commentLogic = new Mock<ICommentLogic>(MockBehavior.Default);
+            articleLogic = new ArticleLogic(articleRepository.Object, commentLogic.Object);
             allArticles = new List<Article>() { Articulo1, Articulo2, Articulo3, Articulo4, Articulo5, Articulo6, Articulo7, Articulo8, Articulo9, Articulo10, Articulo11, Articulo12 };
             newArticle = new List<Article>() { Articulo11 };
         }
@@ -182,15 +187,18 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void DeleteArticleTest()
         {
-            articleRepository.Setup(r => r.Get(It.IsAny<Func<Article, bool>>())).Returns(Articulo11);
+            articuloTest.Comments = new List<Comment>() { new Comment {Id =1 }, new Comment { Id = 2 } };
+            articleRepository.Setup(r => r.Get(It.IsAny<Func<Article, bool>>())).Returns(articuloTest);
+            commentLogic.Setup(r => r.DeleteComment(It.IsAny<int>()));
+            articuloTest.Id = 15;
 
-            articleLogic.DeleteArticle(Articulo11.Id, user);
-            Article result = Articulo11;
+            articleLogic.DeleteArticle(articuloTest.Id, user);
 
-            articleRepository.Verify(r => r.Update(It.IsAny<Article>()), Times.Once);
-            Assert.IsTrue(Articulo11.DateDeleted != null);
+            commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>()), Times.AtLeastOnce());
+            commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>()), Times.Exactly(2));
 
-            Assert.IsNotNull(Articulo11.DateDeleted);
+            Assert.IsTrue(articuloTest.DateDeleted != null);
+            Assert.IsNotNull(articuloTest.DateDeleted);
         }
 
         [TestMethod]
