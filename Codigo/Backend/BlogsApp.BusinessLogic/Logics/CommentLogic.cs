@@ -1,4 +1,5 @@
-﻿using BlogsApp.IBusinessLogic.Interfaces;
+﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 
 namespace BlogsApp.BusinessLogic.Logics
@@ -12,6 +13,9 @@ namespace BlogsApp.BusinessLogic.Logics
             _commentRepository = commentRepository;
         }
 
-        //...Comment LOGIC CODE
+        public Comment CreateComment(Comment comment, User loggedUser)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
