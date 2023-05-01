@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlogsApp.Domain\BlogsApp.Domain.csproj" />
     <ProjectReference Include="..\BlogsApp.IBusinessLogic\BlogsApp.IBusinessLogic.csproj" />
-	<ProjectReference Include="..\BlogsApp.WebAPI\BlogsApp.WebAPI.csproj" />
+    <ProjectReference Include="..\BlogsApp.WebAPI\BlogsApp.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

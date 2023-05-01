@@ -1,4 +1,4 @@
-﻿using BlogsApp.Domain.Entities;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.DataAccess;
@@ -8,11 +8,12 @@ namespace BlogsApp.DataAccess.Repositories
     public class UserRepository : IUserRepository
     {
         //private readonly DbSet<User> users;
+
         private readonly Context context;
 
         public UserRepository(Context context)
         {
-            this.context = context;
+            Context = context;
             //this.users = context.Set<User>();
         }
 
@@ -22,6 +23,24 @@ namespace BlogsApp.DataAccess.Repositories
             context.SaveChanges();
         }
 
-        //.../Users REPOSITORY CODE
+        public void Update(User value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User Get(Func<User, bool> func)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<User> GetAll(Func<User, bool> func)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Exists(Func<User, bool> func)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

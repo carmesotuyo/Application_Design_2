@@ -1,6 +1,7 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.WebAPI.Filters;
+using BlogsApp.Domain.Entities;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -15,36 +16,28 @@ namespace BlogsApp.WebAPI.Controllers
             this.articleLogic = articleLogic;
         }
 
-        // GET: api/Article
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get([FromQuery] string? search)
         {
-            return new string[] { "value1", "value2" };
+            return new OkObjectResult(articleLogic.GetArticles(search));
         }
 
-        // GET: api/Article/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetArticleById([FromRoute] int id)
         {
-            return "value";
+            return new OkObjectResult(articleLogic.GetArticleById(id));
         }
 
-        // POST: api/Article
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("{userId}")]
+        public IActionResult GetByUser([FromRoute]int userId)
         {
+            return new OkObjectResult(articleLogic.GetArticlesByUser(userId));
         }
 
-        // PUT: api/Article/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet("/stats")]
+        public IActionResult GetStatsByYear([FromQuery]int year)
         {
-        }
-
-        // DELETE: api/Article/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return new OkObjectResult(articleLogic.GetStatsByYear(year));
         }
     }
 }
