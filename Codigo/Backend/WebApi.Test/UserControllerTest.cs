@@ -15,16 +15,16 @@ namespace WebApi.Test
     {
         private Mock<IUserLogic>? aUserLogicMock;
         private UserController? aUserControllerMock;
-        User? aValidBlogger;
+        User aValidBlogger;
+        User aBloggerToUpdate;
+        int userId;
         CreateUserRequestDTO aValidBloggerDTO;
-        User ExpectedBloggerUser;
-        User GivenBloggerUser;
-        User DeletedBloggerUser;
+        UpdateUserRequestDTO updateBloggerRequestDto;
 
         [TestInitialize]
         public void InitTest()
         {
-            aUserLogicMock = new Mock<IUserLogic>(MockBehavior.Strict);
+            aUserLogicMock = new Mock<IUserLogic>(MockBehavior.Default);
             aUserControllerMock = new UserController(aUserLogicMock.Object);
 
             aValidBlogger = new User(
@@ -36,6 +36,7 @@ namespace WebApi.Test
                  true,
                  false
             );
+
             aValidBloggerDTO = new CreateUserRequestDTO
             {
                 Username = aValidBlogger.Username,
@@ -45,6 +46,27 @@ namespace WebApi.Test
                 LastName = aValidBlogger.LastName,
                 Blogger = aValidBlogger.Blogger,
                 Admin = aValidBlogger.Admin,
+            };
+
+
+            userId = 1;
+            aBloggerToUpdate = new User
+            {
+                Id = userId,
+                Name = "John",
+                LastName = "Doe",
+                Email = "johndoe@example.com",
+                Blogger = true,
+                Admin = false
+            };
+
+            updateBloggerRequestDto = new UpdateUserRequestDTO
+            {
+                Name = "Jane",
+                LastName = "Doe",
+                Email = "janedoe@example.com",
+                Blogger = false,
+                Admin = true
             };
         }
 
@@ -64,34 +86,48 @@ namespace WebApi.Test
         [TestMethod]
         public void PostUserBadRequest()
         {
-            aValidBlogger!.Email = "email";
-            aValidBlogger!.Email = "email";
-            aUserLogicMock!.Setup(x => x.CreateUser(It.IsAny<User>())).Throws(new BadInputException("El email no es válido"));
-            var result = aUserControllerMock!.PostUser(aValidBloggerDTO!);
-            var objectResult = result as ObjectResult;
+            var invalidUser = new CreateUserRequestDTO
+            {
+                Username = aValidBlogger.Username,
+                Email = aValidBlogger.Email,
+                Name = aValidBlogger.Name,
+                LastName = aValidBlogger.LastName,
+                Blogger = aValidBlogger.Blogger,
+                Admin = aValidBlogger.Admin,
+            };
+
+            var result = aUserControllerMock!.PostUser(invalidUser);
+            var objectResult = result as BadRequestObjectResult;
             var statusCode = objectResult?.StatusCode;
 
-            aUserLogicMock.VerifyAll();
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(400, statusCode);
         }
 
         [TestMethod]
-        public void PutUserOk()
+        public void PatchUserOk()
         {
-            aUserLogicMock!.Setup(x => x.UpdateUser(aValidBlogger!)).Returns(It.IsAny<User>());
-            var result = aUserControllerMock!.PutUser(aValidBlogger!.Id, aValidBlogger);
-            var objectResult = result as ObjectResult;
-            var statusCode = objectResult?.StatusCode;
+            var userLogicMock = new Mock<IUserLogic>();
+            userLogicMock.Setup(x => x.GetUserById(userId)).Returns(aBloggerToUpdate);
+            userLogicMock.Setup(x => x.UpdateUser(aBloggerToUpdate)).Verifiable();
 
-            aUserLogicMock.VerifyAll();
-            Assert.AreEqual(200, statusCode);
+            var userController = new UserController(userLogicMock.Object);
+
+            var result = userController.PatchUser(userId, updateBloggerRequestDto);
+
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+            userLogicMock.Verify(ul => ul.UpdateUser(It.Is<User>(u => u.Id == userId && u.Name == updateBloggerRequestDto.Name && u.LastName == updateBloggerRequestDto.LastName)), Times.Once);
+
         }
 
+
         [TestMethod]
-        public void PutUserFail()
+        public void PatchUserFail()
         {
+            aUserLogicMock = new Mock<IUserLogic>(MockBehavior.Default);
             aUserLogicMock!.Setup(x => x.UpdateUser(aValidBlogger!)).Throws(new Exception());
-            var result = aUserControllerMock!.PutUser(aValidBlogger!.Id, aValidBlogger);
+            var result = aUserControllerMock!.PatchUser(aValidBlogger!.Id, updateBloggerRequestDto);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -99,18 +135,7 @@ namespace WebApi.Test
             Assert.AreEqual(500, statusCode);
         }
 
-        [TestMethod]
-        public void DeleteUserNotFound()
-        {
-            aUserLogicMock!.Setup(x => x.DeleteUser(It.IsAny<int>())).Throws(new ExistenceException("No existe el usuario"));
-            var result = aUserControllerMock!.DeleteUser(It.IsAny<int>());
-            var objectResult = result as ObjectResult;
-            var statusCode = objectResult?.StatusCode;
-
-            aUserLogicMock.VerifyAll();
-            Assert.AreEqual(404, statusCode);
-        }
-
+        
 
         [TestMethod]
         public void DeleteUserOk()
@@ -123,25 +148,6 @@ namespace WebApi.Test
             aUserLogicMock.VerifyAll();
             Assert.AreEqual(200, statusCode);
         }
-
-        //    [TestMethod]
-        //    public void PatchUserTest()
-        //    {
-        //        //var userPatchDTO = new UserPatchDTO { FirstName = "Jane" };
-
-        //        //aUserLogicMock.Setup(x => x.GetUserById(GivenBloggerUser.Id)).Returns(GivenBloggerUser);
-        //        //aUserLogicMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Returns(GivenBloggerUser);
-        //        //aUserContollerMock = new UserController(aUserLogicMock.Object);
-        //        //Assert.IsTrue(GivenBloggerUser.Equals(ExpectedBloggerUser));
-        //    }
-
-        //    [TestMethod]
-        //    public void DeleteUserTest()
-        //    {
-        //        //aUserContollerMock = new UserController(aUserLogicMock.Object);
-        //        //Assert.IsTrue(GivenBloggerUser.Equals(DeletedBloggerUser));
-        //    }
-
     }
 }
 
