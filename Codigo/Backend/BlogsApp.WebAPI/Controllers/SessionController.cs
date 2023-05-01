@@ -4,6 +4,7 @@ using BlogsApp.WebAPI.Filters;
 using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.BusinessLogic.Logics;
+using NuGet.Protocol.Plugins;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -21,7 +22,13 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] string username, [FromBody] string password)
         {
-            return new OkObjectResult(sessionLogic.Login(username, password));
+            Guid token = sessionLogic.Login(username, password);
+            User user = sessionLogic.GetUserFromToken(token);
+            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user.Id);
+
+            var response = new LoginResponseDTO(token, comments);
+
+            return Ok(response);
         }
 
     }

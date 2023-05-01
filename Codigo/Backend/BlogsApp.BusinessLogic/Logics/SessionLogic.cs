@@ -13,6 +13,16 @@ namespace BlogsApp.BusinessLogic.Logics
             _sessionRepository = sessionRepository;
         }
 
+        public IEnumerable<Comment> GetCommentsWhileLoggedOut(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUserFromToken(Guid aToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsValidToken(string token)
         {
             throw new NotImplementedException();
