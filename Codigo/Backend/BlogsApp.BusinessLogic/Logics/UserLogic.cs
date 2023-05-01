@@ -1,5 +1,7 @@
-﻿using BlogsApp.IBusinessLogic.Interfaces;
+﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
+using BlogsApp.Exceptions;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -12,6 +14,23 @@ namespace BlogsApp.BusinessLogic.Logics
             _userRepository = userRepository;
         }
 
+        public User? InsertUser(User? user)
+        {
+            if (IsUserValid(user))
+            {
+                _userRepository.InsertUser(user!);
+            }
+            return user;
+        }
+
+        public bool IsUserValid(User? user)
+        {
+            if (user == null)
+            {
+                throw new BusinessLogicException("Usuario inválido");
+            }
+            return true;
+        }
         //...User LOGIC CODE
     }
 }
