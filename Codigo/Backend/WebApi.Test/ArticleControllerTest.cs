@@ -123,7 +123,7 @@ namespace WebApi.Test
             articleLogicMock!.Setup(m => m.DeleteArticle(article.Id, userBlogger));
 
             var result = controller!.DeleteArticle(article.Id);
-            var objectResult = result as OkObjectResult;
+            var objectResult = result as OkResult;
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
