@@ -2,14 +2,15 @@
 {
     public class Article
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Body { get; set; }
         public bool Private { get; set; }
-        public DateTime DateCreated { get; private set; }
+        public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public User User { get; private set; }
+        public User User { get; set; }
+        public int UserId { get; set; }
         public ICollection<Comment>? Comments;
         public int Template { get; set; }
         public string? Image { get; set; }
@@ -22,6 +23,7 @@
             DateCreated = DateTime.Now;
             DateModified = DateTime.Now;
             User = user;
+            UserId = user.Id;
             Comments = new List<Comment>();
             Template = template;
         }
