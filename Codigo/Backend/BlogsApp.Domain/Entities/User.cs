@@ -39,10 +39,10 @@
             int originalLength = username.Length;
             string removeSpaces = username.Replace(" ", "");
             int lengthWithoutSpaces = removeSpaces.Length;
-            if (lengthWithoutSpaces < originalLength || originalLength < 1 || originalLength > 12)
-            {
-                throw new InvalidDataException();
-            }
+            //if (lengthWithoutSpaces < originalLength || originalLength < 1 || originalLength > 12)
+            //{
+            //    throw new InvalidDataException();
+            //}
         }
 
         private void checkEmailValid(string email)
