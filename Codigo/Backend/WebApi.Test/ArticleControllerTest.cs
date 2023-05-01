@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
 using BlogsApp.WebAPI.Models;
 using System.Net.Http;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace WebApi.Test
 {
@@ -20,7 +21,7 @@ namespace WebApi.Test
         private ArticleController controller;
         HttpContext httpContext;
 
-        private static readonly Article article = new Article() { };
+        private Article article;
         private IEnumerable<Article> articles;
         private StatsModel yearlyStats;
         private User userBlogger;
@@ -31,9 +32,10 @@ namespace WebApi.Test
         {
             articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
             controller = new ArticleController(articleLogicMock.Object);
+            userBlogger = new User() { Blogger = true, Id = 1 };
+            article = new Article() { Id = 1, UserId = 1 };
             articles = new List<Article>() { article };
             yearlyStats = new StatsModel();
-            userBlogger = new User() { Blogger = true };
             userAdmin = new User() { Admin = true };
 
             httpContext = new DefaultHttpContext();
@@ -114,6 +116,48 @@ namespace WebApi.Test
 
             Assert.IsTrue(objectResult.Value.Equals(yearlyStats.stats));
         }
-	}
+
+        [TestMethod]
+        public void DeleteArticleOk()
+        {
+            articleLogicMock.Setup(m => m.DeleteArticle(article.Id, userBlogger));
+
+            var result = controller.DeleteArticle(article.Id);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(200, statusCode);
+        }
+
+
+        [TestMethod]
+        public void DeleteArticleWithoutPermissions()
+        {
+            articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
+
+            var result = controller.DeleteArticle(It.IsAny<int>());
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(500, statusCode); //CHEQUEAR, ME PARECE QUE EL UNAUTH TIRA OTRO NUMERO
+        }
+
+
+        [TestMethod]
+        public void DeleteNotExistingArticle()
+        {
+            articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
+
+            var result = controller.DeleteArticle(It.IsAny<int>());
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(404, statusCode); //CHEQUEAR, ME PARECE QUE EL UNAUTH TIRA OTRO NUMERO
+        }
+    }
 }
 
