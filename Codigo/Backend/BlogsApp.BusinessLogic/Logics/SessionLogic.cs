@@ -1,4 +1,5 @@
-﻿using BlogsApp.IBusinessLogic.Interfaces;
+﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 
 namespace BlogsApp.BusinessLogic.Logics
@@ -17,6 +18,14 @@ namespace BlogsApp.BusinessLogic.Logics
             throw new NotImplementedException();
         }
 
-        //...Session LOGIC CODE
+        public Guid Login(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Logout(User loggedUser)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
