@@ -54,5 +54,13 @@ namespace BlogsApp.WebAPI.Controllers
 
             return new OkObjectResult(articleLogic.CreateArticle(article, loggedUser));
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateArticle([FromRoute] int id, [FromBody] Article article)
+        {
+            User loggedUser = (User)this.HttpContext.Items["user"];
+
+            return new OkObjectResult(articleLogic.UpdateArticle(id, article, loggedUser));
+        }
     }
 }
