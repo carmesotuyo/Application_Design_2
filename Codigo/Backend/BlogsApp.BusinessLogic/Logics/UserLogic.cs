@@ -2,6 +2,8 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 using BlogsApp.Domain.Exceptions;
+using System.Data;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -17,15 +19,15 @@ namespace BlogsApp.BusinessLogic.Logics
         public User CreateUser(User user)
         {
             IsUserValid(user);
-            this._userRepository.Add(user!);
+            _userRepository.Add(user!);
             return user;
         }
 
-        public User DeleteUser(int userId)
+        public User DeleteUser1(int userId)
         {
             User user = _userRepository.Get(UserById(userId));
             user.DateDeleted = DateTime.Now;
-            this._userRepository.Update(user);
+            _userRepository.Update(user);
             return user;
         }
 
@@ -34,7 +36,22 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
-        public ICollection<User> GetUsersRanking(int? top)
+        public User DeleteUser(User loggedUser, int UserId)
+        {
+            if (_userRepository.Exists(m => m.Id == UserId))
+            {
+                User user = GetUserById(UserId);
+                user.DateDeleted = DateTime.Now;
+                _userRepository.Update(user);
+                return user;
+            }
+            else
+            {
+                throw new ExistenceException ("No existe un usuario con ese id.");
+            }
+        }
+
+        public ICollection<User> GetUsersRanking(User loggedUser, int? top)
         {
             throw new NotImplementedException();
         }
@@ -48,16 +65,9 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(int userId, User anUser)
+        public User? UpdateUser(User loggedUser, User user)
         {
-            User user = _userRepository.Get(UserById(userId));
-            user.Name = anUser.Name;
-            user.Email = anUser.Email;
-            user.Admin = anUser.Admin;
-            user.Blogger = anUser.Blogger;
-            user.LastName = anUser.LastName;
-            user.Password = anUser.Password;
-            this._userRepository.Update(user);
+            _userRepository.Update(user!);
             return user;
         }
 

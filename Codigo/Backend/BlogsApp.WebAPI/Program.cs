@@ -14,6 +14,7 @@ ServiceFactory factory = new ServiceFactory(builder.Services);
 factory.AddCustomServices();
 factory.AddDbContextService();
 builder.Services.AddScoped<AuthorizationFilter>();
+builder.Services.AddScoped<ExceptionFilter>();
 
 var app = builder.Build();
 
