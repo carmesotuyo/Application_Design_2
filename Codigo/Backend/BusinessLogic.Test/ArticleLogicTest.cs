@@ -194,10 +194,7 @@ namespace BusinessLogic.Test
 
             articleLogic.DeleteArticle(articuloTest.Id, user);
 
-            commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>()), Times.AtLeastOnce());
             commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>()), Times.Exactly(2));
-
-            Assert.IsTrue(articuloTest.DateDeleted != null);
             Assert.IsNotNull(articuloTest.DateDeleted);
         }
 
