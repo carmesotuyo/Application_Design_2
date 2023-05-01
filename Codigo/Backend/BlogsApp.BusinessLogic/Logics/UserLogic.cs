@@ -19,7 +19,7 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (IsUserValid(user))
             {
-                _userRepository.InsertUser(user!);
+                _userRepository.Add(user!);
             }
             return user;
         }

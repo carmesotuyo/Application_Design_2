@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public int Id { get; private set; }
+        public int Id { get;  set; }
         public string Username { get => _username; set { checkUsernameValid(value); _username = value; } }
         public string Password { get; set; }
         public string Email { get => _email; set { checkEmailValid(value); _email = value; } }

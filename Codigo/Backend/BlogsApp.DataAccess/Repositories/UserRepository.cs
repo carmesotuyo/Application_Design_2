@@ -9,15 +9,15 @@ namespace BlogsApp.DataAccess.Repositories
     {
         //private readonly DbSet<User> users;
 
-        private readonly Context context;
+        private Context context;
 
         public UserRepository(Context context)
         {
-            Context = context;
+            this.context = context;
             //this.users = context.Set<User>();
         }
 
-        public void InsertUser(User user)
+        public void Add(User user)
         {
             context.Users?.Add(user);
             context.SaveChanges();

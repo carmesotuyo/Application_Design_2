@@ -6,6 +6,7 @@ using Moq;
 using BlogsApp.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.Domain.Exceptions;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace WebApi.Test
 {
@@ -72,6 +73,55 @@ namespace WebApi.Test
 
             aUserLogicMock.VerifyAll();
             Assert.AreEqual(400, statusCode);
+        }
+
+        [TestMethod]
+        public void PutUserOk()
+        {
+            aUserLogicMock!.Setup(x => x.UpdateUser(aValidBlogger!)).Returns(It.IsAny<User>());
+            var result = aUserControllerMock!.PutUser(aValidBlogger!.Id, aValidBlogger);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            aUserLogicMock.VerifyAll();
+            Assert.AreEqual(200, statusCode);
+        }
+
+        [TestMethod]
+        public void PutUserFail()
+        {
+            aUserLogicMock!.Setup(x => x.UpdateUser(aValidBlogger!)).Throws(new Exception());
+            var result = aUserControllerMock!.PutUser(aValidBlogger!.Id, aValidBlogger);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            aUserLogicMock.VerifyAll();
+            Assert.AreEqual(500, statusCode);
+        }
+
+        [TestMethod]
+        public void DeleteUserNotFound()
+        {
+            aUserLogicMock!.Setup(x => x.DeleteUser(It.IsAny<int>())).Throws(new ExistenceException("No existe el usuario"));
+            var result = aUserControllerMock!.DeleteUser(It.IsAny<int>());
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            aUserLogicMock.VerifyAll();
+            Assert.AreEqual(404, statusCode);
+        }
+
+
+        [TestMethod]
+        public void DeleteUserOk()
+        {
+            aUserLogicMock!.Setup(x => x.DeleteUser(aValidBlogger!.Id));
+            var result = aUserControllerMock!.DeleteUser(aValidBlogger!.Id);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            aUserLogicMock.VerifyAll();
+            Assert.AreEqual(200, statusCode);
         }
 
         //    [TestMethod]
