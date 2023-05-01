@@ -31,7 +31,9 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpGet("/stats")]
         public IActionResult GetStatsByYear([FromQuery]int year)
         {
-            return new OkObjectResult(articleLogic.GetStatsByYear(year));
+            User loggedUser = (User)this.HttpContext.Items["user"];
+
+            return new OkObjectResult(articleLogic.GetStatsByYear(year, loggedUser));
         }
     }
 }

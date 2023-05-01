@@ -43,6 +43,8 @@ namespace BusinessLogic.Test
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
+        private readonly User userBlogger = new User() { Blogger = true };
+        private readonly User userAdmin = new User() { Blogger = false };
 
         [TestInitialize]
         public void TestInitialize()
@@ -142,16 +144,24 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<int> result = articleLogic.GetStatsByYear(2022);
+            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userAdmin);
 
             articleRepository.VerifyAll();
             Assert.IsTrue(result.Count() == 7);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void GetStatsByYearWithoutPermissionsTest()
+        {
+            articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
+
+            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userBlogger);
+        }
+
+        [TestMethod]
         public void CreateArticleTest()
         {
-
             articleRepository.Setup(x => x.Add(It.IsAny<Article>())).Returns(Articulo11);
 
             Article result = articleLogic.CreateArticle(Articulo11, user);
@@ -159,19 +169,29 @@ namespace BusinessLogic.Test
             articleRepository.VerifyAll();
             Assert.AreEqual(result, Articulo11);
         }
+        //CREAR TEST DE CREATE WITHOUT PERMISSIONS
 
         [TestMethod]
-        public void SetsDateDeletedTest()
+        public void DeleteArticleTest()
         {
             articleRepository.Setup(r => r.Get(It.IsAny<Func<Article, bool>>())).Returns(Articulo11);
 
-            articleLogic.DeleteArticle(Articulo11.Id);
+            articleLogic.DeleteArticle(Articulo11.Id, user);
             Article result = Articulo11;
 
             articleRepository.Verify(r => r.Update(It.IsAny<Article>()), Times.Once);
             Assert.IsTrue(Articulo11.DateDeleted != null);
 
             Assert.IsNotNull(Articulo11.DateDeleted);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void DeleteArticleWithoutPermissionsTest()
+        {
+            articleRepository.Setup(r => r.Get(It.IsAny<Func<Article, bool>>())).Returns(Articulo11);
+
+            articleLogic.DeleteArticle(Articulo11.Id, userBlogger);
         }
 
         [TestMethod]
