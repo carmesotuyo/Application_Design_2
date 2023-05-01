@@ -36,11 +36,11 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
-        public User DeleteUser(int Id)
+        public User DeleteUser(User loggedUser, int UserId)
         {
-            if (_userRepository.Exists(m => m.Id == Id))
+            if (_userRepository.Exists(m => m.Id == UserId))
             {
-                User user = GetUserById(Id);
+                User user = GetUserById(UserId);
                 user.DateDeleted = DateTime.Now;
                 _userRepository.Update(user);
                 return user;
@@ -51,7 +51,7 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-        public ICollection<User> GetUsersRanking(int? top)
+        public ICollection<User> GetUsersRanking(User loggedUser, int? top)
         {
             throw new NotImplementedException();
         }
@@ -65,7 +65,7 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(User user)
+        public User? UpdateUser(User loggedUser, User user)
         {
             _userRepository.Update(user!);
             return user;

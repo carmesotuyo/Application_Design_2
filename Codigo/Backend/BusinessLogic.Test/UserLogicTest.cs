@@ -60,7 +60,7 @@ namespace BusinessLogic.Test
         {
             aUserRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(user);
 
-            userLogic.DeleteUser(user.Id);
+            userLogic.DeleteUser(user, user.Id);
             User result = user;
 
             aUserRepositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Once);
@@ -86,7 +86,7 @@ namespace BusinessLogic.Test
    
             aUserRepositoryMock.Setup(x => x.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
 
-            User result = userLogic.UpdateUser(updatedUser);
+            User result = userLogic.UpdateUser(updatedUser, updatedUser);
 
             aUserRepositoryMock.Verify(x => x.Update(existingUser), Times.Once);
             Assert.AreEqual(updatedUser.Name, result.Name);
@@ -100,7 +100,7 @@ namespace BusinessLogic.Test
             User updatedUser = new User { Password = "NewPassword" };
             aUserRepositoryMock.Setup(repo => repo.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
 
-            User result = userLogic.UpdateUser(updatedUser);
+            User result = userLogic.UpdateUser(updatedUser, updatedUser);
 
             aUserRepositoryMock.Verify(repo => repo.Update(existingUser), Times.Once);
             Assert.AreEqual(updatedUser.Password, result.Password);
@@ -111,7 +111,7 @@ namespace BusinessLogic.Test
         {
             aUserRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(user);
 
-            userLogic.DeleteUser(user.Id);
+            userLogic.DeleteUser(user, user.Id);
             User result = user;
 
             aUserRepositoryMock.VerifyAll();

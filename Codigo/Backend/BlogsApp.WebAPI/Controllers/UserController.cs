@@ -34,7 +34,8 @@ namespace BlogsApp.WebAPI.Controllers
                 return NotFound();
             }
             user = userDTO.ApplyChangesToUser(user);
-            userLogic.UpdateUser(user);
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            userLogic.UpdateUser(loggedUser, user);
 
             return Ok();
         }
@@ -42,7 +43,8 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteUser([FromRoute] int id)
         {
-            var user = userLogic.DeleteUser(id);
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            var user = userLogic.DeleteUser(loggedUser, id);
             return Ok(user);
         }
     }
