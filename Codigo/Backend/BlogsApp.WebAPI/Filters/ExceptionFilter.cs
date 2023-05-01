@@ -14,7 +14,6 @@ namespace BlogsApp.WebAPI.Filters
             {
                 throw context.Exception;
             }
-            // completar con las exceptions que vayamos creando
             catch (NotFoundDbException)
             {
                 context.Result = new ContentResult()
