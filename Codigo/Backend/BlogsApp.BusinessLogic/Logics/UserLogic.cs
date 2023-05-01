@@ -1,7 +1,8 @@
 ﻿using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
-using BlogsApp.Exceptions;
+using BlogsApp.Domain.Exceptions;
+
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -27,7 +28,7 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (user == null)
             {
-                throw new BusinessLogicException("Usuario inválido");
+                throw new BadInputException("Usuario inválido");
             }
             return true;
         }

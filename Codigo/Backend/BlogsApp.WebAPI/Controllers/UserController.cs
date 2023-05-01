@@ -2,7 +2,6 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.WebAPI.DTOs;
-using BlogsApp.Exceptions;
 
 namespace BlogsApp.WebAPI.Controllers
 {

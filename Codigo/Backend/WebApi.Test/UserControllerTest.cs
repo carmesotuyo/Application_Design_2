@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using BlogsApp.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using BlogsApp.Exceptions;
+using BlogsApp.Domain.Exceptions;
 
 namespace WebApi.Test
 {
@@ -65,7 +65,7 @@ namespace WebApi.Test
         {
             aValidBlogger!.Email = "email";
             aValidBlogger!.Email = "email";
-            aUserLogicMock!.Setup(x => x.InsertUser(It.IsAny<User>())).Throws(new BusinessLogicException());
+            aUserLogicMock!.Setup(x => x.InsertUser(It.IsAny<User>())).Throws(new BadInputException("El email no es válido"));
             var result = aUserControllerMock!.PostUser(aValidBloggerDTO!);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
