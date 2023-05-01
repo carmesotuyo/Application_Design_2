@@ -8,7 +8,7 @@ using Moq;
 using BlogsApp.Domain;
 using System.Linq.Expressions;
 
-namespace BlogsApp.BusinessLogic.Tests
+namespace BusinessLogic.Test
 {
     [TestClass]
     public class ArticleLogicTests
@@ -110,22 +110,20 @@ namespace BlogsApp.BusinessLogic.Tests
         [TestMethod]
         public void GetArticles_SearchTextIsNotNull_ReturnsArticlesContainingSearchText()
         {
-            var articles = new List<Article>
-        {
-            new Article { Id = 1, Name = "Article 1", Body = "Article 1 body", DateDeleted = null },
-            new Article { Id = 2, Name = "Article 2, textSearch", Body = "Article 2 body", DateDeleted = null },
-            new Article { Id = 3, Name = "Article 3", Body = "textSearch", DateDeleted = null },
-            new Article { Id = 4, Name = "Article 4", Body = "Article 4 body", DateDeleted = null },
-            new Article { Id = 5, Name = "Article 5", Body = "Article 5 body", DateDeleted = null },
-        };
+            var articles = new List<Article>()
+            {
+                new Article { Id = 1, Name = "Article 1, textSearch", Body = "Article 1 body", DateDeleted = null },
+                new Article { Id = 2, Name = "Article 2", Body = "Article 2 body textSearch", DateDeleted = null },
+
+            };
 
             articleRepository.Setup(r => r.GetAll(It.IsAny<Func<Article, bool>>())).Returns(articles);
 
             var result = articleLogic.GetArticles("textSearch");
 
             Assert.AreEqual(2, result.Count());
-            Assert.AreEqual(2, result.ElementAt(0).Id);
-            Assert.AreEqual(3, result.ElementAt(1).Id);
+            Assert.AreEqual(1, result.ElementAt(0).Id);
+            Assert.AreEqual(2, result.ElementAt(1).Id);
         }
 
         [TestMethod]

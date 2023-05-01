@@ -11,7 +11,7 @@ using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogsApp.BusinessLogic.Tests
+namespace DataAccess.Test
 {
     [TestClass]
     public class ArticleRepositoryTests

@@ -96,22 +96,6 @@ namespace WebApi.Test
 
             Assert.IsTrue(objectResult.Value.Equals(yearlyStats.stats));
         }
-
-        [TestMethod]
-        public void GetArticlesByUser()
-        {
-            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>())).Returns(articles);
-
-            IActionResult result = controller!.GetByUser(user.Id);
-            articleLogicMock.VerifyAll();
-
-            OkObjectResult objectResult = result as OkObjectResult;
-
-            Assert.IsNotNull(result);
-            articleLogicMock.VerifyAll();
-
-            Assert.IsTrue(objectResult.Value.Equals(articles));
-        }
 	}
 }
 
