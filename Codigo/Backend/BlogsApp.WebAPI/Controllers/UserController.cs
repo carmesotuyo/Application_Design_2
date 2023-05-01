@@ -24,14 +24,26 @@ namespace BlogsApp.WebAPI.Controllers
             return Ok(userLogic.CreateUser(userDTO.TransformToUser()));
         }
 
-        //public IActionResult PatchUser([FromBody] User aUser)
-        //{
-        //    //return new OkObjectResult;
-        //}
 
-        //public IActionResult DeleteUser([FromBody] User aUser)
-        //{
-        //    //return new OkObjectResult;
-        //}
+        [HttpPatch("{id}")]
+        public IActionResult PatchUser([FromRoute] int id, [FromBody] UpdateUserRequestDTO userDTO)
+        {
+            var user = userLogic.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user = userDTO.ApplyChangesToUser(user);
+            userLogic.UpdateUser(user);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser([FromRoute] int id)
+        {
+            var user = userLogic.DeleteUser(id);
+            return Ok(user);
+        }
     }
 }
