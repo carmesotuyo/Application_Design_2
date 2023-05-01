@@ -5,9 +5,9 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     public interface IUserLogic
     {
         User? CreateUser(User? user);
-        public User DeleteUser(int UserId);
-        public ICollection<User> GetUsersRanking(int? top);
+        public User DeleteUser(User loggedUser, int UserId);
+        public ICollection<User> GetUsersRanking(User loggedUser, int? top);
         public User GetUserById(int userId);
-        User? UpdateUser(User user);
+        User? UpdateUser(User loggedUser, User user);
     }
 }
