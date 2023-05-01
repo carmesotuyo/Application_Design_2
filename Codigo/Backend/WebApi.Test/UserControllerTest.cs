@@ -51,7 +51,7 @@ namespace WebApi.Test
         [TestMethod]
         public void PostUserTest()
         {
-            aUserLogicMock!.Setup(x => x.InsertUser(It.IsAny<User>())).Returns(aValidBlogger);
+            aUserLogicMock!.Setup(x => x.CreateUser(It.IsAny<User>())).Returns(aValidBlogger);
             var result = aUserControllerMock!.PostUser(aValidBloggerDTO!);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
@@ -65,7 +65,7 @@ namespace WebApi.Test
         {
             aValidBlogger!.Email = "email";
             aValidBlogger!.Email = "email";
-            aUserLogicMock!.Setup(x => x.InsertUser(It.IsAny<User>())).Throws(new BadInputException("El email no es válido"));
+            aUserLogicMock!.Setup(x => x.CreateUser(It.IsAny<User>())).Throws(new BadInputException("El email no es válido"));
             var result = aUserControllerMock!.PostUser(aValidBloggerDTO!);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
