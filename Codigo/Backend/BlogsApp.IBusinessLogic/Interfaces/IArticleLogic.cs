@@ -4,7 +4,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     public interface IArticleLogic
     {
         Article GetArticleById(int id);
-        IEnumerable<Article> GetArticles(string? search);
+        IEnumerable<Article> GetArticles(User loggedUser, string? search);
         IEnumerable<Article> GetArticlesByUser(int userId);
         IEnumerable<int> GetStatsByYear(int year, User loggedUser);
         void DeleteArticle(int articleId, User loggedUser);

@@ -47,17 +47,17 @@ namespace BlogsApp.BusinessLogic.Logics
             return _articleRepository.Get(ArticleById(id));
         }
 
-        public IEnumerable<Article> GetArticles(string? searchText)
+        public IEnumerable<Article> GetArticles(User loggedUser, string? searchText)
         {
             if (searchText == null)
             {
-                return _articleRepository.GetAll(m => m.DateDeleted == null)
+                return _articleRepository.GetAll(m => m.DateDeleted == null && (m.Private == false || m.UserId == loggedUser.Id))
                                  .OrderByDescending(m => m.DateModified)
                                  .Take(10);
             }
             else
             {
-                return _articleRepository.GetAll(ArticleByTextSearch(searchText));
+                return _articleRepository.GetAll(ArticleByTextSearch(searchText, loggedUser));
             }
         }
 
@@ -72,7 +72,8 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 return _articleRepository.GetAll(m => m.DateCreated.Year == year)
                                          .GroupBy(m => m.DateCreated.Month)
-                                         .Select(m => m.Count());
+                                         .Select(m => m.Count())
+                                         .ToList();
             } else
             {
                 throw new UnauthorizedAccessException("Se necesitan permisos de administrador");
@@ -103,10 +104,11 @@ namespace BlogsApp.BusinessLogic.Logics
             return a => a.Id == id && a.DateDeleted != null;
         }
 
-        private Func<Article, bool> ArticleByTextSearch(string text)
+        private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
         {
             return article => article.DateDeleted == null &&
-                              (article.Name.Contains(text) || article.Body.Contains(text));
+                              (article.Name.Contains(text) || article.Body.Contains(text)) &&
+                              (article.Private == false || article.UserId == loggedUser.Id);
         }
 
         public bool isValidArticle(Article? article)
