@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using BlogsApp.Domain.Exceptions;
+using BlogsApp.WebAPI.DTOs;
 
 namespace WebApi.Test
 {
@@ -23,8 +24,10 @@ namespace WebApi.Test
         private string username;
         private string password;
         private Guid token;
-
-        //private Article article;
+        private User user;
+        private Comment comment;
+        private List<Comment> comments;
+        private LoginResponseDTO responseDTO;
 
         [TestInitialize]
         public void InitTest()
@@ -32,22 +35,13 @@ namespace WebApi.Test
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
             controller = new SessionController(sessionLogicMock.Object);
 
-            //session = new Session();
             username = "username";
             password = "password";
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = userBlogger;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new ArticleController(articleLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
+            user = new User();
+            comment = new Comment();
+            comments = new List<Comment>() { comment };
+            responseDTO = new LoginResponseDTO(token, comments);
         }
 
 
@@ -55,14 +49,18 @@ namespace WebApi.Test
         public void LoginOk()
         {
             sessionLogicMock!.Setup(m => m.Login(It.IsAny<string>(), It.IsAny<string>())).Returns(token);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
+            sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<int>())).Returns(comments);
 
             var result = controller!.Login(username, password);
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
+            var receivedDTO = objectResult.Value as LoginResponseDTO;
 
             sessionLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
-            Assert.AreEqual(objectResult.Value, token);
+            Assert.AreEqual(receivedDTO.Token, token);
+            Assert.AreEqual(receivedDTO.Comments, comments);
         }
 
         [TestMethod]
