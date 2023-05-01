@@ -1,26 +1,29 @@
-﻿using BlogsApp.Domain.Entities;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using BlogsApp.DataAccess;
 
 namespace BlogsApp.DataAccess.Repositories
 {
     public class UserRepository : IUserRepository
     {
         //private readonly DbSet<User> users;
-        private DbContext Context { get; }
 
-        public UserRepository(DbContext context)
+        private readonly Context context;
+
+        public UserRepository(Context context)
         {
             Context = context;
             //this.users = context.Set<User>();
         }
 
-        public void Update(User value)
+        public void InsertUser(User user)
         {
-            throw new NotImplementedException();
+            context.Users?.Add(user);
+            context.SaveChanges();
         }
 
-        public User Add(User value)
+        public void Update(User value)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +42,5 @@ namespace BlogsApp.DataAccess.Repositories
         {
             throw new NotImplementedException();
         }
-
-        //.../Users REPOSITORY CODE
     }
 }
