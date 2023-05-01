@@ -2,12 +2,12 @@
 {
     public class Comment
     {
-        public int Id { get; private set; }
-        public User User { get; private set; }
+        public int Id { get; set; }
+        public User User { get;  set; }
         public string Body { get; set; }
-        public Article Article { get; private set; }
+        public Article Article { get; set; }
         public Reply? Reply { get; set; }
-        public DateTime DateCreated { get; private set; }
+        public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
 

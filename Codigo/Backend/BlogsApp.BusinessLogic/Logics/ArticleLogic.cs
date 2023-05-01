@@ -10,10 +10,12 @@ namespace BlogsApp.BusinessLogic.Logics
     public class ArticleLogic : IArticleLogic
     {
         private readonly IArticleRepository _articleRepository;
+        private readonly ICommentLogic _commentLogic;
 
-        public ArticleLogic(IArticleRepository articleRepository)
+        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic)
         {
             _articleRepository = articleRepository;
+            _commentLogic = commentLogic;
         }
 
         public Article CreateArticle(Article article, User loggedUser)
@@ -34,6 +36,10 @@ namespace BlogsApp.BusinessLogic.Logics
             Article article = _articleRepository.Get(ArticleById(articleId));
             if(loggedUser.Id == article.UserId)
             {
+                foreach (Comment comment in article.Comments)
+                {
+                    _commentLogic.DeleteComment(comment.Id);
+                }
                 article.DateDeleted = DateTime.Now;
                 this._articleRepository.Update(article);
             } else
