@@ -149,7 +149,7 @@ namespace WebApi.Test
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundDbException))]
-        public void DeleteNotExistingArticle()
+        public void DeleteArticleNotFound()
         {
             articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
 
@@ -187,6 +187,44 @@ namespace WebApi.Test
 
             articleLogicMock.VerifyAll();
             Assert.AreEqual(500, statusCode);
+        }
+
+        [TestMethod]
+        public void UpdateArticleOk()
+        {
+            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Returns(It.IsAny<Article>());
+            var result = controller!.UpdateArticle(article!.Id, article);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(200, statusCode);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateArticleWithoutPermissions()
+        {
+            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new UnauthorizedAccessException());
+            var result = controller!.UpdateArticle(article!.Id, article);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(400, statusCode);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void UpdateArticleNotFound()
+        {
+            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new NotFoundDbException());
+            var result = controller!.UpdateArticle(article!.Id, article);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(404, statusCode);
         }
     }
 }
