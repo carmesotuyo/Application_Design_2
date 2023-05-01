@@ -69,7 +69,7 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<Article> result = articleLogic.GetArticles(null);
+            IEnumerable<Article> result = articleLogic.GetArticles(user, null);
 
             articleRepository.VerifyAll();
             Assert.IsTrue(result.Count() == 10);
@@ -94,7 +94,7 @@ namespace BusinessLogic.Test
 
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(articles);
 
-            var result = articleLogic.GetArticles(null);
+            var result = articleLogic.GetArticles(user, null);
 
             Assert.AreEqual(10, result.Count());
             Assert.AreEqual(articles[0].Id, result.ElementAt(0).Id);
@@ -121,7 +121,7 @@ namespace BusinessLogic.Test
 
             articleRepository.Setup(r => r.GetAll(It.IsAny<Func<Article, bool>>())).Returns(articles);
 
-            var result = articleLogic.GetArticles("textSearch");
+            var result = articleLogic.GetArticles(user, "textSearch");
 
             Assert.AreEqual(2, result.Count());
             Assert.AreEqual(1, result.ElementAt(0).Id);
