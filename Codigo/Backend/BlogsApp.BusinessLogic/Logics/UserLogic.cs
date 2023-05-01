@@ -51,12 +51,6 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-
-
-
-
-
-
         public ICollection<User> GetUsersRanking(int? top)
         {
             throw new NotImplementedException();
@@ -70,19 +64,6 @@ namespace BlogsApp.BusinessLogic.Logics
             }
             return true;
         }
-
-        //public User? UpdateUser(int userId, User anUser)
-        //{
-        //    User user = _userRepository.Get(UserById(userId));
-        //    user.Name = anUser.Name;
-        //    user.Email = anUser.Email;
-        //    user.Admin = anUser.Admin;
-        //    user.Blogger = anUser.Blogger;
-        //    user.LastName = anUser.LastName;
-        //    user.Password = anUser.Password;
-        //    this._userRepository.Update(user);
-        //    return user;
-        //}
 
         public User? UpdateUser(User user)
         {
