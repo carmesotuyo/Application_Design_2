@@ -7,6 +7,9 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         IEnumerable<Article> GetArticles(string? search);
         IEnumerable<Article> GetArticlesByUser(int userId);
         IEnumerable<int> GetStatsByYear(int year);
+        void DeleteArticle(int articleId);
+        Article CreateArticle(Article article, User loggedUser);
+        Article UpdateArticle(int articleId, Article article);
     }
 }
 

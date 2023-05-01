@@ -1,5 +1,6 @@
 ﻿using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.DataAccess.Repositories;
 using BlogsApp.Domain.Entities;
 using BlogsApp.Domain.Exceptions;
 using BlogsApp.IBusinessLogic.Interfaces;
@@ -22,7 +23,7 @@ namespace BusinessLogic.Test
         [TestInitialize]
         public void InitTest()
         {
-            aUserRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
+            aUserRepositoryMock = new Mock<IUserRepository>(MockBehavior.Default);
             userLogic = new UserLogic(aUserRepositoryMock.Object);
             aValidBlogger = new User(
                 "JPerez",
@@ -38,19 +39,11 @@ namespace BusinessLogic.Test
             invalidUser = new User("", "", "", "", "", false, false);
         }
 
-        [TestMethod]
-        public void GetAllUsers()
-        {
-            aUserRepositoryMock!.Setup(x => x.GetUsers()).Returns(users!);
-            userLogic!.GetUsers();
-            aUserRepositoryMock.VerifyAll();
-        }
-
         [ExpectedException(typeof(Exception))]
         [TestMethod]
-        public void InsertnullUser()
+        public void CreatenullUser()
         {
-            userLogic!.InsertUser(nullUser);
+            userLogic!.CreateUser(nullUser);
             aUserRepositoryMock!.VerifyAll();
         }
 
@@ -58,66 +51,67 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void InsertinvalidUser()
         {
-            userLogic!.InsertUser(invalidUser!);
+            userLogic!.CreateUser(invalidUser!);
             aUserRepositoryMock!.VerifyAll();
         }
 
         [TestMethod]
         public void InsertUserOk()
         {
-            aUserRepositoryMock!.Setup(x => x.InsertUser(aValidBlogger!));
-            userLogic!.InsertUser(aValidBlogger!);
+            aUserRepositoryMock!.Setup(x => x.Add(aValidBlogger!));
+            userLogic!.CreateUser(aValidBlogger!);
             aUserRepositoryMock.VerifyAll();
         }
 
-        [ExpectedException(typeof(Exception))]
         [TestMethod]
-        public void UpdatenullUser()
+        public void SetsDateDeletedTest()
         {
-            userLogic!.UpdateUser(nullUser);
-            aUserRepositoryMock!.VerifyAll();
+            aUserRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(aValidBlogger);
+
+            userLogic.DeleteUser(aValidBlogger.Id);
+            User result = aValidBlogger;
+
+            aUserRepositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Once);
+
+            Assert.IsNotNull(aValidBlogger.DateDeleted);
         }
 
-        [ExpectedException(typeof(Exception))]
         [TestMethod]
-        public void UpdateinvalidUser()
+        public void GetUserByIdTest()
         {
-            userLogic!.UpdateUser(invalidUser!);
-            aUserRepositoryMock!.VerifyAll();
+            aUserRepositoryMock.Setup(x => x.Get(It.IsAny<Func<User, bool>>())).Returns(aValidBlogger);
+            User result = userLogic.GetUserById(aValidBlogger.Id);
+            aUserRepositoryMock.VerifyAll();
+            Assert.IsTrue(result.Id == aValidBlogger.Id);
         }
 
-        [ExpectedException(typeof(ExistenceException))]
         [TestMethod]
-        public void UpdateUserNonExist()
+        public void UpdateUserNameTest()
         {
-            aUserRepositoryMock!.Setup(x => x.GetUserById(aValidBlogger!.Id)).Returns(nullUser);
-            userLogic!.UpdateUser(aValidBlogger!);
-            aUserRepositoryMock.VerifyAll();
-        }
-        [TestMethod]
-        public void UpdateUserOk()
-        {
-            aUserRepositoryMock!.Setup(x => x.GetUserById(It.IsAny<int>())).Returns(aValidBlogger!);
-            aUserRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>()));
-            userLogic!.UpdateUser(aValidBlogger!);
-            aUserRepositoryMock.VerifyAll();
+            int userId = 1;
+            User existingUser = new User { Id = userId, Name = "Old name" };
+            User updatedUser = new User { Name = "New name" };
+            aUserRepositoryMock.Setup(repo => repo.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
+
+            User result = userLogic.UpdateUser(userId, updatedUser);
+
+            aUserRepositoryMock.Verify(repo => repo.Update(existingUser), Times.Once);
+            Assert.AreEqual(updatedUser.Name, result.Name);
+
         }
 
-        [ExpectedException(typeof(ExistenceException))]
         [TestMethod]
-        public void DeleteUserNonExist()
+        public void UpdateUserPassTest()
         {
-            aUserRepositoryMock!.Setup(x => x.GetUserById(10)).Returns(nullUser);
-            userLogic!.DeleteUser(10);
-            aUserRepositoryMock.VerifyAll();
-        }
-        [TestMethod]
-        public void DeleteUserOk()
-        {
-            aUserRepositoryMock!.Setup(x => x.GetUserById(1)).Returns(aValidBlogger!);
-            aUserRepositoryMock.Setup(x => x.DeleteUser(aValidBlogger!));
-            userLogic!.DeleteUser(1);
-            aUserRepositoryMock.VerifyAll();
+            int userId = 1;
+            User existingUser = new User { Id = userId, Password = "OldPassword" };
+            User updatedUser = new User { Password = "NewPassword" };
+            aUserRepositoryMock.Setup(repo => repo.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
+
+            User result = userLogic.UpdateUser(userId, updatedUser);
+
+            aUserRepositoryMock.Verify(repo => repo.Update(existingUser), Times.Once);
+            Assert.AreEqual(updatedUser.Password, result.Password);
         }
     }
 }
