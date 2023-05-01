@@ -30,11 +30,20 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet("/stats")]
-        public IActionResult GetStatsByYear([FromQuery]int year)
+        public IActionResult GetStatsByYear([FromQuery] int year)
         {
             User loggedUser = (User)this.HttpContext.Items["user"];
 
             return new OkObjectResult(articleLogic.GetStatsByYear(year, loggedUser));
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteArticle([FromRoute] int id)
+        {
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            articleLogic.DeleteArticle(id, loggedUser);
+
+            return new OkResult();
         }
     }
 }

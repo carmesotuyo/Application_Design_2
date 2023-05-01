@@ -133,6 +133,7 @@ namespace WebApi.Test
 
 
         [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
         public void DeleteArticleWithoutPermissions()
         {
             articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
@@ -142,11 +143,12 @@ namespace WebApi.Test
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
-            Assert.AreEqual(500, statusCode); //CHEQUEAR, ME PARECE QUE EL UNAUTH TIRA OTRO NUMERO
+            Assert.AreEqual(500, statusCode);
         }
 
 
         [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
         public void DeleteNotExistingArticle()
         {
             articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
@@ -156,7 +158,7 @@ namespace WebApi.Test
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
-            Assert.AreEqual(404, statusCode); //CHEQUEAR, ME PARECE QUE EL UNAUTH TIRA OTRO NUMERO
+            Assert.AreEqual(404, statusCode);
         }
     }
 }
