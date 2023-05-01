@@ -81,6 +81,63 @@ namespace BlogsApp.BusinessLogic.Tests
             Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Get(getById));
         }
 
+        [TestMethod]
+        public void GetAllArticlesOk()
+        {
+            IArticleRepository articleRepository = CreateRepositoryWithArticle();
+
+            ICollection<Article> articlesInDb = articleRepository.GetAll(a => true);
+
+            Assert.IsNotNull(articlesInDb);
+            Assert.IsTrue(articlesInDb.SequenceEqual(articles));
+        }
+
+        [TestMethod]
+        public void GetAllArticlesFail()
+        {
+            var context = CreateContext();
+            IArticleRepository articleRepository = new ArticleRepository(context);
+
+            Assert.ThrowsException<NotFoundDbException>(() => articleRepository.GetAll(m => true));
+        }
+
+        [TestMethod]
+        public void ExistsArticleTrue()
+        {
+            var context = CreateContext();
+            IArticleRepository articleRepository = CreateRepositoryWithArticle();
+            getById = GetArticleById(anArticle.Id);
+
+            articleRepository.Exists(getById);
+            bool existsArticle = context.Articles.Any(a => a.Id == anArticle.Id);
+
+            Assert.IsTrue(existsArticle);
+        }
+
+        [TestMethod]
+        public void UpdateArticleNotFound()
+        {
+            var context = CreateContext();
+            IArticleRepository articleRepository = new ArticleRepository(context);
+            anArticle.Name = anotherName;
+
+            Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Update(anArticle));
+        }
+
+        [TestMethod]
+        public void UpdateArticleOk()
+        {
+            var context = CreateContext();
+            IArticleRepository articleRepository = CreateRepositoryWithArticle();
+            anArticle.Name = anotherName;
+
+            articleRepository.Update(anArticle);
+            Article updatedArticle = context.Articles.Where(m => m.Id == anArticle.Id).AsNoTracking().FirstOrDefault();
+
+            Assert.IsNotNull(updatedArticle);
+            Assert.AreEqual(anotherName, updatedArticle.Name);
+        }
+
         private Context GetMemoryContext(string nameBd)
         {
             var builder = new DbContextOptionsBuilder<Context>();

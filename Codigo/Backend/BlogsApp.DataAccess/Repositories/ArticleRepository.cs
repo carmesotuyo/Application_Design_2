@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
@@ -26,8 +27,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public bool Exists(Func<Article, bool> func)
         {
-            throw new NotImplementedException();
-            //completar codigo
+            return Context.Set<Article>().Where(func).Any();
         }
 
         public Article Get(Func<Article, bool> func)
@@ -40,7 +40,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Article> GetAll(Func<Article, bool> func)
         {
-            ICollection<Article> articles = Context.Set<Article>().Include("User").Where(a => a.DateDeleted != null).Where(func).ToArray();
+            ICollection<Article> articles = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).Where(func).ToArray();
             if (articles.Count == 0)
                 throw new NotFoundDbException();
             return articles;
@@ -48,8 +48,12 @@ namespace BlogsApp.DataAccess.Repositories
 
         public void Update(Article value)
         {
-            throw new NotImplementedException();
-            //completar codigo
+            bool exists = Context.Set<Article>().Where(i => i.Id == value.Id).Any();
+            if (!exists)
+                throw new NotFoundDbException();
+            Article original = Context.Set<Article>().Find(value.Id);
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
         }
 
     }
