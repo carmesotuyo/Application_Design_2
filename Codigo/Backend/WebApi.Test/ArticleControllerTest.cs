@@ -9,6 +9,7 @@ using System.Data;
 using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
 using BlogsApp.WebAPI.Models;
+using System.Net.Http;
 
 namespace WebApi.Test
 {
@@ -17,11 +18,13 @@ namespace WebApi.Test
     {
         private Mock<IArticleLogic> articleLogicMock;
         private ArticleController controller;
+        HttpContext httpContext;
 
         private static readonly Article article = new Article() { };
         private IEnumerable<Article> articles;
         private StatsModel yearlyStats;
-        private User user;
+        private User userBlogger;
+        private User userAdmin;
 
         [TestInitialize]
 		public void InitTest()
@@ -30,7 +33,20 @@ namespace WebApi.Test
             controller = new ArticleController(articleLogicMock.Object);
             articles = new List<Article>() { article };
             yearlyStats = new StatsModel();
-            user = new User() { };
+            userBlogger = new User() { Blogger = true };
+            userAdmin = new User() { Admin = true };
+
+            httpContext = new DefaultHttpContext();
+            httpContext.Items["user"] = userBlogger;
+
+            ControllerContext controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+            controller = new ArticleController(articleLogicMock.Object)
+            {
+                ControllerContext = controllerContext
+            };
         }
 
         [TestMethod]
@@ -84,7 +100,9 @@ namespace WebApi.Test
         [TestMethod]
         public void GetArticlesStats()
         {
-            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>())).Returns(yearlyStats.stats);
+            httpContext.Items["user"] = userAdmin;
+
+            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>(), It.IsAny<User>())).Returns(yearlyStats.stats);
 
             IActionResult result = controller!.GetStatsByYear(2020);
             articleLogicMock.VerifyAll();
@@ -95,22 +113,6 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
 
             Assert.IsTrue(objectResult.Value.Equals(yearlyStats.stats));
-        }
-
-        [TestMethod]
-        public void GetArticlesByUser()
-        {
-            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>())).Returns(articles);
-
-            IActionResult result = controller!.GetByUser(user.Id);
-            articleLogicMock.VerifyAll();
-
-            OkObjectResult objectResult = result as OkObjectResult;
-
-            Assert.IsNotNull(result);
-            articleLogicMock.VerifyAll();
-
-            Assert.IsTrue(objectResult.Value.Equals(articles));
         }
 	}
 }

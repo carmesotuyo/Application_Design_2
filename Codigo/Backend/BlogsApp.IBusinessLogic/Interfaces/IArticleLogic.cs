@@ -6,10 +6,10 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         Article GetArticleById(int id);
         IEnumerable<Article> GetArticles(string? search);
         IEnumerable<Article> GetArticlesByUser(int userId);
-        IEnumerable<int> GetStatsByYear(int year);
-        void DeleteArticle(int articleId);
+        IEnumerable<int> GetStatsByYear(int year, User loggedUser);
+        void DeleteArticle(int articleId, User loggedUser);
         Article CreateArticle(Article article, User loggedUser);
-        Article UpdateArticle(int articleId, Article article);
+        Article UpdateArticle(int articleId, Article article, User loggedUser);
     }
 }
 

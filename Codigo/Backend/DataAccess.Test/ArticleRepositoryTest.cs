@@ -11,7 +11,7 @@ using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogsApp.BusinessLogic.Tests
+namespace DataAccess.Test
 {
     [TestClass]
     public class ArticleRepositoryTests
@@ -59,6 +59,7 @@ namespace BlogsApp.BusinessLogic.Tests
 
             Assert.ThrowsException<AlreadyExistsDbException>(() => articleRepository.Add(anArticle));
         }
+
         [TestMethod]
         public void GetArticleOk()
         {

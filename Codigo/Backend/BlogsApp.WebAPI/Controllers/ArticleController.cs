@@ -28,16 +28,12 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(articleLogic.GetArticleById(id));
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetByUser([FromRoute]int userId)
-        {
-            return new OkObjectResult(articleLogic.GetArticlesByUser(userId));
-        }
-
         [HttpGet("/stats")]
         public IActionResult GetStatsByYear([FromQuery]int year)
         {
-            return new OkObjectResult(articleLogic.GetStatsByYear(year));
+            User loggedUser = (User)this.HttpContext.Items["user"];
+
+            return new OkObjectResult(articleLogic.GetStatsByYear(year, loggedUser));
         }
     }
 }
