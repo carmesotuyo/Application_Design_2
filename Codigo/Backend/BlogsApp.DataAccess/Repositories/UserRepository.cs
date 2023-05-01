@@ -13,14 +13,15 @@ namespace BlogsApp.DataAccess.Repositories
 
         public UserRepository(Context context)
         {
-            Context = context;
+            context = context;
             //this.users = context.Set<User>();
         }
 
-        public void InsertUser(User user)
+        public User Add(User user)
         {
             context.Users?.Add(user);
             context.SaveChanges();
+            return user;
         }
 
         public void Update(User value)
