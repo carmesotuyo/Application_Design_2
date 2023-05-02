@@ -47,7 +47,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 }
                 else
                 {
-                    throw new ExistenceException("No existe un usuario con ese id.");
+                    throw new NotFoundDbException("No existe un usuario con ese id.");
                 }
             }
             else 
@@ -101,7 +101,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 }
                 else
                 {
-                    throw new ExistenceException("No existe un usuario con ese id.");
+                    throw new NotFoundDbException("No existe un usuario con ese id.");
                 }
             }
             else

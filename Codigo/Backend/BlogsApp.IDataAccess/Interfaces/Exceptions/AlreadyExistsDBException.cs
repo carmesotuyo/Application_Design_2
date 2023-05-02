@@ -5,6 +5,8 @@ namespace BlogsApp.DataAccess.Interfaces.Exceptions
     [Serializable]
     public class AlreadyExistsDbException : Exception
     {
-        public AlreadyExistsDbException() { }
+        public AlreadyExistsDbException(string message) : base(message)
+        {
+        }
     }
 }

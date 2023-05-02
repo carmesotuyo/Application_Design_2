@@ -89,7 +89,8 @@ namespace BlogsApp.BusinessLogic.Logics
         public Article UpdateArticle(int articleId, Article anArticle, User loggedUser)
         {
             Article article = _articleRepository.Get(ArticleById(articleId));
-            if(loggedUser.Id == article.UserId)
+            isValidArticle(anArticle);
+            if (loggedUser.Id == article.UserId)
             {
                 article.Name = anArticle.Name;
                 article.Body = anArticle.Body;
