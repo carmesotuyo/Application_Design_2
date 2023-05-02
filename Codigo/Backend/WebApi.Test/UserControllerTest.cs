@@ -58,24 +58,8 @@ namespace WebApi.Test
                 Admin = aValidBlogger.Admin,
             };
 
-            aBloggerToUpdate = new User
-            {
-                Id = 2,
-                Name = "John",
-                LastName = "Doe",
-                Email = "johndoe@example.com",
-                Blogger = true,
-                Admin = false
-            };
-
-            updateBloggerRequestDto = new UpdateUserRequestDTO
-            {
-                Name = "Jane",
-                LastName = "Doe",
-                Email = "janedoe@example.com",
-                Blogger = false,
-                Admin = true
-            };
+            aBloggerToUpdate = new User() { Id = 2 };
+            updateBloggerRequestDto = new UpdateUserRequestDTO();
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
             article = new Article();
             userArticles = new List<Article>() { article };
