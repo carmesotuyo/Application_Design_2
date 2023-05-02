@@ -43,6 +43,7 @@ namespace BlogsApp.BusinessLogic.Logics
                         _articleLogic.DeleteArticle(article.Id, user);
                     }
                     _userRepository.Update(user);
+                    _articleLogic.
                     return user;
                 }
                 else

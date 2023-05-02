@@ -1,4 +1,5 @@
 ﻿using BlogsApp.Domain.Entities;
+using BlogsApp.Domain.Exceptions;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 using System.Data;
@@ -120,24 +121,23 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (article == null)
             {
-                return false;
-                //throw new BusinessLogicException("Articulo inválido");
+                throw new BadInputException("Articulo inválido");
             }
             if (article.Name == null || article.Name == "")
             {
-                //throw new BusinessLogicException("Debe ingresar un nombre");
+                throw new BadInputException("Debe ingresar un nombre");
             }
             if (article.Body == null || article.Body == "")
             {
-                //throw new BusinessLogicException("Debe ingresar una contenido");
+                throw new BadInputException("Debe ingresar una contenido");
             }
             if (article.User == null)
             {
-                //throw new BusinessLogicException("El articulo debe contener un autor");
+                throw new BadInputException("El articulo debe contener un autor");
             }
             if (article.Template == null)
             {
-                //throw new BusinessLogicException("Debe ingresar un template válido");
+                throw new BadInputException("Debe ingresar un template válido");
             }
             return true;
         }
