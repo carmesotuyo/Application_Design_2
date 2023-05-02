@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.InMemory;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
+using System.Runtime.Intrinsics.X86;
 
 namespace DataAccess.Test
 {
@@ -185,6 +186,76 @@ namespace DataAccess.Test
 
             // Act
             sessionRepository.Get(s => s.Id == 2);
+        }
+
+        [TestMethod]
+        public void GetSessions_Successful()
+        {
+            // Arrange
+            var user1 = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            var user2 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var session1 = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            var session2 = new Session { Id = 2, User = user2, Token = "1312", DateTimeLogin = DateTime.Now.AddDays(-1), DateTimeLogout = DateTime.Now };
+            var session3 = new Session { Id = 3, User = user1, Token = "1412", DateTimeLogin = DateTime.Now.AddHours(-2), DateTimeLogout = DateTime.Now.AddHours(-1) };
+            _dbContext.Users.AddRange(new List<User> { user1, user2 });
+            _dbContext.Sessions.AddRange(new List<Session> { session1, session2, session3 });
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = sessionRepository.GetAll(s => s.User == user1);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.IsTrue(result.Any(s => s.Id == 1));
+            Assert.IsTrue(result.Any(s => s.Id == 3));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetSessions_NoSessionsFound()
+        {
+            // Arrange
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            _dbContext.Users.Add(user1);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = sessionRepository.GetAll(s => s.User == user1);
+
+            // Assert (expected exception)
+        }
+
+        [TestMethod]
+        public void Exists_SessionExists_ReturnsTrue()
+        {
+            // Arrange
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var session = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            _dbContext.Set<Session>().Add(session);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = sessionRepository.Exists(s => s.Id == session.Id);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Exists_SessionDoesNotExist_ReturnsFalse()
+        {
+            // Arrange
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var session = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            _dbContext.Set<Session>().Add(session);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = sessionRepository.Exists(s => s.Id == 2);
+
+            // Assert
+            Assert.IsFalse(result);
         }
 
     }

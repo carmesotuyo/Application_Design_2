@@ -49,12 +49,15 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Session> GetAll(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            ICollection<Session> sessions = Context.Set<Session>().Where(func).ToArray();
+            if (sessions.Count == 0)
+                throw new NotFoundDbException("No se encontraron sesiones");
+            return sessions;
         }
 
         public bool Exists(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            return Context.Set<Session>().Where(func).Any();
         }
     }
 }
