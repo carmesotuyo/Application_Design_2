@@ -32,7 +32,7 @@ namespace DataAccess.Test
             _articleRepository = new ArticleRepository(_dbContext);
             _userRepository = new UserRepository(_dbContext);
 
-            _testUser = new User("username", "password", "email", "name", "last_name", false, false);
+            _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false);
             _userRepository.Add(_testUser);
             _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
             _articleRepository.Add(_testArticle);
@@ -53,8 +53,9 @@ namespace DataAccess.Test
         [TestMethod]
         public void AddArticleOk()
         {
-            _articleRepository.Add(anArticle);
-            Article articleInDb = _dbContext.Articles.Where(a => a.Id == anArticle.Id).AsNoTracking().FirstOrDefault();
+            Article _testArticle2 = new Article("Test Article", "Test Content", 1, _testUser);
+            _articleRepository.Add(_testArticle2);
+            Article articleInDb = _dbContext.Articles.Where(a => a.Id == _testArticle.Id).AsNoTracking().FirstOrDefault();
 
             Assert.IsNotNull(articleInDb);
             Assert.AreEqual(anArticle.Id, articleInDb.Id);
@@ -66,7 +67,22 @@ namespace DataAccess.Test
             Assert.ThrowsException<AlreadyExistsDbException>(() => _articleRepository.Add(anArticle));
         }
 
-       
+        [TestMethod]
+        public void GetArticleById_ShouldReturnCorrectArticle()
+        {
+            Article retrievedArticle = _articleRepository.Get(a => a.Id == _testArticle.Id);
+
+            Assert.AreEqual(_testArticle, retrievedArticle);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetArticleById_ShouldThrowNotFoundDbException()
+        {
+            Article retrievedArticle = _articleRepository.Get(a => a.Id == -1);
+        }
+
+
 
 
 
