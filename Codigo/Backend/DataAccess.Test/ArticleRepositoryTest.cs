@@ -112,6 +112,37 @@ namespace DataAccess.Test
             Assert.IsFalse(result);
         }
 
+        [TestMethod]
+        public void Get_ShouldReturnArticle_WhenArticleExists()
+        {
+            // Arrange
+            var article1 = new Article("Article 1", "Body of article 1", 1, _testUser);
+            var article2 = new Article("Article 2", "Body of article 2", 1, _testUser);
+            _dbContext.Set<Article>().Add(article1);
+            _dbContext.Set<Article>().Add(article2);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _articleRepository.Get(a => a.Id == article1.Id);
+
+            // Assert
+            Assert.AreEqual(article1, result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void Get_ShouldThrowNotFoundDbException_WhenArticleDoesNotExist()
+        {
+            // Arrange
+            var article = new Article("Article 1", "Body of article 1", 1, _testUser);
+            _dbContext.Set<Article>().Add(article);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _articleRepository.Get(a => a.Id == article.Id + 1);
+
+        }
+
 
 
 
