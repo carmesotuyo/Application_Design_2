@@ -143,6 +143,68 @@ namespace DataAccess.Test
 
         }
 
+        [TestMethod]
+        public void Update_ShouldThrowNotFoundDbException_WhenArticleDoesNotExist()
+        {
+            // Arrange
+            ArticleRepository articleRepository = new ArticleRepository(_dbContext);
+
+            Article articleToUpdate = new Article()
+            {
+                Id = 9999,
+                Name = "Article to update",
+                Body = "Body of article to update",
+                Private = false,
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now,
+                User = _testUser,
+                UserId = 1,
+                Comments = new List<Comment>(),
+                Template = 1,
+                Image = "article.jpg"
+            };
+
+            // Act + Assert
+            Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Update(articleToUpdate));
+        }
+
+        [TestMethod]
+        public void Update_ShouldUpdateArticle_WhenArticleExists()
+        {
+            // Arrange
+            ArticleRepository articleRepository = new ArticleRepository(_dbContext);
+
+            Article articleToUpdate = new Article()
+            {
+                Id = 1,
+                Name = "Updated article",
+                Body = "Updated body of article",
+                Private = true,
+                DateCreated = DateTime.Now.AddDays(-10),
+                DateModified = DateTime.Now,
+                User = _testUser,
+                UserId = 1,
+                Comments = new List<Comment>(),
+                Template = 2,
+                Image = "updated.jpg"
+            };
+
+            // Act
+            articleRepository.Update(articleToUpdate);
+
+            // Assert
+            Article updatedArticle = articleRepository.Get(a => a.Id == 1);
+            Assert.AreEqual(articleToUpdate.Id, updatedArticle.Id);
+            Assert.AreEqual(articleToUpdate.Name, updatedArticle.Name);
+            Assert.AreEqual(articleToUpdate.Body, updatedArticle.Body);
+            Assert.AreEqual(articleToUpdate.Private, updatedArticle.Private);
+            Assert.AreEqual(articleToUpdate.DateCreated, updatedArticle.DateCreated);
+            Assert.AreEqual(articleToUpdate.DateModified, updatedArticle.DateModified);
+            Assert.AreEqual(articleToUpdate.UserId, updatedArticle.UserId);
+            Assert.AreEqual(articleToUpdate.Template, updatedArticle.Template);
+            Assert.AreEqual(articleToUpdate.Image, updatedArticle.Image);
+        }
+
 
 
 
