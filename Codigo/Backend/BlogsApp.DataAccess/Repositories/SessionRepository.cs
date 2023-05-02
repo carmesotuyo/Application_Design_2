@@ -1,4 +1,5 @@
-﻿using BlogsApp.Domain.Entities;
+﻿using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,15 +14,20 @@ namespace BlogsApp.DataAccess.Repositories
             Context = context;
         }
 
-        public void Update(Session value)
-        {
-            throw new NotImplementedException();
-        }
-
         public Session Add(Session value)
         {
-            throw new NotImplementedException();
+            bool exists = Context.Set<Session>().Any(s => s.User == value.User && s.DateTimeLogout == null);
+            if (exists)
+            {
+                throw new AlreadyExistsDbException("El usuario ya tiene una sesión activa");
+            }
+            Context.Set<Session>().Add(value);
+            Context.SaveChanges();
+            return value;
         }
+
+
+
 
         public Session Get(Func<Session, bool> func)
         {
@@ -37,7 +43,5 @@ namespace BlogsApp.DataAccess.Repositories
         {
             throw new NotImplementedException();
         }
-
-        //.../sessions REPOSITORY CODE
     }
 }
