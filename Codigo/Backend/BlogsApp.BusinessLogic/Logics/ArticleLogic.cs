@@ -67,9 +67,9 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-        public IEnumerable<Article> GetArticlesByUser(int userId)
+        public IEnumerable<Article> GetArticlesByUser(int userId, User loggedUser)
         {
-            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId);
+            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId && (!m.Private || m.UserId == loggedUser.Id));
         }
 
         public IEnumerable<int> GetStatsByYear(int year, User loggedUser)

@@ -1,4 +1,5 @@
 ﻿using BlogsApp.Domain.Entities;
+using System;
 
 namespace BlogsApp.IBusinessLogic.Interfaces
 {

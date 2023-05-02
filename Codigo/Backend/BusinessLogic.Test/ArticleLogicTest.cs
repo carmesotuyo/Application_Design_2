@@ -138,7 +138,7 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<Article> result = articleLogic.GetArticlesByUser(user.Id);
+            IEnumerable<Article> result = articleLogic.GetArticlesByUser(user.Id, user);
 
             articleRepository.VerifyAll();
             Assert.IsTrue(result.SequenceEqual(allArticles));
