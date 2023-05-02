@@ -2,7 +2,7 @@
 {
     public class Session
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public User User { get; private set; }
         public string Token { get; private set; }
         public DateTime DateTimeLogin { get; private set; }

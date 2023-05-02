@@ -7,6 +7,7 @@ using BlogsApp.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.Domain.Exceptions;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApi.Test
 {
@@ -15,6 +16,7 @@ namespace WebApi.Test
     {
         private Mock<IUserLogic>? aUserLogicMock;
         private UserController? aUserControllerMock;
+        HttpContext httpContext;
         User aValidBlogger;
         User aBloggerToUpdate;
         int userId;
@@ -68,6 +70,18 @@ namespace WebApi.Test
                 Blogger = false,
                 Admin = true
             };
+
+            httpContext = new DefaultHttpContext();
+            httpContext.Items["user"] = aBloggerToUpdate;
+
+            ControllerContext controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+            aUserControllerMock = new UserController(aUserLogicMock.Object)
+            {
+                ControllerContext = controllerContext
+            };
         }
 
 
@@ -110,14 +124,14 @@ namespace WebApi.Test
         {
             var userLogicMock = new Mock<IUserLogic>();
             userLogicMock.Setup(x => x.GetUserById(userId)).Returns(aBloggerToUpdate);
-            userLogicMock.Setup(x => x.UpdateUser(aBloggerToUpdate)).Verifiable();
+            userLogicMock.Setup(x => x.UpdateUser(aBloggerToUpdate, aBloggerToUpdate)).Verifiable();
 
             var userController = new UserController(userLogicMock.Object);
 
             var result = userController.PatchUser(userId, updateBloggerRequestDto);
 
             Assert.IsInstanceOfType(result, typeof(OkResult));
-            userLogicMock.Verify(ul => ul.UpdateUser(It.Is<User>(u => u.Id == userId && u.Name == updateBloggerRequestDto.Name && u.LastName == updateBloggerRequestDto.LastName)), Times.Once);
+            userLogicMock.Verify(ul => ul.UpdateUser(aBloggerToUpdate, It.Is<User>(u => u.Id == userId && u.Name == updateBloggerRequestDto.Name && u.LastName == updateBloggerRequestDto.LastName)), Times.Once);
 
         }
 
@@ -126,7 +140,7 @@ namespace WebApi.Test
         public void PatchUserFail()
         {
             aUserLogicMock = new Mock<IUserLogic>(MockBehavior.Default);
-            aUserLogicMock!.Setup(x => x.UpdateUser(aValidBlogger!)).Throws(new Exception());
+            aUserLogicMock!.Setup(x => x.UpdateUser(aBloggerToUpdate, aValidBlogger!)).Throws(new Exception());
             var result = aUserControllerMock!.PatchUser(aValidBlogger!.Id, updateBloggerRequestDto);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
@@ -140,7 +154,7 @@ namespace WebApi.Test
         [TestMethod]
         public void DeleteUserOk()
         {
-            aUserLogicMock!.Setup(x => x.DeleteUser(aValidBlogger!.Id));
+            aUserLogicMock!.Setup(x => x.DeleteUser(aBloggerToUpdate, aValidBlogger!.Id));
             var result = aUserControllerMock!.DeleteUser(aValidBlogger!.Id);
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
