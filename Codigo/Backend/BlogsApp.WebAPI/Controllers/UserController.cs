@@ -36,9 +36,7 @@ namespace BlogsApp.WebAPI.Controllers
             }
             user = userDTO.ApplyChangesToUser(user);
             User loggedUser = (User)this.HttpContext.Items["user"];
-            //userLogic.UpdateUser(loggedUser, user);
 
-            //return Ok();
             return new OkObjectResult(userLogic.UpdateUser(loggedUser, user));
         }
 
@@ -51,10 +49,10 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet("/ranking")]
-        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, int top)
+        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top)
         {
             User loggedUser = (User)this.HttpContext.Items["user"];
-            return Ok(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
+            return new OkObjectResult(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
 
         }
 
@@ -62,7 +60,7 @@ namespace BlogsApp.WebAPI.Controllers
         public IActionResult GetUserArticles([FromRoute] int id)
         {
             User loggedUser = (User)this.HttpContext.Items["user"];
-            return Ok(articleLogic.GetArticlesByUser(id,loggedUser));
+            return new OkObjectResult(articleLogic.GetArticlesByUser(id,loggedUser));
         }
     }
 }

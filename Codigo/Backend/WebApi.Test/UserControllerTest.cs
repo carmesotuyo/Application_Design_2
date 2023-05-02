@@ -24,6 +24,9 @@ namespace WebApi.Test
         User aBloggerToUpdate;
         CreateUserRequestDTO aValidBloggerDTO;
         UpdateUserRequestDTO updateBloggerRequestDto;
+        ICollection<User> usersRanking;
+        ICollection<Article> userArticles;
+        Article article;
 
         [TestInitialize]
         public void InitTest()
@@ -73,6 +76,9 @@ namespace WebApi.Test
                 Blogger = false,
                 Admin = true
             };
+            usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
+            article = new Article();
+            userArticles = new List<Article>() { article };
 
             httpContext = new DefaultHttpContext();
             httpContext.Items["user"] = loggedUser;
@@ -99,6 +105,7 @@ namespace WebApi.Test
 
             userLogicMock.VerifyAll();
             Assert.AreEqual(200, statusCode);
+            Assert.AreEqual(objectResult.Value, aValidBlogger);
         }
 
         [TestMethod]
@@ -114,6 +121,7 @@ namespace WebApi.Test
 
             userLogicMock.VerifyAll();
             Assert.AreEqual(200, statusCode);
+            Assert.AreEqual(objectResult.Value, aBloggerToUpdate);
         }
 
 
@@ -145,6 +153,7 @@ namespace WebApi.Test
             userLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(200, statusCode);
+            Assert.AreEqual(objectResult.Value, aBloggerToUpdate);
         }
 
         [TestMethod]
@@ -173,6 +182,79 @@ namespace WebApi.Test
 
             articleLogicMock.VerifyAll();
             Assert.AreEqual(404, statusCode);
+        }
+
+        [TestMethod]
+        public void GetRankingOk()
+        {
+            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Returns(usersRanking);
+
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            userLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
+            Assert.AreEqual(objectResult.Value, usersRanking);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void GetRankingBadRequest()
+        {
+            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Throws(new UnauthorizedAccessException());
+
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            userLogicMock.VerifyAll();
+            Assert.AreEqual(500, statusCode);
+        }
+
+        [TestMethod]
+        public void GetUserArticlesOk()
+        {
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Returns(userArticles);
+
+            var result = controller!.GetUserArticles(aValidBlogger.Id);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            userLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
+            Assert.AreEqual(objectResult.Value, userArticles);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetArticlesUserNotFound()
+        {
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
+
+            var result = controller!.GetUserArticles(It.IsAny<int>());
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(404, statusCode);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void GetUserArticlesBadRequest()
+        {
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
+
+            var result = controller!.GetUserArticles(It.IsAny<int>());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            articleLogicMock.VerifyAll();
+            Assert.AreEqual(500, statusCode);
         }
     }
 }
