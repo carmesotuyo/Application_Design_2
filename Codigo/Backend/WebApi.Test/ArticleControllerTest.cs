@@ -8,7 +8,7 @@ using BlogsApp.Domain.Entities;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
-using BlogsApp.WebAPI.Models;
+using BlogsApp.WebAPI.DTOs;
 using System.Net.Http;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 
@@ -151,7 +151,7 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void DeleteArticleNotFound()
         {
-            articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
+            articleLogicMock.Setup(m => m.DeleteArticle(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException(""));
 
             var result = controller.DeleteArticle(It.IsAny<int>());
             var objectResult = result as ObjectResult;
@@ -218,7 +218,7 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void UpdateArticleNotFound()
         {
-            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new NotFoundDbException());
+            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new NotFoundDbException(""));
             var result = controller!.UpdateArticle(article!.Id, article);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;

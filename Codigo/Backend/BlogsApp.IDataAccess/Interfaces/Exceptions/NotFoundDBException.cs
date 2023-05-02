@@ -5,7 +5,7 @@ namespace BlogsApp.DataAccess.Interfaces.Exceptions
     [Serializable]
     public class NotFoundDbException : Exception
     {
-        public NotFoundDbException(string message) : base(message)
+        public NotFoundDbException(string? message) : base(message)
         {
         }
 
