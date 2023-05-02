@@ -26,7 +26,16 @@ namespace BlogsApp.DataAccess.Repositories
             return value;
         }
 
-
+        public void Update(Session value)
+        {
+            Session original = Context.Set<Session>().Find(value.Id);
+            if (original == null)
+            {
+                throw new NotFoundDbException("No se encuentra el id en la base de datos");
+            }
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
+        }
 
 
         public Session Get(Func<Session, bool> func)

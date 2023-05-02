@@ -105,7 +105,56 @@ namespace DataAccess.Test
             Assert.IsNull(createdSession.DateTimeLogout);
         }
 
+        [TestMethod]
+        public void Update_SessionExists_ShouldUpdateSession()
+        {
+            // Arrange
+            var session = new Session
+            {
+                Id = 1,
+                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
+                Token = "abc123",
+                DateTimeLogin = DateTime.Now,
+                DateTimeLogout = null
+            };
+            _dbContext.Sessions.Add(session);
+            _dbContext.SaveChanges();
 
+            var updatedSession = new Session
+            {
+                Id = session.Id,
+                User = session.User,
+                Token = "xyz456",
+                DateTimeLogin = session.DateTimeLogin,
+                DateTimeLogout = DateTime.Now
+            };
+
+            // Act
+            sessionRepository.Update(updatedSession);
+
+            // Assert
+            var result = _dbContext.Sessions.Find(session.Id);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(updatedSession.Token, result.Token);
+            Assert.AreEqual(updatedSession.DateTimeLogout, result.DateTimeLogout);
+        }
+
+        [TestMethod]
+        public void Update_SessionNotExists_ShouldThrowNotFoundDbException()
+        {
+            // Arrange
+            var session = new Session
+            {
+                Id = 1,
+                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
+                Token = "abc123",
+                DateTimeLogin = DateTime.Now,
+                DateTimeLogout = null
+            };
+
+            // Act & Assert
+            Assert.ThrowsException<NotFoundDbException>(() => sessionRepository.Update(session));
+        }
 
     }
 }
