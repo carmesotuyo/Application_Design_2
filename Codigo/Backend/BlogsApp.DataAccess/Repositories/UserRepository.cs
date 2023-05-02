@@ -19,9 +19,11 @@ namespace BlogsApp.DataAccess.Repositories
 
         public User Add(User value)
         {
-            bool exists = Context.Set<User>().Where(i => i.Id == value.Id).Any();
+            bool exists = Context.Set<User>().Any(i => i.Id == value.Id);
             if (exists)
+            {
                 throw new AlreadyExistsDbException("El Nombre de usuario ya está en uso");
+            }
             Context.Set<User>().Add(value);
             Context.SaveChanges();
             return value;
@@ -29,10 +31,11 @@ namespace BlogsApp.DataAccess.Repositories
 
         public void Update(User value)
         {
-            bool exists = Context.Set<User>().Where(i => i.Id == value.Id).Any();
-            if (!exists)
-                throw new NotFoundDbException("No se encuentra el id en la base de datos");
             User original = Context.Set<User>().Find(value.Id);
+            if (original == null)
+            {
+                throw new NotFoundDbException("No se encuentra el id en la base de datos");
+            }
             Context.Entry(original).CurrentValues.SetValues(value);
             Context.SaveChanges();
         }
