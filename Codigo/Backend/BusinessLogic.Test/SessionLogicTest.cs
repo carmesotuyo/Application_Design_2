@@ -124,6 +124,39 @@ namespace BusinessLogic.Test
             Assert.IsNotNull(receivedComments);
             Assert.AreEqual(receivedComments, commentsWhileLoggedOut);
         }
+
+        [TestMethod]
+        public void IsValidTokenOk()
+        {
+            Assert.IsTrue(sessionLogic.IsValidToken(Guid.NewGuid().ToString()));
+        }
+
+
+        [TestMethod]
+        public void InvalidToken()
+        {
+            Assert.IsFalse(sessionLogic.IsValidToken(null));
+        }
+
+        [TestMethod]
+        public void GetUserFromToken()
+        {
+            Guid token = Guid.NewGuid();
+            sessionRepositoryMock!.Setup(x => x.Exists(It.IsAny<Func<Session, bool>>())).Returns(true);
+            sessionRepositoryMock!.Setup(x => x.Get(It.IsAny<Func<Session, bool>>())).Returns(session);
+            User user = sessionLogic.GetUserFromToken(token);
+
+            Assert.AreEqual(user, session.User);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetUserFromTokenInvalid()
+        {
+            Guid token = Guid.NewGuid();
+            sessionRepositoryMock!.Setup(x => x.Exists(It.IsAny<Func<Session, bool>>())).Returns(false);
+            User user = sessionLogic.GetUserFromToken(token);
+        }
     }
 }
 

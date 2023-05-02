@@ -81,12 +81,14 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public bool IsValidToken(string token)
         {
-            throw new NotImplementedException();
+            return token != null && Guid.Parse(token).ToString() == token;
         }
 
         public User GetUserFromToken(Guid aToken)
         {
-            throw new NotImplementedException();
+            bool exists = _sessionRepository.Exists(s => s.Token == aToken);
+            if (!exists) throw new NotFoundDbException("Token inválido");
+            return _sessionRepository.Get(s => s.Token == aToken).User;
         }
     }
 }
