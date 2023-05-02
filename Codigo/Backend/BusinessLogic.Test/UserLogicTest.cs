@@ -14,110 +14,193 @@ namespace BusinessLogic.Test
     [TestClass]
     public class UserLogicTest
     {
-        private Mock<IUserRepository> aUserRepositoryMock;
+        private Mock<IUserRepository> userRepositoryMock;
+        private Mock<IArticleLogic> articleLogicMock;
         private IUserLogic userLogic;       
         User? aValidBlogger;
         private IEnumerable<User>? users = new List<User>();
-        User invalidUser; 
+        User invalidUser;
+        private User adminUser;
+        private User normalUser;
+        private User normalUser2;
+        private Article article1;
+        private Article article2;
         private static readonly User user = new User { Id = 1, Name = "Test User", LastName = "Last Test User" };
 
 
         [TestInitialize]
         public void TestInitialize()
         {
-            aUserRepositoryMock = new Mock<IUserRepository>(MockBehavior.Default);
-            userLogic = new UserLogic(aUserRepositoryMock.Object);
-           
+            userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Default);
+            articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Default);
+            userLogic = new UserLogic(userRepositoryMock.Object, articleLogicMock.Object);
+
+            adminUser = new User { Id = 1, Username = "admin", Admin = true };
+            normalUser = new User { Id = 2, Username = "user", Blogger = true };
+            normalUser2 = new User { Id = 3, Username = "blogger", Blogger = true };
+            article1 = new Article { Id = 1, UserId = 2 };
+            article2 = new Article { Id = 2, UserId = 2 };
+            normalUser.Articles = new List<Article> { article1, article2 };
         }
 
         
         [TestMethod]
         [ExpectedException(typeof(BadInputException))]
-        public void CreatenullUser()
+        public void CreateNullUser()
         {
             userLogic!.CreateUser(null);
-            aUserRepositoryMock!.VerifyAll();
+            userRepositoryMock!.VerifyAll();
         }
 
 
         [TestMethod]
-        public void InsertUserOk()
+        public void CreateUserOk()
         {
-            UserLogic userLogic = new UserLogic(aUserRepositoryMock.Object);
-            aUserRepositoryMock!.Setup(x => x.Add(It.IsAny<User>())).Returns(user);
+            userRepositoryMock!.Setup(x => x.Add(It.IsAny<User>())).Returns(user);
 
             var result = userLogic!.CreateUser(user!);
-            aUserRepositoryMock.VerifyAll();
+            userRepositoryMock.VerifyAll();
 
             Assert.IsNotNull(result); 
             Assert.AreEqual(user.Name, result.Name);
-            Assert.AreEqual(user.LastName, result.LastName); 
-                                               
-        }
-
-        [TestMethod]
-        public void SetsDateDeletedTest()
-        {
-            aUserRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(user);
-
-            userLogic.DeleteUser(user, user.Id);
-            User result = user;
-
-            aUserRepositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Once);
-
-            Assert.IsNotNull(user.DateDeleted);
+            Assert.AreEqual(user.LastName, result.LastName);                   
         }
 
         [TestMethod]
         public void GetUserByIdTest()
         {
-            aUserRepositoryMock.Setup(x => x.Get(It.IsAny<Func<User, bool>>())).Returns(user);
+            userRepositoryMock.Setup(x => x.Get(It.IsAny<Func<User, bool>>())).Returns(user);
             User result = userLogic.GetUserById(user.Id);
-            aUserRepositoryMock.VerifyAll();
+            userRepositoryMock.VerifyAll();
             Assert.IsTrue(result.Id == user.Id);
         }
 
         [TestMethod]
-        public void UpdateUserNameTest()
+        public void UpdateName()
         {
-            int userId = 2;
-            User existingUser = new User { Id = userId, Name = "Old name" };
-            User updatedUser = new User { Name = "New name" };
-   
-            aUserRepositoryMock.Setup(x => x.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
 
-            User result = userLogic.UpdateUser(updatedUser, updatedUser);
+            normalUser.Name = "Jonathan";
+            User updatedUser = userLogic.UpdateUser(normalUser, normalUser);
 
-            aUserRepositoryMock.Verify(x => x.Update(existingUser), Times.Once);
-            Assert.AreEqual(updatedUser.Name, result.Name);
+            userRepositoryMock.VerifyAll();
+            Assert.AreEqual("Jonathan", updatedUser.Name);
+        }
+
+
+        [TestMethod]
+        public void UpdateUserName()
+        {
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+
+            normalUser.Username = "Jonathan";
+            User updatedUser = userLogic.UpdateUser(normalUser, normalUser);
+
+            userRepositoryMock.VerifyAll();
+            Assert.AreEqual("Jonathan", updatedUser.Username);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UpdateUserNonExistingUser()
+        {
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(false);
+
+            userLogic.UpdateUser(normalUser, user);
+        }
+
+
+        [TestMethod]
+        public void DeleteUserAndArticlesTest()
+        {
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+
+            var deletedUser = userLogic.DeleteUser(adminUser, normalUser.Id);
+
+            userRepositoryMock.Verify(r => r.Update(normalUser), Times.Once);
+            articleLogicMock.Verify(a => a.DeleteArticle(article1.Id, normalUser), Times.Once);
+            articleLogicMock.Verify(a => a.DeleteArticle(article2.Id, normalUser), Times.Once);
+            Assert.IsNotNull(deletedUser.DateDeleted);
         }
 
         [TestMethod]
-        public void UpdateUserPassTest()
+        public void DeleteUserInvalidUser()
         {
-            int userId = 1;
-            User existingUser = new User { Id = userId, Password = "OldPassword" };
-            User updatedUser = new User { Password = "NewPassword" };
-            aUserRepositoryMock.Setup(repo => repo.Get(It.IsAny<Func<User, bool>>())).Returns(existingUser);
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(false);
 
-            User result = userLogic.UpdateUser(updatedUser, updatedUser);
-
-            aUserRepositoryMock.Verify(repo => repo.Update(existingUser), Times.Once);
-            Assert.AreEqual(updatedUser.Password, result.Password);
+            Assert.ThrowsException<NotFoundDbException>(() => userLogic.DeleteUser(adminUser, normalUser.Id));
         }
 
         [TestMethod]
-        public void DeleteUserTest()
+        public void DeleteUserUnauthorizedUser()
         {
-            aUserRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(user);
-
-            userLogic.DeleteUser(user, user.Id);
-            User result = user;
-
-            aUserRepositoryMock.VerifyAll();
-            Assert.IsTrue(user.DateDeleted != null);
-
-            Assert.IsNotNull(user.DateDeleted);
+            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.DeleteUser(normalUser, adminUser.Id));
         }
+
+        [TestMethod]
+        public void GetUsersRanking()
+        {
+            var dateFrom = new DateTime(2023, 1, 1);
+            var dateTo = new DateTime(2023, 5, 1);
+
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = 1,
+                    Articles = new List<Article>
+                    {
+                        new Article { Id = 1, DateCreated = new DateTime(2023, 1, 15) },
+                        new Article { Id = 2, DateCreated = new DateTime(2023, 2, 20) },
+                    },
+                    Comments = new List<Comment>
+                    {
+                        new Comment { Id = 1, DateCreated = new DateTime(2023, 1, 10) },
+                    }
+                },
+                new User
+                {
+                    Id = 2,
+                    Articles = new List<Article>
+                    {
+                        new Article { Id = 3, DateCreated = new DateTime(2023, 3, 10) },
+                    },
+                    Comments = new List<Comment>
+                    {
+                        new Comment { Id = 2, DateCreated = new DateTime(2023, 3, 20) },
+                        new Comment { Id = 3, DateCreated = new DateTime(2023, 4, 15) },
+                    }
+                },
+                new User
+                {
+                    Id = 3,
+                    Articles = new List<Article>(),
+                    Comments = new List<Comment>()
+                }
+            };
+
+            userRepositoryMock.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>()))
+                   .Returns<Func<User, bool>>(filter => users.Where(filter).ToList());
+
+            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null);
+
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result.First().Id);
+            Assert.AreEqual(2, result.Last().Id);
+        }
+
+        [TestMethod]
+        public void GetUsersRankingUnauthorizedUser()
+        {
+            var dateFrom = new DateTime(2023, 1, 1);
+            var dateTo = new DateTime(2023, 5, 1);
+
+            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null));
+        }
+
     }
 }

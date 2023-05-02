@@ -1,4 +1,5 @@
 ﻿using System;
+using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.Filters;
@@ -7,28 +8,27 @@ using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
-    [Route("api/comments")]
+    [Route("api/replies")]
     [ServiceFilter(typeof(AuthorizationFilter))]
-    public class CommmentController : BlogsAppControllerBase
+    public class ReplyController : BlogsAppControllerBase
     {
-        private readonly ICommentLogic commentLogic;
+        private readonly IReplyLogic replyLogic;
         private readonly ISessionLogic sessionLogic;
 
-        public CommmentController(ICommentLogic commentLogic, ISessionLogic sessionLogic)
+        public ReplyController(IReplyLogic replyLogic, ISessionLogic sessionLogic)
         {
-            this.commentLogic = commentLogic;
+            this.replyLogic = replyLogic;
             this.sessionLogic = sessionLogic;
         }
 
+
         [HttpPost]
-        public IActionResult CreateComment([FromBody] Comment comment, [FromHeader] string token)
+        public IActionResult PostReply([FromBody] Reply reply, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
-            Comment createdCommented = commentLogic.CreateComment(comment, loggedUser);
-            return new OkObjectResult(createdCommented);
-
+            return new OkObjectResult(replyLogic.CreateReply(reply, loggedUser));
         }
     }
 }

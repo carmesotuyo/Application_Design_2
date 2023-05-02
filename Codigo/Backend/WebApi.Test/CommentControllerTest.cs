@@ -13,36 +13,45 @@ namespace WebApi.Test
 	public class CommentControllerTest
     {
         Mock<ICommentLogic> commentLogicMock;
+        private Mock<ISessionLogic> sessionLogicMock;
         private CommmentController controller;
-        HttpContext httpContext;
+        //HttpContext httpContext;
 
-        static readonly Comment comment = new Comment() { };
-        static readonly User user = new User() { };
+        private Comment comment;
+        private User user;
+        private Guid token;
 
         [TestInitialize]
         public void InitTest()
         {
             commentLogicMock = new Mock<ICommentLogic>(MockBehavior.Strict);
+            sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
+            controller = new CommmentController(commentLogicMock.Object, sessionLogicMock.Object);
 
-            httpContext = new DefaultHttpContext();
-            httpContext.Items["user"] = user;
+            comment = new Comment();
+            user = new User();
+            token = Guid.NewGuid();
 
-            ControllerContext controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-            controller = new CommmentController(commentLogicMock.Object)
-            {
-                ControllerContext = controllerContext
-            };
+            //httpContext = new DefaultHttpContext();
+            //httpContext.Items["user"] = user;
+
+            //ControllerContext controllerContext = new ControllerContext()
+            //{
+            //    HttpContext = httpContext
+            //};
+            //controller = new CommmentController(commentLogicMock.Object)
+            //{
+            //    ControllerContext = controllerContext
+            //};
         }
 
         [TestMethod]
 		public void CreateComment()
 		{
-            commentLogicMock.Setup(m => m.CreateComment(comment, user)).Returns(comment);
+            commentLogicMock.Setup(m => m.CreateComment(It.IsAny<Comment>(), It.IsAny<User>())).Returns(comment);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller.CreateComment(comment);
+            var result = controller.CreateComment(comment, token.ToString());
 
             commentLogicMock.VerifyAll();
             OkObjectResult objectResult = result as OkObjectResult;

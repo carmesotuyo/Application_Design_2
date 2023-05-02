@@ -16,8 +16,9 @@ namespace WebApi.Test
     {
         private Mock<IUserLogic>? userLogicMock;
         private Mock<IArticleLogic> articleLogicMock;
+        private Mock<ISessionLogic> sessionLogicMock;
         private UserController? controller;
-        HttpContext httpContext;
+        //HttpContext httpContext;
 
         User loggedUser;
         User aValidBlogger;
@@ -27,13 +28,15 @@ namespace WebApi.Test
         ICollection<User> usersRanking;
         ICollection<Article> userArticles;
         Article article;
+        private Guid token;
 
         [TestInitialize]
         public void InitTest()
         {
             userLogicMock = new Mock<IUserLogic>(MockBehavior.Default);
             articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
-            controller = new UserController(userLogicMock.Object, articleLogicMock.Object);
+            sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
+            controller = new UserController(userLogicMock.Object, articleLogicMock.Object, sessionLogicMock.Object);
 
             loggedUser = new User() { Id = 1 };
             aValidBlogger = new User(
@@ -63,18 +66,19 @@ namespace WebApi.Test
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
             article = new Article();
             userArticles = new List<Article>() { article };
+            token = Guid.NewGuid();
 
-            httpContext = new DefaultHttpContext();
-            httpContext.Items["user"] = loggedUser;
+            //httpContext = new DefaultHttpContext();
+            //httpContext.Items["user"] = loggedUser;
 
-            ControllerContext controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-            controller = new UserController(userLogicMock.Object, articleLogicMock.Object)
-            {
-                ControllerContext = controllerContext
-            };
+            //ControllerContext controllerContext = new ControllerContext()
+            //{
+            //    HttpContext = httpContext
+            //};
+            //controller = new UserController(userLogicMock.Object, articleLogicMock.Object)
+            //{
+            //    ControllerContext = controllerContext
+            //};
         }
 
 
@@ -97,8 +101,9 @@ namespace WebApi.Test
         {
             userLogicMock.Setup(x => x.GetUserById(It.IsAny<int>())).Returns(aBloggerToUpdate);
             userLogicMock.Setup(x => x.UpdateUser(It.IsAny<User>(), It.IsAny<User>())).Returns(aBloggerToUpdate);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller.PatchUser(aBloggerToUpdate.Id, updateBloggerRequestDto);
+            var result = controller.PatchUser(aBloggerToUpdate.Id, updateBloggerRequestDto, token.ToString());
 
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
@@ -115,8 +120,9 @@ namespace WebApi.Test
         {
             userLogicMock.Setup(x => x.GetUserById(It.IsAny<int>())).Returns(aBloggerToUpdate);
             userLogicMock!.Setup(x => x.UpdateUser(It.IsAny<User>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.PatchUser(aBloggerToUpdate.Id, updateBloggerRequestDto);
+            var result = controller!.PatchUser(aBloggerToUpdate.Id, updateBloggerRequestDto, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -129,8 +135,9 @@ namespace WebApi.Test
         public void DeleteUserOk()
         {
             userLogicMock!.Setup(x => x.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Returns(aBloggerToUpdate);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.DeleteUser(aBloggerToUpdate.Id);
+            var result = controller!.DeleteUser(aBloggerToUpdate.Id, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -145,8 +152,9 @@ namespace WebApi.Test
         public void DeleteUserWithoutPermissions()
         {
             userLogicMock.Setup(m => m.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Throws(new UnauthorizedAccessException());
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.DeleteUser(It.IsAny<int>());
+            var result = controller!.DeleteUser(It.IsAny<int>(), token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -158,9 +166,10 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void DeleteUserNotFound()
         {
-            userLogicMock.Setup(m => m.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Throws(new NotFoundDbException());
+            userLogicMock.Setup(m => m.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Throws(new NotFoundDbException(""));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.DeleteUser(It.IsAny<int>());
+            var result = controller!.DeleteUser(It.IsAny<int>(), token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -172,8 +181,9 @@ namespace WebApi.Test
         public void GetRankingOk()
         {
             userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Returns(usersRanking);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10);
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -189,8 +199,9 @@ namespace WebApi.Test
         public void GetRankingBadRequest()
         {
             userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Throws(new UnauthorizedAccessException());
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10);
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -202,8 +213,9 @@ namespace WebApi.Test
         public void GetUserArticlesOk()
         {
             articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Returns(userArticles);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetUserArticles(aValidBlogger.Id);
+            var result = controller!.GetUserArticles(aValidBlogger.Id, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -217,9 +229,10 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void GetArticlesUserNotFound()
         {
-            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException(""));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetUserArticles(It.IsAny<int>());
+            var result = controller!.GetUserArticles(It.IsAny<int>(), token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -232,8 +245,9 @@ namespace WebApi.Test
         public void GetUserArticlesBadRequest()
         {
             articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetUserArticles(It.IsAny<int>());
+            var result = controller!.GetUserArticles(It.IsAny<int>(), token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 

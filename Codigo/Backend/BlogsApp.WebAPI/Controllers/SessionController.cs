@@ -5,6 +5,7 @@ using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.BusinessLogic.Logics;
 using NuGet.Protocol.Plugins;
+using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -19,9 +20,9 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login([FromBody] string username, [FromBody] string password)
+        public IActionResult Login([FromBody] LoginRequestDTO credentials)
         {
-            Guid token = sessionLogic.Login(username, password);
+            Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user.Id);
 
@@ -32,9 +33,10 @@ namespace BlogsApp.WebAPI.Controllers
 
         [ServiceFilter(typeof(AuthorizationFilter))]
         [HttpPatch("{id}")]
-        public IActionResult Logout([FromRoute] int id)
+        public IActionResult Logout([FromRoute] int id, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             sessionLogic.Logout(id, loggedUser);
 
             return new OkResult();

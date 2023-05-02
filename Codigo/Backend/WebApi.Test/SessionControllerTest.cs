@@ -17,11 +17,12 @@ namespace WebApi.Test
 
         private Mock<ISessionLogic> sessionLogicMock;
         private SessionController controller;
-        HttpContext httpContext;
+        //HttpContext httpContext;
 
         private Session session;
         private string username;
         private string password;
+        private LoginRequestDTO credentials;
         private Guid token;
         private User user;
         private Comment comment;
@@ -37,23 +38,24 @@ namespace WebApi.Test
             session = new Session() { Id = 1 };
             username = "username";
             password = "password";
+            credentials = new LoginRequestDTO(username, password);
             token = Guid.NewGuid();
             user = new User();
             comment = new Comment();
             comments = new List<Comment>() { comment };
             responseDTO = new LoginResponseDTO(token, comments);
 
-            httpContext = new DefaultHttpContext();
-            httpContext.Items["user"] = user;
+            //httpContext = new DefaultHttpContext();
+            //httpContext.Items["user"] = user;
 
-            ControllerContext controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-            controller = new SessionController(sessionLogicMock.Object)
-            {
-                ControllerContext = controllerContext
-            };
+            //ControllerContext controllerContext = new ControllerContext()
+            //{
+            //    HttpContext = httpContext
+            //};
+            //controller = new SessionController(sessionLogicMock.Object)
+            //{
+            //    ControllerContext = controllerContext
+            //};
         }
 
         [TestMethod]
@@ -63,7 +65,7 @@ namespace WebApi.Test
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
             sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<int>())).Returns(comments);
 
-            var result = controller!.Login(username, password);
+            var result = controller!.Login(credentials);
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
             var receivedDTO = objectResult.Value as LoginResponseDTO;
@@ -80,7 +82,7 @@ namespace WebApi.Test
         {
             sessionLogicMock!.Setup(m => m.Login(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadInputException("Incorrect credentials"));
 
-            var result = controller!.Login(username, password);
+            var result = controller!.Login(credentials);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -93,8 +95,9 @@ namespace WebApi.Test
         public void LogoutOk()
         {
             sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>()));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id);
+            var result = controller!.Logout(session.Id, token.ToString());
             var objectResult = result as OkResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -108,8 +111,9 @@ namespace WebApi.Test
         public void LogoutBadRequest()
         {
             sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>())).Throws(new BadHttpRequestException("Incorrect request to Logout", 400));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id);
+            var result = controller!.Logout(session.Id, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 

@@ -15,7 +15,7 @@ namespace BlogsApp.WebAPI.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            string token = context.HttpContext.Request.Headers["Authorization"];
+            string token = context.HttpContext.Request.Headers["token"];
             if (token == null)
             {
                 context.Result = new ContentResult()
