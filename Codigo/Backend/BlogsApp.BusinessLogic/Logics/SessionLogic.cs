@@ -62,7 +62,21 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public void Logout(int sessionId, User loggedUser)
         {
-            throw new NotImplementedException();
+            Session logOutSession = _sessionRepository.Get(IsValidSession(sessionId, loggedUser));
+            if (logOutSession != null)
+            {
+                logOutSession.DateTimeLogout = DateTime.Now;
+                _sessionRepository.Update(logOutSession);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Sesión inválida, no se deslogueó");
+            }
+        }
+
+        private Func<Session, bool> IsValidSession(int sessionId, User loggedUser)
+        {
+            return s => s.User == loggedUser && s.DateTimeLogout == null && s.Id == sessionId;
         }
     }
 }
