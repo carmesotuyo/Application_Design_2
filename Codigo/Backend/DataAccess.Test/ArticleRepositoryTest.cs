@@ -82,6 +82,36 @@ namespace DataAccess.Test
             Article retrievedArticle = _articleRepository.Get(a => a.Id == -1);
         }
 
+        [TestMethod]
+        public void Exists_ShouldReturnTrue_WhenArticleExists()
+        {
+            // Arrange
+            var article = new Article("Article 1", "Body of article 1", 1, _testUser);
+            _dbContext.Set<Article>().Add(article);
+            _dbContext.SaveChanges();
+
+            // Act
+            bool result = _articleRepository.Exists(a => a.Id == article.Id);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Exists_ShouldReturnFalse_WhenArticleDoesNotExist()
+        {
+            // Arrange
+            var article = new Article("Article 1", "Body of article 1", 1, _testUser);
+            _dbContext.Set<Article>().Add(article);
+            _dbContext.SaveChanges();
+
+            // Act
+            bool result = _articleRepository.Exists(a => a.Id == article.Id + 1);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
 
 
 
