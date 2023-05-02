@@ -5,6 +5,7 @@ using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.BusinessLogic.Logics;
 using NuGet.Protocol.Plugins;
+using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -32,9 +33,10 @@ namespace BlogsApp.WebAPI.Controllers
 
         [ServiceFilter(typeof(AuthorizationFilter))]
         [HttpPatch("{id}")]
-        public IActionResult Logout([FromRoute] int id)
+        public IActionResult Logout([FromRoute] int id, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             sessionLogic.Logout(id, loggedUser);
 
             return new OkResult();

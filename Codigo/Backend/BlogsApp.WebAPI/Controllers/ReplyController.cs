@@ -4,6 +4,7 @@ using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -12,17 +13,20 @@ namespace BlogsApp.WebAPI.Controllers
     public class ReplyController : BlogsAppControllerBase
     {
         private readonly IReplyLogic replyLogic;
+        private readonly ISessionLogic sessionLogic;
 
-        public ReplyController(IReplyLogic replyLogic)
+        public ReplyController(IReplyLogic replyLogic, ISessionLogic sessionLogic)
         {
             this.replyLogic = replyLogic;
+            this.sessionLogic = sessionLogic;
         }
 
 
         [HttpPost]
-        public IActionResult PostReply([FromBody] Reply reply)
+        public IActionResult PostReply([FromBody] Reply reply, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
             return new OkObjectResult(replyLogic.CreateReply(reply, loggedUser));
         }

@@ -41,7 +41,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public Session Get(Func<Session, bool> func)
         {
-            Session session = Context.Set<Session>().FirstOrDefault(func);
+            Session session = Context.Set<Session>().Include("User").FirstOrDefault(func);
             if (session == null)
                 throw new NotFoundDbException("No se encontraron sesiones");
             return session;

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using BlogsApp.WebAPI.DTOs;
 using Azure.Core;
 using System.Data;
+using BlogsApp.BusinessLogic.Logics;
+using NuGet.Common;
+using Newtonsoft.Json.Linq;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -12,10 +15,12 @@ namespace BlogsApp.WebAPI.Controllers
     {
         private readonly IUserLogic userLogic;
         private readonly IArticleLogic articleLogic;
-        public UserController(IUserLogic userLogic, IArticleLogic articleLogic) 
+        private readonly ISessionLogic sessionLogic;
+        public UserController(IUserLogic userLogic, IArticleLogic articleLogic, ISessionLogic sessionLogic) 
         {
             this.userLogic = userLogic;
             this.articleLogic = articleLogic;
+            this.sessionLogic = sessionLogic;
         }
 
         [HttpPost]
@@ -27,7 +32,7 @@ namespace BlogsApp.WebAPI.Controllers
 
 
         [HttpPatch("{id}")]
-        public IActionResult PatchUser([FromRoute] int id, [FromBody] UpdateUserRequestDTO userDTO)
+        public IActionResult PatchUser([FromRoute] int id, [FromBody] UpdateUserRequestDTO userDTO, [FromHeader] string token)
         {
             var user = userLogic.GetUserById(id);
             if (user == null)
@@ -35,31 +40,35 @@ namespace BlogsApp.WebAPI.Controllers
                 return NotFound();
             }
             user = userDTO.ApplyChangesToUser(user);
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
             return new OkObjectResult(userLogic.UpdateUser(loggedUser, user));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser([FromRoute] int id)
+        public IActionResult DeleteUser([FromRoute] int id, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
             return new OkObjectResult(userLogic.DeleteUser(loggedUser, id));
         }
 
         [HttpGet("ranking")]
-        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top)
+        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             return new OkObjectResult(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
 
         }
 
         [HttpGet("{id}/articles")]
-        public IActionResult GetUserArticles([FromRoute] int id)
+        public IActionResult GetUserArticles([FromRoute] int id, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             return new OkObjectResult(articleLogic.GetArticlesByUser(id,loggedUser));
         }
     }
