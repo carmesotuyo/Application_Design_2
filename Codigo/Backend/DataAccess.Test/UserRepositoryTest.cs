@@ -5,14 +5,18 @@ using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using System.Data.Entity;
 
 namespace DataAccess.Test
 {
     [TestClass]
     public class UserRepositoryTest
     {
+        private Context _dbContext;
+        private UserRepository userRepository;
         User aValidBlogger;
         ICollection<User> users;
         Func<User, bool> getById;
@@ -35,20 +39,112 @@ namespace DataAccess.Test
             users = new List<User>() { aValidBlogger };
             getById = GetUserById(aValidBlogger.Id);
             anotherAddress = "5th Avenue";
+            var options = new DbContextOptionsBuilder<Context>()
+                .UseInMemoryDatabase(databaseName: "UserDb")
+                .Options;
+
+            _dbContext = new Context(options);
+            userRepository = new UserRepository(_dbContext);
         }
 
 
-        [TestMethod]
-        public void AddUserOk()
+        [TestCleanup]
+        public void Cleanup()
         {
-            var context = CreateContext();
-            IUserRepository userRepository = new UserRepository(context);
+            _dbContext.Database.EnsureDeleted();
+            _dbContext.Dispose();
+        }
 
-            userRepository.Add(aValidBlogger);
-            User userInDb = context.Users.Where<User>(m => m.Id == aValidBlogger.Id).AsNoTracking().FirstOrDefault();
+        [TestMethod]
+        public void Add_NewUser_ShouldBeAddedToDatabase()
+        {
+            var user = new User { Id = 1, Name = "Test User1", Email = "test@example.com", LastName = "Test", Password = "password", Username = "testuser0" };
+            
+            userRepository.Add(user);
+            _dbContext.SaveChanges();
 
-            Assert.IsNotNull(userInDb);
-            Assert.AreEqual(aValidBlogger.Id, userInDb.Id);
+            Assert.AreEqual(1, _dbContext.Users.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AlreadyExistsDbException))]
+        public void Add_ExistingUser_ShouldThrowAlreadyExistsDbException()
+        {
+            var existingUser = new User { Id = 1, Name = "Test User", Email = "test@example.com", LastName = "Test", Password = "password", Username = "testuser" };
+            _dbContext.Users.Add(existingUser);
+            _dbContext.SaveChanges();
+
+            var newUser = new User { Id = 1, Name = "Test User 2", Email = "test2@example.com", LastName = "Test 2", Password = "password2", Username = "testuser2" };
+            
+            userRepository.Add(newUser);
+            _dbContext.SaveChanges();
+        }
+       
+
+        [TestMethod]
+        public void Update_UpdatesExistingUser()
+        {
+            var options = new DbContextOptionsBuilder<Context>().UseInMemoryDatabase(databaseName: "UserDb").Options;
+            IUserRepository userRepository = new UserRepository(_dbContext);
+            _dbContext = new Context(options);
+            userRepository = new UserRepository(_dbContext);
+
+            var user = new User
+            {
+                Id = 1,
+                Name = "John Doe",
+                Email = "john@example.com",
+                LastName = "Doe",
+                Password = "password123",
+                Username = "john"
+            };
+            _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
+
+            var updatedUser = new User
+            {
+                Id = 1,
+                Name = "Jane Doe",
+                Email = "jane@example.com",
+                LastName = "Doe",
+                Password = "password456",
+                Username = "jane"
+            };
+
+            userRepository.Update(updatedUser);
+            _dbContext.SaveChanges();
+
+            var retrievedUser = _dbContext.Users.Find(user.Id);
+            Assert.IsNotNull(retrievedUser);
+            Assert.AreEqual("Jane Doe", retrievedUser.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void Update_NonExistingUser_ShouldThrowNotFoundDbException()
+        {
+            var user = new User { Id = 1, Name = "Test User" };
+
+            userRepository.Update(user);
+        }
+
+        [TestMethod]
+        public void Get_ExistingUser_ReturnsUser()
+        {
+            User user = new User { Id = 1, Name = "Test User", Email = "test@example.com", LastName = "Test", Password = "password", Username = "testuser3" };
+            _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
+
+            User result = userRepository.Get(u => u.Id == 1);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Test User", result.Name);
+        }
+
+        [TestMethod]
+        public void Get_NonExistingUser_ThrowsNotFoundException()
+        {
+            Assert.ThrowsException<NotFoundDbException>(() => userRepository.Get(u => u.Id == 1));
         }
 
         [TestMethod]
@@ -61,26 +157,12 @@ namespace DataAccess.Test
         }
 
         [TestMethod]
-        public void GetUserOk()
-        {
-            var context = CreateContext();
-            IUserRepository userRepository = CreateUserRepository();
-
-            User userInDb = userRepository.Get(getById);
-
-            Assert.IsNotNull(userInDb);
-            Assert.AreEqual(aValidBlogger.Id, userInDb.Id);
-        }
-
-
-        [TestMethod]
         public void GetUserFail()
         {
             var context = CreateContext();
             IUserRepository userRepository = new UserRepository(context);
 
             Assert.ThrowsException<NotFoundDbException>(() => userRepository.Get(getById));
-
         }
 
         [TestMethod]
@@ -124,19 +206,6 @@ namespace DataAccess.Test
             aValidBlogger.Name = name;
 
             Assert.ThrowsException<NotFoundDbException>(() => userRepository.Update(aValidBlogger));
-        }
-
-        [TestMethod]
-        public void UpdateUserOk()
-        {
-            var context = CreateContext();
-            IUserRepository userRepository = CreateUserRepository();
-            aValidBlogger.Name = name;
-
-            userRepository.Update(aValidBlogger);
-            User updatedUser = context.Users.Where<User>(m => m.Id == aValidBlogger.Id).AsNoTracking().FirstOrDefault();
-
-            Assert.AreEqual(Id, updatedUser.Id);
         }
 
         private IUserRepository CreateUserRepository()

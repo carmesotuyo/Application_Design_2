@@ -1,45 +1,63 @@
-﻿using BlogsApp.Domain.Entities;
+﻿using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
     public class SessionRepository : ISessionRepository
     {
-        //private readonly DbSet<Session> sessions;
         private DbContext Context { get; }
 
-        public SessionRepository(DbContext context)
+        public SessionRepository(Context context)
         {
             Context = context;
-            //this.sessions = context.Set<Session>();
-        }
-
-        public void Update(Session value)
-        {
-            throw new NotImplementedException();
         }
 
         public Session Add(Session value)
         {
-            throw new NotImplementedException();
+            bool exists = Context.Set<Session>().Any(s => s.User == value.User && s.DateTimeLogout == null);
+            if (exists)
+            {
+                throw new AlreadyExistsDbException("El usuario ya tiene una sesión activa");
+            }
+            Context.Set<Session>().Add(value);
+            Context.SaveChanges();
+            return value;
         }
+
+        public void Update(Session value)
+        {
+            Session original = Context.Set<Session>().Find(value.Id);
+            if (original == null)
+            {
+                throw new NotFoundDbException("No se encuentra el id en la base de datos");
+            }
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
+        }
+
 
         public Session Get(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            Session session = Context.Set<Session>().FirstOrDefault(func);
+            if (session == null)
+                throw new NotFoundDbException("No se encontraron sesiones");
+            return session;
         }
 
         public ICollection<Session> GetAll(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            ICollection<Session> sessions = Context.Set<Session>().Where(func).ToArray();
+            if (sessions.Count == 0)
+                throw new NotFoundDbException("No se encontraron sesiones");
+            return sessions;
         }
 
         public bool Exists(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            return Context.Set<Session>().Where(func).Any();
         }
-
-        //.../sessions REPOSITORY CODE
     }
 }

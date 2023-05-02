@@ -132,7 +132,7 @@ namespace BusinessLogic.Test
         {
             userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(false);
 
-            Assert.ThrowsException<ExistenceException>(() => userLogic.DeleteUser(adminUser, normalUser.Id));
+            Assert.ThrowsException<NotFoundDbException>(() => userLogic.DeleteUser(adminUser, normalUser.Id));
         }
 
         [TestMethod]

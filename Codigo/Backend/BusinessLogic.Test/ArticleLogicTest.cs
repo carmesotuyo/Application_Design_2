@@ -34,7 +34,7 @@ namespace BusinessLogic.Test
 
         private readonly Article Articulo10 = new Article { Id = 10, Name = "Test Article 10", DateCreated = DateTime.Parse("2022-06-05") };
 
-        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", DateCreated = DateTime.Parse("2022-07-05"), User = user, UserId = user.Id};
+        private readonly Article Articulo11 = new Article { Id = 11, Name = "Test Article 11", Body = "aa", DateCreated = DateTime.Parse("2022-07-05"), User = user, UserId = user.Id};
 
         private readonly Article Articulo12 = new Article { Id = 12, Name = "Test Article 12", Body = "Text1" , DateCreated = DateTime.Parse("2022-07-05") };
         private readonly Article articuloTest = new Article("Nombre", "Body", 1, user);
