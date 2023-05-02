@@ -2,6 +2,8 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.WebAPI.DTOs;
+using Azure.Core;
+using System.Data;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -9,9 +11,11 @@ namespace BlogsApp.WebAPI.Controllers
     public class UserController: BlogsAppControllerBase
     {
         private readonly IUserLogic userLogic;
-        public UserController(IUserLogic userLogic) 
+        private readonly IArticleLogic articleLogic;
+        public UserController(IUserLogic userLogic, IArticleLogic articleLogic) 
         {
             this.userLogic = userLogic;
+            this.articleLogic = articleLogic;
         }
 
         [HttpPost]
@@ -46,6 +50,21 @@ namespace BlogsApp.WebAPI.Controllers
             User loggedUser = (User)this.HttpContext.Items["user"];
             var user = userLogic.DeleteUser(loggedUser, id);
             return Ok(user);
+        }
+
+        [HttpGet("/ranking")]
+        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, int top)
+        {
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            return Ok(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
+
+        }
+
+        [HttpGet("{id}/articles")]
+        public IActionResult GetUserArticles([FromRoute] int id)
+        {
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            return Ok(articleLogic.GetArticlesByUser(loggedUser,id));
         }
     }
 }
