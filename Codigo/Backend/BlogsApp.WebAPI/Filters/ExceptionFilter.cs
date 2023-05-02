@@ -14,20 +14,20 @@ namespace BlogsApp.WebAPI.Filters
             {
                 throw context.Exception;
             }
-            catch (NotFoundDbException)
+            catch (NotFoundDbException ex)
             {
                 context.Result = new ContentResult()
                 {
                     StatusCode = 404,
-                    Content = "Error retrieving data -- Data Not Found"
+                    Content = "Error retrieving data -- Data Not Found -- " + ex.Message
                 };
             }
-            catch (AlreadyExistsDbException)
+            catch (AlreadyExistsDbException ex)
             {
                 context.Result = new ContentResult()
                 {
                     StatusCode = 403,
-                    Content = "Error creating data -- Data already exists"
+                    Content = "Error creating data -- Data already exists -- " + ex.Message
                 };
             }
             catch (BadInputException ex)
@@ -38,20 +38,12 @@ namespace BlogsApp.WebAPI.Filters
                     Content = "Error with input -- " + ex.Message
                 };
             }
-            catch (InterruptedActionException ex)
-            {
-                context.Result = new ContentResult()
-                {
-                    StatusCode = 400,
-                    Content = "Error with input -- " + ex.Message
-                };
-            }
-            catch (NonExistantImplementationException)
+            catch (NonExistantImplementationException ex)
             {
                 context.Result = new ContentResult()
                 {
                     StatusCode = 404,
-                    Content = "Error retrieving data -- No extraction methods found"
+                    Content = "Error retrieving data -- No extraction methods found" + ex.Message
                 };
             }
             catch (UnauthorizedAccessException)

@@ -81,7 +81,8 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public bool IsValidToken(string token)
         {
-            return token != null && Guid.Parse(token).ToString() == token;
+            Guid guidOut;
+            return Guid.TryParse(token, out guidOut);
         }
 
         public User GetUserFromToken(Guid aToken)
