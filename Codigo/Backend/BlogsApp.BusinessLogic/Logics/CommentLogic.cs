@@ -29,5 +29,10 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             //throw new NotImplementedException();
         }
+
+        public IEnumerable<Comment> GetCommentsSince(DateTime? lastLogout)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

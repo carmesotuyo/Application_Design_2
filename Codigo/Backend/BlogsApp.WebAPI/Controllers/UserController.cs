@@ -48,7 +48,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(userLogic.DeleteUser(loggedUser, id));
         }
 
-        [HttpGet("/ranking")]
+        [HttpGet("ranking")]
         public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top)
         {
             User loggedUser = (User)this.HttpContext.Items["user"];
