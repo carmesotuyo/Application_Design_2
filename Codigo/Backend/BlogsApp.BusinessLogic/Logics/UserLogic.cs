@@ -51,7 +51,7 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-        public ICollection<User> GetUsersRanking(User loggedUser, int? top)
+        public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
         {
             throw new NotImplementedException();
         }
