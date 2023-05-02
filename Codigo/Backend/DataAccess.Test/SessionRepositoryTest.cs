@@ -156,5 +156,36 @@ namespace DataAccess.Test
             Assert.ThrowsException<NotFoundDbException>(() => sessionRepository.Update(session));
         }
 
+        [TestMethod]
+        public void Get_SessionExists_ReturnsSession()
+        {
+            // Arrange
+            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            var session = new Session { Id = 1, Token = "abc123", User = user, DateTimeLogin = DateTime.Now };
+            _dbContext.Set<Session>().Add(session);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = sessionRepository.Get(s => s.Id == session.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(session.Id, result.Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void Get_SessionDoesNotExist_ThrowsNotFoundDbException()
+        {
+            // Arrange
+            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            var session = new Session { Id = 1, Token = "abc123", User = user, DateTimeLogin = DateTime.Now };
+            _dbContext.Set<Session>().Add(session);
+            _dbContext.SaveChanges();
+
+            // Act
+            sessionRepository.Get(s => s.Id == 2);
+        }
+
     }
 }

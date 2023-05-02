@@ -2,6 +2,7 @@
 using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
@@ -40,7 +41,10 @@ namespace BlogsApp.DataAccess.Repositories
 
         public Session Get(Func<Session, bool> func)
         {
-            throw new NotImplementedException();
+            Session session = Context.Set<Session>().FirstOrDefault(func);
+            if (session == null)
+                throw new NotFoundDbException("No se encontraron sesiones");
+            return session;
         }
 
         public ICollection<Session> GetAll(Func<Session, bool> func)
