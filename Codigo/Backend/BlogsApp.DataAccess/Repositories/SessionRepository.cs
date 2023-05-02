@@ -6,13 +6,11 @@ namespace BlogsApp.DataAccess.Repositories
 {
     public class SessionRepository : ISessionRepository
     {
-        //private readonly DbSet<Session> sessions;
         private DbContext Context { get; }
 
-        public SessionRepository(DbContext context)
+        public SessionRepository(Context context)
         {
             Context = context;
-            //this.sessions = context.Set<Session>();
         }
 
         public void Update(Session value)
