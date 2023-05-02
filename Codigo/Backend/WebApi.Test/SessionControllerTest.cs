@@ -22,6 +22,7 @@ namespace WebApi.Test
         private Session session;
         private string username;
         private string password;
+        private LoginRequestDTO credentials;
         private Guid token;
         private User user;
         private Comment comment;
@@ -37,6 +38,7 @@ namespace WebApi.Test
             session = new Session() { Id = 1 };
             username = "username";
             password = "password";
+            credentials = new LoginRequestDTO(username, password);
             token = Guid.NewGuid();
             user = new User();
             comment = new Comment();
@@ -63,7 +65,7 @@ namespace WebApi.Test
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
             sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<int>())).Returns(comments);
 
-            var result = controller!.Login(username, password);
+            var result = controller!.Login(credentials);
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
             var receivedDTO = objectResult.Value as LoginResponseDTO;
@@ -80,7 +82,7 @@ namespace WebApi.Test
         {
             sessionLogicMock!.Setup(m => m.Login(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadInputException("Incorrect credentials"));
 
-            var result = controller!.Login(username, password);
+            var result = controller!.Login(credentials);
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 

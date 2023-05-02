@@ -46,11 +46,11 @@ namespace DataAccess.Test
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 
-            Session session1 = new Session { User = user, Token = "token1", DateTimeLogin = DateTime.Now };
+            Session session1 = new Session { User = user, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now };
             _dbContext.Sessions.Add(session1);
             _dbContext.SaveChanges();
 
-            Session session2 = new Session { User = user, Token = "token2", DateTimeLogin = DateTime.Now };
+            Session session2 = new Session { User = user, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now };
 
             // Act and assert
             Assert.ThrowsException<AlreadyExistsDbException>(() => sessionRepository.Add(session2));
@@ -62,7 +62,7 @@ namespace DataAccess.Test
         {
             // Arrange
             var user = new User { Id = 1, Username = "testuser", Password = "testpassword", Email = "papa@123.com", Name = "Pepe", LastName = "Perez" };
-            var session = new Session { Id = 1, User = user, Token = "token", DateTimeLogin = DateTime.Now };
+            var session = new Session { Id = 1, User = user, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now };
 
             // Act
             var result = sessionRepository.Add(session);
@@ -92,7 +92,7 @@ namespace DataAccess.Test
             var newSession = new Session
             {
                 User = user,
-                Token = "test-token",
+                Token = Guid.NewGuid(),
                 DateTimeLogin = DateTime.UtcNow
             };
 
@@ -114,7 +114,7 @@ namespace DataAccess.Test
             {
                 Id = 1,
                 User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
-                Token = "abc123",
+                Token = Guid.NewGuid(),
                 DateTimeLogin = DateTime.Now,
                 DateTimeLogout = null
             };
@@ -125,7 +125,7 @@ namespace DataAccess.Test
             {
                 Id = session.Id,
                 User = session.User,
-                Token = "xyz456",
+                Token = Guid.NewGuid(),
                 DateTimeLogin = session.DateTimeLogin,
                 DateTimeLogout = DateTime.Now
             };
@@ -148,7 +148,7 @@ namespace DataAccess.Test
             {
                 Id = 1,
                 User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
-                Token = "abc123",
+                Token = Guid.NewGuid(),
                 DateTimeLogin = DateTime.Now,
                 DateTimeLogout = null
             };
@@ -162,7 +162,7 @@ namespace DataAccess.Test
         {
             // Arrange
             var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
-            var session = new Session { Id = 1, Token = "abc123", User = user, DateTimeLogin = DateTime.Now };
+            var session = new Session { Id = 1, Token = Guid.NewGuid(), User = user, DateTimeLogin = DateTime.Now };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
 
@@ -180,7 +180,7 @@ namespace DataAccess.Test
         {
             // Arrange
             var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
-            var session = new Session { Id = 1, Token = "abc123", User = user, DateTimeLogin = DateTime.Now };
+            var session = new Session { Id = 1, Token = Guid.NewGuid(), User = user, DateTimeLogin = DateTime.Now };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
 
@@ -194,9 +194,9 @@ namespace DataAccess.Test
             // Arrange
             var user1 = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
             var user2 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
-            var session1 = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
-            var session2 = new Session { Id = 2, User = user2, Token = "1312", DateTimeLogin = DateTime.Now.AddDays(-1), DateTimeLogout = DateTime.Now };
-            var session3 = new Session { Id = 3, User = user1, Token = "1412", DateTimeLogin = DateTime.Now.AddHours(-2), DateTimeLogout = DateTime.Now.AddHours(-1) };
+            var session1 = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            var session2 = new Session { Id = 2, User = user2, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddDays(-1), DateTimeLogout = DateTime.Now };
+            var session3 = new Session { Id = 3, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddHours(-2), DateTimeLogout = DateTime.Now.AddHours(-1) };
             _dbContext.Users.AddRange(new List<User> { user1, user2 });
             _dbContext.Sessions.AddRange(new List<Session> { session1, session2, session3 });
             _dbContext.SaveChanges();
@@ -231,7 +231,7 @@ namespace DataAccess.Test
         {
             // Arrange
             var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
-            var session = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            var session = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
 
@@ -247,7 +247,7 @@ namespace DataAccess.Test
         {
             // Arrange
             var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
-            var session = new Session { Id = 1, User = user1, Token = "1212", DateTimeLogin = DateTime.Now.AddMinutes(-30) };
+            var session = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
 

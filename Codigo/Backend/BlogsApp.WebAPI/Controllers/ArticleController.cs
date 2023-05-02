@@ -30,7 +30,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(articleLogic.GetArticleById(id));
         }
 
-        [HttpGet("/stats")]
+        [HttpGet("stats")]
         public IActionResult GetStatsByYear([FromQuery] int year)
         {
             User loggedUser = (User)this.HttpContext.Items["user"];

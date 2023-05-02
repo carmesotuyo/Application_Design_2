@@ -6,5 +6,6 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     {
         Comment CreateComment(Comment comment, User loggedUser);
         void DeleteComment(int commentId);
+        IEnumerable<Comment> GetCommentsSince(DateTime? lastLogout);
     }
 }

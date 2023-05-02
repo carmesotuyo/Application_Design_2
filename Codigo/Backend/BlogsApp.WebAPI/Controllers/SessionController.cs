@@ -19,9 +19,9 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login([FromBody] string username, [FromBody] string password)
+        public IActionResult Login([FromBody] LoginRequestDTO credentials)
         {
-            Guid token = sessionLogic.Login(username, password);
+            Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user.Id);
 
