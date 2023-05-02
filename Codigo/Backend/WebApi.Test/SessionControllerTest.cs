@@ -95,8 +95,9 @@ namespace WebApi.Test
         public void LogoutOk()
         {
             sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>()));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id);
+            var result = controller!.Logout(session.Id, token.ToString());
             var objectResult = result as OkResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -110,8 +111,9 @@ namespace WebApi.Test
         public void LogoutBadRequest()
         {
             sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>())).Throws(new BadHttpRequestException("Incorrect request to Logout", 400));
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id);
+            var result = controller!.Logout(session.Id, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
