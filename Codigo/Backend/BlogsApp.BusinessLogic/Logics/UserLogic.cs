@@ -25,14 +25,6 @@ namespace BlogsApp.BusinessLogic.Logics
             return user;
         }
 
-        //public User DeleteUser1(int userId)
-        //{
-        //    User user = _userRepository.Get(UserById(userId));
-        //    user.DateDeleted = DateTime.Now;
-        //    _userRepository.Update(user);
-        //    return user;
-        //}
-
         public User GetUserById(int userId)
         {
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
@@ -64,10 +56,27 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-       
         public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
         {
-            throw new NotImplementedException();
+            if(loggedUser != null && loggedUser.Admin)
+            {
+                return _userRepository.GetAll(m => m.DateDeleted == null)
+                                                .Select(m => new
+                                                {
+                                                    User = m,
+                                                    Points = m.Articles.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
+                                                              + m.Comments.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
+                                                })
+                                                .Where(m => m.Points > 0)
+                                                .OrderByDescending(m => m.Points)
+                                                .ThenBy(m => m.User.Id)
+                                                .Take(top ?? 10)
+                                                .Select(m => m.User)
+                                                .ToList();
+            } else
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+            }
         }
 
         public bool IsUserValid(User? user)
@@ -100,11 +109,6 @@ namespace BlogsApp.BusinessLogic.Logics
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
         }
-
-        //private Func<User, bool> UserById(int id)
-        //{
-        //    return a => a.Id == id && a.DateDeleted != null;
-        //}
 
         private bool authorizedUser(User loggedUser, int userId) 
         { 

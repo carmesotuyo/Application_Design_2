@@ -141,5 +141,66 @@ namespace BusinessLogic.Test
             Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.DeleteUser(normalUser, adminUser.Id));
         }
 
+        [TestMethod]
+        public void GetUsersRanking()
+        {
+            var dateFrom = new DateTime(2023, 1, 1);
+            var dateTo = new DateTime(2023, 5, 1);
+
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = 1,
+                    Articles = new List<Article>
+                    {
+                        new Article { Id = 1, DateCreated = new DateTime(2023, 1, 15) },
+                        new Article { Id = 2, DateCreated = new DateTime(2023, 2, 20) },
+                    },
+                    Comments = new List<Comment>
+                    {
+                        new Comment { Id = 1, DateCreated = new DateTime(2023, 1, 10) },
+                    }
+                },
+                new User
+                {
+                    Id = 2,
+                    Articles = new List<Article>
+                    {
+                        new Article { Id = 3, DateCreated = new DateTime(2023, 3, 10) },
+                    },
+                    Comments = new List<Comment>
+                    {
+                        new Comment { Id = 2, DateCreated = new DateTime(2023, 3, 20) },
+                        new Comment { Id = 3, DateCreated = new DateTime(2023, 4, 15) },
+                    }
+                },
+                new User
+                {
+                    Id = 3,
+                    Articles = new List<Article>(),
+                    Comments = new List<Comment>()
+                }
+            };
+
+            userRepositoryMock.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>()))
+                   .Returns<Func<User, bool>>(filter => users.Where(filter).ToList());
+
+            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null);
+
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result.First().Id);
+            Assert.AreEqual(2, result.Last().Id);
+        }
+
+        [TestMethod]
+        public void GetUsersRankingUnauthorizedUser()
+        {
+            var dateFrom = new DateTime(2023, 1, 1);
+            var dateTo = new DateTime(2023, 5, 1);
+
+            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null));
+        }
+
     }
 }
