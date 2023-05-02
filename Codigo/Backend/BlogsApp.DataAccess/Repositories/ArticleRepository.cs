@@ -19,7 +19,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             bool exists = Context.Set<Article>().Where(i => i.Id == value.Id).Any();
             if (exists)
-                throw new AlreadyExistsDbException();
+                throw new AlreadyExistsDbException("El ya existe");
             Context.Set<Article>().Add(value);
             Context.SaveChanges();
             return value;
@@ -34,7 +34,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             Article article = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).FirstOrDefault(func);
             if (article == null)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No se encontraron articulos");
             return article;
         }
 
@@ -42,7 +42,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             ICollection<Article> articles = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).Where(func).ToArray();
             if (articles.Count == 0)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No se encontraron articulos");
             return articles;
         }
 
@@ -50,7 +50,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             bool exists = Context.Set<Article>().Where(i => i.Id == value.Id).Any();
             if (!exists)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No existe articulo con ese Id");
             Article original = Context.Set<Article>().Find(value.Id);
             Context.Entry(original).CurrentValues.SetValues(value);
             Context.SaveChanges();

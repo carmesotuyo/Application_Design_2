@@ -10,9 +10,6 @@ namespace BlogsApp.DataAccess.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        //private readonly DbSet<User> users;
-
-        //private readonly Context context;
         private DbContext Context { get; }
 
         public UserRepository(Context context)
@@ -24,7 +21,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             bool exists = Context.Set<User>().Where(i => i.Id == value.Id).Any();
             if (exists)
-                throw new AlreadyExistsDbException();
+                throw new AlreadyExistsDbException("El Nombre de usuario ya está en uso");
             Context.Set<User>().Add(value);
             Context.SaveChanges();
             return value;
@@ -34,7 +31,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             bool exists = Context.Set<User>().Where(i => i.Id == value.Id).Any();
             if (!exists)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No se encuentra el id en la base de datos");
             User original = Context.Set<User>().Find(value.Id);
             Context.Entry(original).CurrentValues.SetValues(value);
             Context.SaveChanges();
@@ -44,7 +41,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             User user = Context.Set<User>().Where(a => a.DateDeleted == null).FirstOrDefault(func);
             if (user == null)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No se encontraron usuarios");
             return user;
         }
 
@@ -52,7 +49,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             ICollection<User> users = Context.Set<User>().Where(func).ToArray();
             if (users.Count == 0)
-                throw new NotFoundDbException();
+                throw new NotFoundDbException("No se encontraron usuarios");
             return users;
         }
 

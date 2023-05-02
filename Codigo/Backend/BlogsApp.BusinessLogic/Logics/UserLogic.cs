@@ -10,24 +10,18 @@ namespace BlogsApp.BusinessLogic.Logics
     public class UserLogic : IUserLogic
     {
         private readonly IUserRepository _userRepository;
+        private readonly IArticleLogic _articleLogic;
 
-        public UserLogic(IUserRepository userRepository)
+        public UserLogic(IUserRepository userRepository, IArticleLogic articleLogic)
         {
             _userRepository = userRepository;
+            _articleLogic = articleLogic;
         }
 
         public User CreateUser(User user)
         {
             IsUserValid(user);
             _userRepository.Add(user!);
-            return user;
-        }
-
-        public User DeleteUser1(int userId)
-        {
-            User user = _userRepository.Get(UserById(userId));
-            user.DateDeleted = DateTime.Now;
-            _userRepository.Update(user);
             return user;
         }
 
@@ -38,22 +32,51 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public User DeleteUser(User loggedUser, int UserId)
         {
-            if (_userRepository.Exists(m => m.Id == UserId))
+            if (authorizedUser(loggedUser, UserId))
             {
-                User user = GetUserById(UserId);
-                user.DateDeleted = DateTime.Now;
-                _userRepository.Update(user);
-                return user;
+                if (_userRepository.Exists(m => m.Id == UserId))
+                {
+                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
+                    user.DateDeleted = DateTime.Now;
+                    foreach (Article article in user.Articles)
+                    {
+                        _articleLogic.DeleteArticle(article.Id, user);
+                    }
+                    _userRepository.Update(user);
+                    return user;
+                }
+                else
+                {
+                    throw new NotFoundDbException("No existe un usuario con ese id.");
+                }
             }
-            else
+            else 
             {
-                throw new ExistenceException ("No existe un usuario con ese id.");
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
         }
 
         public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
         {
-            throw new NotImplementedException();
+            if(loggedUser != null && loggedUser.Admin)
+            {
+                return _userRepository.GetAll(m => m.DateDeleted == null)
+                                                .Select(m => new
+                                                {
+                                                    User = m,
+                                                    Points = m.Articles.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
+                                                              + m.Comments.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
+                                                })
+                                                .Where(m => m.Points > 0)
+                                                .OrderByDescending(m => m.Points)
+                                                .ThenBy(m => m.User.Id)
+                                                .Take(top ?? 10)
+                                                .Select(m => m.User)
+                                                .ToList();
+            } else
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+            }
         }
 
         public bool IsUserValid(User? user)
@@ -65,15 +88,37 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(User loggedUser, User user)
+        public User? UpdateUser(User loggedUser, User anUser)
         {
-            _userRepository.Update(user!);
-            return user;
+            if (authorizedUser(loggedUser, anUser.Id))
+            {
+                if (_userRepository.Exists(m => m.Id == anUser.Id))
+                {
+                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == anUser.Id);
+                    user = anUser;
+                    _userRepository.Update(user);
+                    return user;
+                }
+                else
+                {
+                    throw new NotFoundDbException("No existe un usuario con ese id.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+            }
         }
 
-        private Func<User, bool> UserById(int id)
-        {
-            return a => a.Id == id && a.DateDeleted != null;
+        private bool authorizedUser(User loggedUser, int userId) 
+        { 
+            if (loggedUser != null && (loggedUser.Admin || loggedUser.Id == userId))
+            {
+                return true;
+            } else
+            {
+               return false;
+            }
         }
 
     }
