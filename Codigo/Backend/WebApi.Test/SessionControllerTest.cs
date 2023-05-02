@@ -2,7 +2,6 @@
 using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.Controllers;
-using BlogsApp.WebAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

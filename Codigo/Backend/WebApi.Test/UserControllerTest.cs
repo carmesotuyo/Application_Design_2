@@ -158,7 +158,7 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void DeleteUserNotFound()
         {
-            userLogicMock.Setup(m => m.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Throws(new NotFoundDbException());
+            userLogicMock.Setup(m => m.DeleteUser(It.IsAny<User>(), It.IsAny<int>())).Throws(new NotFoundDbException(""));
 
             var result = controller!.DeleteUser(It.IsAny<int>());
             var objectResult = result as ObjectResult;
@@ -217,7 +217,7 @@ namespace WebApi.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void GetArticlesUserNotFound()
         {
-            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException());
+            articleLogicMock.Setup(m => m.GetArticlesByUser(It.IsAny<int>(), It.IsAny<User>())).Throws(new NotFoundDbException(""));
 
             var result = controller!.GetUserArticles(It.IsAny<int>());
             var objectResult = result as ObjectResult;

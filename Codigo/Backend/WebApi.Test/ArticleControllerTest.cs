@@ -8,7 +8,6 @@ using BlogsApp.Domain.Entities;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
-using BlogsApp.WebAPI.DTOs;
 using System.Net.Http;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 
@@ -23,9 +22,9 @@ namespace WebApi.Test
 
         private Article article;
         private IEnumerable<Article> articles;
-        private StatsModel yearlyStats;
         private User userBlogger;
         private User userAdmin;
+        private List<int> yearlyStats;
 
         [TestInitialize]
 		public void InitTest()
@@ -35,8 +34,8 @@ namespace WebApi.Test
             userBlogger = new User() { Blogger = true, Id = 1 };
             article = new Article() { Id = 1, UserId = 1 };
             articles = new List<Article>() { article };
-            yearlyStats = new StatsModel();
             userAdmin = new User() { Admin = true };
+            yearlyStats = new List<int>();
 
             httpContext = new DefaultHttpContext();
             httpContext.Items["user"] = userBlogger;
@@ -104,7 +103,7 @@ namespace WebApi.Test
         {
             httpContext.Items["user"] = userAdmin;
 
-            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>(), It.IsAny<User>())).Returns(yearlyStats.stats);
+            articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>(), It.IsAny<User>())).Returns(yearlyStats);
 
             IActionResult result = controller!.GetStatsByYear(2020);
             articleLogicMock.VerifyAll();
@@ -114,7 +113,7 @@ namespace WebApi.Test
             Assert.IsNotNull(result);
             articleLogicMock.VerifyAll();
 
-            Assert.IsTrue(objectResult.Value.Equals(yearlyStats.stats));
+            Assert.IsTrue(objectResult.Value.Equals(yearlyStats));
         }
 
         [TestMethod]
