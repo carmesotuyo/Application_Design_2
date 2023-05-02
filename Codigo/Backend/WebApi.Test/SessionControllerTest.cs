@@ -17,7 +17,7 @@ namespace WebApi.Test
 
         private Mock<ISessionLogic> sessionLogicMock;
         private SessionController controller;
-        HttpContext httpContext;
+        //HttpContext httpContext;
 
         private Session session;
         private string username;
@@ -45,17 +45,17 @@ namespace WebApi.Test
             comments = new List<Comment>() { comment };
             responseDTO = new LoginResponseDTO(token, comments);
 
-            httpContext = new DefaultHttpContext();
-            httpContext.Items["user"] = user;
+            //httpContext = new DefaultHttpContext();
+            //httpContext.Items["user"] = user;
 
-            ControllerContext controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-            controller = new SessionController(sessionLogicMock.Object)
-            {
-                ControllerContext = controllerContext
-            };
+            //ControllerContext controllerContext = new ControllerContext()
+            //{
+            //    HttpContext = httpContext
+            //};
+            //controller = new SessionController(sessionLogicMock.Object)
+            //{
+            //    ControllerContext = controllerContext
+            //};
         }
 
         [TestMethod]
