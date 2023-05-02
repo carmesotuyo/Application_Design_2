@@ -46,8 +46,8 @@ namespace BusinessLogic.Test
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
-        private readonly User userBlogger = new User() { Blogger = true };
-        private readonly User userAdmin = new User() { Blogger = false, Admin = true };
+        private readonly User userBlogger = new User("User1", "1234", "aaa@222.com", "User", "Seru", true, false);
+        private readonly User userAdmin = new User("User2", "1234", "aaa@222.com", "User", "Seru", false, true);
 
 
         [TestInitialize]
@@ -211,8 +211,8 @@ namespace BusinessLogic.Test
         public void UpdateArticleNameTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Old name", UserId = user.Id };
-            Article updatedArticle = new Article { Name = "New name" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test2", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
@@ -227,19 +227,19 @@ namespace BusinessLogic.Test
         public void UpdateArticleNameWithoutPermissionsTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Old name", UserId = userBlogger.Id };
-            Article updatedArticle = new Article { Name = "New name" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test2", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
 
         [TestMethod]
         public void UpdateArticleBodyTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Body = "Old body", UserId = user.Id };
-            Article updatedArticle = new Article { Body = "New body" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
@@ -253,19 +253,19 @@ namespace BusinessLogic.Test
         public void UpdateArticleBodyWithoutPermissionsTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Body = "Old body", UserId = userBlogger.Id };
-            Article updatedArticle = new Article { Body = "New body" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
 
         [TestMethod]
         public void UpdateArticleImageTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg", UserId = user.Id };
-            Article updatedArticle = new Article { Image = "NewImage.jpeg" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
@@ -279,19 +279,19 @@ namespace BusinessLogic.Test
         public void UpdateArticleImageWithoutPermissionsTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Image = "OldImage.jpeg", UserId = userBlogger.Id };
-            Article updatedArticle = new Article { Image = "NewImage.jpeg" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
 
         [TestMethod]
         public void UpdateArticleDateModifiedTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, DateModified = DateTime.Parse("2022-01-05"), UserId = user.Id };
-            Article updatedArticle = new Article { DateModified = DateTime.Parse("2023-02-06") };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
@@ -305,11 +305,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleDateModifiedWithoutPermissionsTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, DateModified = DateTime.Parse("2022-01-05"), UserId = userBlogger.Id };
-            Article updatedArticle = new Article { DateModified = DateTime.Parse("2023-02-06") };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
 
-            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
+            Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
 
     }
