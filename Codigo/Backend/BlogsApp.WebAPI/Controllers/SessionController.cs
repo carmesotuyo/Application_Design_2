@@ -9,7 +9,6 @@ using NuGet.Protocol.Plugins;
 namespace BlogsApp.WebAPI.Controllers
 {
 	[Route("api/sessions")]
-    [ServiceFilter(typeof(AuthorizationFilter))]
     public class SessionController : BlogsAppControllerBase
     {
         private readonly ISessionLogic sessionLogic;
@@ -29,6 +28,16 @@ namespace BlogsApp.WebAPI.Controllers
             var response = new LoginResponseDTO(token, comments);
 
             return Ok(response);
+        }
+
+        [ServiceFilter(typeof(AuthorizationFilter))]
+        [HttpPatch("{id}")]
+        public IActionResult Logout([FromRoute] int id)
+        {
+            User loggedUser = (User)this.HttpContext.Items["user"];
+            sessionLogic.Logout(id, loggedUser);
+
+            return new OkResult();
         }
 
     }

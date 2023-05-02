@@ -33,7 +33,7 @@ namespace BlogsApp.BusinessLogic.Logics
             throw new NotImplementedException();
         }
 
-        public void Logout(User loggedUser)
+        public void Logout(int sessionId, User loggedUser)
         {
             throw new NotImplementedException();
         }
