@@ -85,47 +85,38 @@ namespace DataAccess.Test
         [TestMethod]
         public void Exists_ShouldReturnTrue_WhenArticleExists()
         {
-            // Arrange
             var article = new Article("Article 1", "Body of article 1", 1, _testUser);
             _dbContext.Set<Article>().Add(article);
             _dbContext.SaveChanges();
 
-            // Act
             bool result = _articleRepository.Exists(a => a.Id == article.Id);
 
-            // Assert
             Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void Exists_ShouldReturnFalse_WhenArticleDoesNotExist()
         {
-            // Arrange
             var article = new Article("Article 1", "Body of article 1", 1, _testUser);
             _dbContext.Set<Article>().Add(article);
             _dbContext.SaveChanges();
 
-            // Act
             bool result = _articleRepository.Exists(a => a.Id == article.Id + 1);
 
-            // Assert
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void Get_ShouldReturnArticle_WhenArticleExists()
         {
-            // Arrange
             var article1 = new Article("Article 1", "Body of article 1", 1, _testUser);
             var article2 = new Article("Article 2", "Body of article 2", 1, _testUser);
             _dbContext.Set<Article>().Add(article1);
             _dbContext.Set<Article>().Add(article2);
             _dbContext.SaveChanges();
 
-            // Act
             var result = _articleRepository.Get(a => a.Id == article1.Id);
 
-            // Assert
             Assert.AreEqual(article1, result);
         }
 
@@ -133,12 +124,10 @@ namespace DataAccess.Test
         [ExpectedException(typeof(NotFoundDbException))]
         public void Get_ShouldThrowNotFoundDbException_WhenArticleDoesNotExist()
         {
-            // Arrange
             var article = new Article("Article 1", "Body of article 1", 1, _testUser);
             _dbContext.Set<Article>().Add(article);
             _dbContext.SaveChanges();
 
-            // Act
             var result = _articleRepository.Get(a => a.Id == article.Id + 1);
 
         }
@@ -146,7 +135,6 @@ namespace DataAccess.Test
         [TestMethod]
         public void Update_ShouldThrowNotFoundDbException_WhenArticleDoesNotExist()
         {
-            // Arrange
             ArticleRepository articleRepository = new ArticleRepository(_dbContext);
 
             Article articleToUpdate = new Article()
@@ -164,14 +152,12 @@ namespace DataAccess.Test
                 Image = "article.jpg"
             };
 
-            // Act + Assert
             Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Update(articleToUpdate));
         }
 
         [TestMethod]
         public void Update_ShouldUpdateArticle_WhenArticleExists()
         {
-            // Arrange
             ArticleRepository articleRepository = new ArticleRepository(_dbContext);
 
             Article articleToUpdate = new Article()
@@ -189,10 +175,8 @@ namespace DataAccess.Test
                 Image = "updated.jpg"
             };
 
-            // Act
             articleRepository.Update(articleToUpdate);
 
-            // Assert
             Article updatedArticle = articleRepository.Get(a => a.Id == 1);
             Assert.AreEqual(articleToUpdate.Id, updatedArticle.Id);
             Assert.AreEqual(articleToUpdate.Name, updatedArticle.Name);
@@ -205,136 +189,46 @@ namespace DataAccess.Test
             Assert.AreEqual(articleToUpdate.Image, updatedArticle.Image);
         }
 
+        [TestMethod]
+        public void GetAll_ShouldReturnAllArticles_WhenFuncIsNull()
+        {
+            var user = new User { Username = "user1", Email = "user1@test.com" };
+            var article1 = new Article { Name = "Article 1", Body = "Body 1", User = _testUser };
+            var article2 = new Article { Name = "Article 2", Body = "Body 2", User = _testUser };
+            var article3 = new Article { Name = "Article 3", Body = "Body 3", User = _testUser };
+            _dbContext.Set<Article>().AddRange(article1, article2, article3);
+            _dbContext.SaveChanges();
 
+            var result = _articleRepository.GetAll(a => true);
 
+            Assert.AreEqual(4, result.Count);
+            Assert.IsTrue(result.Contains(article1));
+            Assert.IsTrue(result.Contains(article2));
+            Assert.IsTrue(result.Contains(article3));
+        }
 
+        [TestMethod]
+        public void GetAll_ShouldReturnFilteredArticles_WhenFuncIsProvided()
+        {
+            User user1 = new User("username", "password", "email@.com", "name", "last_name", false, false);
+            User user2 = new User("username2", "password", "email@.com", "name", "last_name", false, false);
+            var article1 = new Article { Name = "Article 1", Body = "Body 1", User = user1 };
+            var article2 = new Article { Name = "Article 2", Body = "Body 2", User = user1 };
+            var article3 = new Article { Name = "Article 3", Body = "Body 3", User = user2 };
+            _dbContext.Set<Article>().AddRange(article1, article2, article3);
+            _dbContext.SaveChanges();
 
+            var result = _articleRepository.GetAll(a => a.User == user1);
 
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result.Contains(article1));
+            Assert.IsTrue(result.Contains(article2));
+        }
 
-
-
-
-
-
-
-
-
-
-        //[TestMethod]
-        //public void GetArticleOk()
-        //{
-        //    getById = GetArticleById(anArticle.Id);
-
-        //    Article articleInDb = articleRepository.Get(getById);
-
-        //    Assert.IsNotNull(articleInDb);
-        //    Assert.AreEqual(anArticle.Id, articleInDb.Id);
-        //}
-
-        //[TestMethod]
-        //public void GetArticleFail()
-        //{
-        //    var context = CreateContext();
-        //    IArticleRepository articleRepository = new ArticleRepository(context);
-        //    getById = GetArticleById(anArticle.Id);
-
-        //    Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Get(getById));
-        //}
-
-        //[TestMethod]
-        //public void GetAllArticlesOk()
-        //{
-        //    IArticleRepository articleRepository = CreateRepositoryWithArticle();
-
-        //    ICollection<Article> articlesInDb = articleRepository.GetAll(a => true);
-
-        //    Assert.IsNotNull(articlesInDb);
-        //    Assert.IsTrue(articlesInDb.SequenceEqual(articles));
-        //}
-
-        //[TestMethod]
-        //public void GetAllArticlesFail()
-        //{
-        //    var context = CreateContext();
-        //    IArticleRepository articleRepository = new ArticleRepository(context);
-
-        //    Assert.ThrowsException<NotFoundDbException>(() => articleRepository.GetAll(m => true));
-        //}
-
-        //[TestMethod]
-        //public void ExistsArticleTrue()
-        //{
-        //    var context = CreateContext();
-        //    IArticleRepository articleRepository = CreateRepositoryWithArticle();
-        //    getById = GetArticleById(anArticle.Id);
-
-        //    articleRepository.Exists(getById);
-        //    bool existsArticle = context.Articles.Any(a => a.Id == anArticle.Id);
-
-        //    Assert.IsTrue(existsArticle);
-        //}
-
-        //[TestMethod]
-        //public void UpdateArticleNotFound()
-        //{
-        //    var context = CreateContext();
-        //    IArticleRepository articleRepository = new ArticleRepository(context);
-        //    anArticle.Name = anotherName;
-
-        //    Assert.ThrowsException<NotFoundDbException>(() => articleRepository.Update(anArticle));
-        //}
-
-        //[TestMethod]
-        //public void UpdateArticleOk()
-        //{
-        //    var context = CreateContext();
-        //    IArticleRepository articleRepository = CreateRepositoryWithArticle();
-        //    anArticle.Name = anotherName;
-
-        //    articleRepository.Update(anArticle);
-        //    Article updatedArticle = context.Articles.Where(m => m.Id == anArticle.Id).AsNoTracking().FirstOrDefault();
-
-        //    Assert.IsNotNull(updatedArticle);
-        //    Assert.AreEqual(anotherName, updatedArticle.Name);
-        //}
-
-
-
-
-
-
-
-        //======================================================================
-
-        //private Context GetMemoryContext(string nameBd)
-        //{
-        //    var builder = new DbContextOptionsBuilder<Context>();
-        //    return new Context(GetMemoryConfig(builder, nameBd));
-        //}
-        //private DbContextOptions GetMemoryConfig(DbContextOptionsBuilder builder, string nameBd)
-        //{
-        //    builder.UseInMemoryDatabase(nameBd);
-        //    return builder.Options;
-        //}
-        //private IArticleRepository CreateRepositoryWithArticle()
-        //{
-        //    var context = CreateContext();
-        //    context.Articles.Add(anArticle);
-        //    context.SaveChanges();
-
-        //    IArticleRepository repository = new ArticleRepository(context);
-        //    return repository;
-        //}
-        //private Context CreateContext()
-        //{
-        //    Context context = GetMemoryContext("MemoryTestArticleDB");
-        //    context.Database.EnsureDeleted();
-        //    context.Database.EnsureCreated();
-        //    return context;
-        //}
-        //private Func<Article, bool> GetArticleById(int Id)
-        //{
-        //    return a => a.Id == Id;
-        //}
+        [TestMethod]
+        public void GetAll_ShouldThrowNotFoundDbException_WhenNoArticleExists()
+        {
+            Assert.ThrowsException<NotFoundDbException>(() => _articleRepository.GetAll(a => a.Name == "Nonexistent"));
+        }
     }
 }
