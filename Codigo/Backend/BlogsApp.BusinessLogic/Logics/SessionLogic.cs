@@ -10,26 +10,26 @@ namespace BlogsApp.BusinessLogic.Logics
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICommentLogic _commentLogic;
 
-        public SessionLogic(ISessionRepository sessionRepository, IUserRepository userRepository)
+        public SessionLogic(ISessionRepository sessionRepository, IUserRepository userRepository, ICommentLogic commentLogic)
         {
             _sessionRepository = sessionRepository;
             _userRepository = userRepository;
+            _commentLogic = commentLogic;
         }
 
         public IEnumerable<Comment> GetCommentsWhileLoggedOut(int userId)
         {
-            throw new NotImplementedException();
+            DateTime? lastLogout = GetLastLogoutDateTime(userId);
+            return _commentLogic.GetCommentsSince(lastLogout);
         }
 
-        public User GetUserFromToken(Guid aToken)
+        private DateTime? GetLastLogoutDateTime(int userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool IsValidToken(string token)
-        {
-            throw new NotImplementedException();
+            return _sessionRepository.GetAll(s => s.User.Id == userId && s.DateTimeLogout != null)
+                                     .OrderByDescending(s => s.DateTimeLogout)
+                                     .FirstOrDefault()?.DateTimeLogout;
         }
 
         public Guid Login(string username, string password)
@@ -77,6 +77,16 @@ namespace BlogsApp.BusinessLogic.Logics
         private Func<Session, bool> IsValidSession(int sessionId, User loggedUser)
         {
             return s => s.User == loggedUser && s.DateTimeLogout == null && s.Id == sessionId;
+        }
+
+        public bool IsValidToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUserFromToken(Guid aToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

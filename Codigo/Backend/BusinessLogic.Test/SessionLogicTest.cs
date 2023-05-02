@@ -15,24 +15,34 @@ namespace BusinessLogic.Test
     {
         private Mock<ISessionRepository> sessionRepositoryMock;
         private Mock<IUserRepository> userRepositoryMock;
+        private Mock<ICommentRepository> commentRepositoryMock;
         private ISessionLogic sessionLogic;
+        private Mock<ICommentLogic> commentLogicMock;
         private Session session;
         private string username;
         private string password;
         private string incorrectPass;
         private User user;
+        private Comment comment;
+        private List<Comment> commentsWhileLoggedOut;
+        private List<Session> sessions;
 
         [TestInitialize]
         public void InitTest()
         {
             sessionRepositoryMock = new Mock<ISessionRepository>(MockBehavior.Strict);
             userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
-            sessionLogic = new SessionLogic(sessionRepositoryMock.Object, userRepositoryMock.Object);
+            commentRepositoryMock = new Mock<ICommentRepository>(MockBehavior.Strict);
+            commentLogicMock = new Mock<ICommentLogic>(MockBehavior.Strict);
+            sessionLogic = new SessionLogic(sessionRepositoryMock.Object, userRepositoryMock.Object, commentLogicMock.Object);
             session = new Session() { Id = 1 };
             username = "usernamr";
             password = "password";
             incorrectPass = "incorrect";
             user = new User() { Username = username, Password = password };
+            comment = new Comment();
+            commentsWhileLoggedOut = new List<Comment>() { comment };
+            sessions = new List<Session>() { session };
         }
 
         [TestMethod]
@@ -99,6 +109,20 @@ namespace BusinessLogic.Test
             sessionRepositoryMock.VerifyAll();
 
             Assert.IsNull(session.DateTimeLogout);
+        }
+
+        [TestMethod]
+        public void GetCommentsLoggedOutOk()
+        {
+            session.DateTimeLogout = DateTime.Parse("2022/03/04");
+            sessionRepositoryMock!.Setup(x => x.GetAll(It.IsAny<Func<Session, bool>>())).Returns(sessions);
+            commentLogicMock!.Setup(x => x.GetCommentsSince(It.IsAny<DateTime>())).Returns(commentsWhileLoggedOut);
+
+            IEnumerable<Comment> receivedComments = sessionLogic!.GetCommentsWhileLoggedOut(session.Id);
+            sessionRepositoryMock.VerifyAll();
+
+            Assert.IsNotNull(receivedComments);
+            Assert.AreEqual(receivedComments, commentsWhileLoggedOut);
         }
     }
 }
