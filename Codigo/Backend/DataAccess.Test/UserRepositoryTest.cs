@@ -70,11 +70,11 @@ namespace DataAccess.Test
         [ExpectedException(typeof(AlreadyExistsDbException))]
         public void Add_ExistingUser_ShouldThrowAlreadyExistsDbException()
         {
-            var existingUser = new User { Id = 1, Name = "Test User", Email = "test@example.com", LastName = "Test", Password = "password", Username = "testuser" };
+            var existingUser = new User { Username = "testuser", Name = "Test User", Email = "test@example.com", LastName = "Test", Password = "password" };
             _dbContext.Users.Add(existingUser);
             _dbContext.SaveChanges();
 
-            var newUser = new User { Id = 1, Name = "Test User 2", Email = "test2@example.com", LastName = "Test 2", Password = "password2", Username = "testuser2" };
+            var newUser = new User { Username = "testuser", Name = "Test User 2", Email = "test2@example.com", LastName = "Test 2", Password = "password2" };
             
             userRepository.Add(newUser);
             _dbContext.SaveChanges();

@@ -19,10 +19,10 @@ namespace BlogsApp.DataAccess.Repositories
 
         public User Add(User value)
         {
-            bool exists = Context.Set<User>().Any(i => i.Id == value.Id);
+            bool exists = Context.Set<User>().Any(i => i.Username == value.Username);
             if (exists)
             {
-                throw new AlreadyExistsDbException("El Nombre de usuario ya est· en uso");
+                throw new AlreadyExistsDbException("El Nombre de usuario ya est√° en uso");
             }
             Context.Set<User>().Add(value);
             Context.SaveChanges();
