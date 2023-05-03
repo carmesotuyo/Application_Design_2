@@ -42,7 +42,7 @@ namespace BlogsApp.Logging.Logic.Services
             _logEntryRepository.Add(logEntry);
         }
 
-        public ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate, User loggedUser)
+        public ICollection<LogEntry> GetLogs(DateTime startDate, DateTime endDate, User loggedUser)
         {
             if (!loggedUser.Admin)
             {

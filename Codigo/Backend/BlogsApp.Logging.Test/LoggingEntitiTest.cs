@@ -16,11 +16,10 @@ namespace BlogsApp.Logging.Test
             string searchQuery = "blog";
             DateTime timestamp = DateTime.Now;
 
-            LogEntry logEntry = new LogEntry(userId, user, actionType, searchQuery, timestamp);
+            LogEntry logEntry = new LogEntry(userId, actionType, searchQuery, timestamp);
 
             Assert.IsNotNull(logEntry);
             Assert.AreEqual(userId, logEntry.UserId);
-            Assert.AreEqual(user, logEntry.User);
             Assert.AreEqual(actionType, logEntry.ActionType);
             Assert.AreEqual(searchQuery, logEntry.SearchQuery);
             Assert.AreEqual(timestamp, logEntry.Timestamp);
@@ -30,24 +29,11 @@ namespace BlogsApp.Logging.Test
         public void LogEntry_Constructor_ShouldThrowArgumentException_WhenActionTypeIsNull()
         {
             int userId = 1;
-            User user = new User();
             string actionType = null;
             string searchQuery = "blog";
             DateTime timestamp = DateTime.Now;
 
-            Assert.ThrowsException<ArgumentException>(() => new LogEntry(userId, user, actionType, searchQuery, timestamp));
-        }
-
-        [TestMethod]
-        public void LogEntry_Constructor_ShouldThrowArgumentException_WhenSearchQueryIsNull()
-        {
-            int userId = 1;
-            User user = new User();
-            string actionType = "search";
-            string searchQuery = null;
-            DateTime timestamp = DateTime.Now;
-
-            Assert.ThrowsException<ArgumentException>(() => new LogEntry(userId, user, actionType, searchQuery, timestamp));
+            Assert.ThrowsException<ArgumentException>(() => new LogEntry(userId, actionType, searchQuery, timestamp));
         }
     }
 }

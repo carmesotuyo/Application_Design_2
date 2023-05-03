@@ -52,7 +52,7 @@ namespace BlogsApp.Logging.Test
                 Admin = false
             };
 
-            Assert.ThrowsException<UnauthorizedUserException>(() => _loggerService.GetLogsByDate(startDate, endDate, loggedUser));
+            Assert.ThrowsException<UnauthorizedUserException>(() => _loggerService.GetLogs(startDate, endDate, loggedUser));
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace BlogsApp.Logging.Test
         };
             _logEntryRepositoryMock.Setup(x => x.GetByDate(startDate, endDate)).Returns(logEntries);
 
-            var result = _loggerService.GetLogsByDate(startDate, endDate, loggedUser);
+            var result = _loggerService.GetLogs(startDate, endDate, loggedUser);
 
             Assert.AreEqual(logEntries.Count, result.Count);
         }

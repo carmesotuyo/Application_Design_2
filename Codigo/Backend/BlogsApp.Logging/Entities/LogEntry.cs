@@ -11,23 +11,21 @@ namespace BlogsApp.Logging.Entities
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
-        public User User { get; set; }
         public string ActionType { get; set; }
         public string SearchQuery { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public LogEntry(int userId, User user, string actionType, string searchQuery, DateTime timestamp)
+        public LogEntry(int userId, string actionType, string searchQuery, DateTime timestamp)
         {
+            if (userId == null)
+            {
+                throw new ArgumentException("UserId no debe ser null");
+            }
             if (actionType == null)
             {
-                throw new ArgumentException("Action type cannot be null");
-            }
-            if (searchQuery == null)
-            {
-                throw new ArgumentException("Search query cannot be null");
+                throw new ArgumentException("actionType debe ser Login o Busqueda");
             }
             UserId = userId;
-            User = user;
             ActionType = actionType;
             SearchQuery = searchQuery;
             Timestamp = timestamp;

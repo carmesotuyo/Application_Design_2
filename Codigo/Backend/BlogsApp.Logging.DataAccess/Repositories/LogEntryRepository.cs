@@ -28,7 +28,6 @@ namespace BlogsApp.Logging.DataAccess.Repositories
         {
             return _context.LogEntries
                 .Where(log => log.Timestamp >= startDate && log.Timestamp <= endDate)
-                .Include(log => log.User)
                 .ToList();
         }
     }

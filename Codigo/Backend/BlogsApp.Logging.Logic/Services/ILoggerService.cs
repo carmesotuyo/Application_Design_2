@@ -12,6 +12,6 @@ namespace BlogsApp.Logging.Logic.Services
     {
         void LogLogin(int userId);
         public void LogSearch(int userId, string query);
-        ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate, User loggedUser);
+        ICollection<LogEntry> GetLogs(DateTime startDate, DateTime endDate, User loggedUser);
     }
 }
