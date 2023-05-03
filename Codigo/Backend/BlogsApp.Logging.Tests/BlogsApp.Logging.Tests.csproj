@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlogsApp.DataAccess\BlogsApp.DataAccess.csproj" />
+    <ProjectReference Include="..\BlogsApp.Domain\BlogsApp.Domain.csproj" />
+    <ProjectReference Include="..\BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj" />
+    <ProjectReference Include="..\BlogsApp.Logging\BlogsApp.Logging.csproj" />
+  </ItemGroup>
+
 </Project>
