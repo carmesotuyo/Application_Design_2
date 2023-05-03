@@ -17,5 +17,10 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             throw new NotImplementedException();
         }
+
+        public void DeleteReply(int commentId, User loggedUser)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
