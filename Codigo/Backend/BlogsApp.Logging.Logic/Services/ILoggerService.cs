@@ -1,4 +1,5 @@
-﻿using BlogsApp.Logging.Entities;
+﻿using BlogsApp.Domain.Entities;
+using BlogsApp.Logging.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace BlogsApp.Logging.Logic.Services
     {
         void LogLogin(int userId);
         public void LogSearch(int userId, string query);
-        ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate);
+        ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate, User loggedUser);
     }
 }

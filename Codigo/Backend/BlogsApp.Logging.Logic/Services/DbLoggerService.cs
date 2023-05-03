@@ -1,10 +1,12 @@
 ﻿using BlogsApp.Logging.Entities;
 using BlogsApp.Logging.DataAccess.Repositories;
+using BlogsApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlogsApp.Logging.Logic.Services.Services;
 
 namespace BlogsApp.Logging.Logic.Services
 {
@@ -40,8 +42,12 @@ namespace BlogsApp.Logging.Logic.Services
             _logEntryRepository.Add(logEntry);
         }
 
-        public ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate)
+        public ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate, User loggedUser)
         {
+            if (!loggedUser.Admin)
+            {
+                throw new UnauthorizedUserException("Usuario no autorizado");
+            }
             return _logEntryRepository.GetByDate(startDate, endDate);
         }
     }
