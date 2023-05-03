@@ -37,7 +37,10 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Reply> GetAll(Func<Reply, bool> func)
         {
-            throw new NotImplementedException();
+            ICollection<Reply> replies = Context.Set<Reply>().Include("User").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            if (replies.Count == 0)
+                throw new NotFoundDbException("No se encontraron replies");
+            return replies;
         }
 
         public void Update(Reply value)

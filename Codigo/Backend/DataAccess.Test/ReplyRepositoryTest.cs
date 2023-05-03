@@ -23,7 +23,7 @@ namespace DataAccess.Test
         private static User _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false);
         private static User _testUser2 = new User("usernam2", "password", "email@.com", "name", "last_name", false, false);
         private static Article _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
-        private Comment _comment = new Comment(_testUser, "Hola", _testArticle);
+        private static Comment _comment = new Comment(_testUser, "Hola", _testArticle);
         private Reply _reply = new Reply(_testUser, "hola");
 
         [TestInitialize]
@@ -105,6 +105,34 @@ namespace DataAccess.Test
         public void Get_ShouldThrowNotFoundDbException_WhenReplyDoesNotExist()
         {
             Assert.ThrowsException<NotFoundDbException>(() => _replyRepository.Get(r => r.Id == 1));
+        }
+
+        [TestMethod]
+        public void GetAll_ShouldReturnReplies_WhenRepliesExist()
+        {
+            var reply1 = new Reply(_testUser, "Body 1");
+            var reply2 = new Reply(_testUser, "Body 2");
+
+            _dbContext.Add(_testUser);
+            _dbContext.Add(_testUser2);
+            _dbContext.Add(_testArticle);
+            _dbContext.Add(_comment);
+            _dbContext.Add(reply1);
+            _dbContext.Add(reply2);
+            _dbContext.SaveChanges();
+
+            // Act
+            var replies = _replyRepository.GetAll(r => r.User == _testUser);
+
+            // Assert
+            Assert.AreEqual(2, replies.Count);
+        }
+
+        [TestMethod]
+        public void GetAll_ShouldThrowNotFoundDbException_WhenNoRepliesExist()
+        {
+            // Act & Assert
+            Assert.ThrowsException<NotFoundDbException>(() => _replyRepository.GetAll(r => r.User.Id == 1));
         }
     }
 }
