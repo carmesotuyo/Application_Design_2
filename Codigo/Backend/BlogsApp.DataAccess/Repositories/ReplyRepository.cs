@@ -1,23 +1,24 @@
 ﻿using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BlogsApp.DataAccess.Repositories
 {
     public class ReplyRepository : IReplyRepository
     {
-        //private readonly DbSet<Reply> replies;
         private DbContext Context { get; }
 
         public ReplyRepository(DbContext context)
         {
             Context = context;
-            //this.replies = context.Set<Reply>();
         }
 
         public Reply Add(Reply value)
         {
-            throw new NotImplementedException();
+            Context.Set<Reply>().Add(value);
+            Context.SaveChanges();
+            return value;
         }
 
         public bool Exists(Func<Reply, bool> func)
@@ -39,7 +40,5 @@ namespace BlogsApp.DataAccess.Repositories
         {
             throw new NotImplementedException();
         }
-
-        //.../replies REPOSITORY CODE
     }
 }
