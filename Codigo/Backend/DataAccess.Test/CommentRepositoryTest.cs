@@ -94,5 +94,40 @@ namespace DataAccess.Test
             // Assert
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void Get_ShouldReturnComment_WhenCommentExists()
+        {
+            // Arrange
+            _dbContext.Users.Add(_testUser);
+            _dbContext.SaveChanges();
+
+            _dbContext.Articles.Add(_testArticle);
+            _dbContext.SaveChanges();
+
+            Comment comment = new Comment(_testUser, "testcomment", _testArticle);
+            _dbContext.Comments.Add(comment);
+            _dbContext.SaveChanges();
+
+            // Act
+            Comment result = _commentRepository.Get(c => c.Id == comment.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(comment.Id, result.Id);
+            Assert.AreEqual(comment.Body, result.Body);
+            Assert.AreEqual(comment.User.Username, result.User.Username);
+            Assert.AreEqual(comment.Article.Name, result.Article.Name);
+        }
+
+        [TestMethod]
+        public void Get_ShouldThrowNotFoundDbException_WhenCommentDoesNotExist()
+        {
+            // Arrange
+            int nonExistentCommentId = 1;
+
+            // Act & Assert
+            Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.Get(c => c.Id == nonExistentCommentId));
+        }
     }
 }

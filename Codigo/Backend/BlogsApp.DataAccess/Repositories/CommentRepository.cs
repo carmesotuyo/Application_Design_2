@@ -29,7 +29,10 @@ namespace BlogsApp.DataAccess.Repositories
 
         public Comment Get(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            Comment comment = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            if (comment == null)
+                throw new NotFoundDbException("No se encontraron comentarios");
+            return comment;
         }
 
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
