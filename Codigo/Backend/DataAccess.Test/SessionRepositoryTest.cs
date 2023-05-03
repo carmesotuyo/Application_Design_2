@@ -212,7 +212,6 @@ namespace DataAccess.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundDbException))]
         public void GetSessions_NoSessionsFound()
         {
             // Arrange
@@ -223,7 +222,8 @@ namespace DataAccess.Test
             // Act
             var result = sessionRepository.GetAll(s => s.User == user1);
 
-            // Assert (expected exception)
+            // Assert
+            Assert.AreEqual(0, result.Count());
         }
 
         [TestMethod]

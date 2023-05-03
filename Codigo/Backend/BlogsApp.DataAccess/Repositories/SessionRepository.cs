@@ -43,15 +43,13 @@ namespace BlogsApp.DataAccess.Repositories
         {
             Session session = Context.Set<Session>().Include("User").FirstOrDefault(func);
             if (session == null)
-                throw new NotFoundDbException("No se encontraron sesiones");
+                throw new NotFoundDbException("No se encontró la sesión");
             return session;
         }
 
         public ICollection<Session> GetAll(Func<Session, bool> func)
         {
             ICollection<Session> sessions = Context.Set<Session>().Where(func).ToArray();
-            if (sessions.Count == 0)
-                throw new NotFoundDbException("No se encontraron sesiones");
             return sessions;
         }
 

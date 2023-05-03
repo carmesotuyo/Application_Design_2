@@ -34,9 +34,11 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetArticleById([FromRoute] int id)
+        public IActionResult GetArticleById([FromRoute] int id, [FromHeader] string token)
         {
-            return new OkObjectResult(articleLogic.GetArticleById(id));
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            return new OkObjectResult(articleLogic.GetArticleById(id, loggedUser));
         }
 
         [HttpGet("stats")]

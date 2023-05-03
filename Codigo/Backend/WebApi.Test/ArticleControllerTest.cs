@@ -64,9 +64,10 @@ namespace WebApi.Test
         [TestMethod]
         public void GetArticlesById()
         {
-            articleLogicMock.Setup(m => m.GetArticleById(It.IsAny<int>())).Returns(article);
+            articleLogicMock.Setup(m => m.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            IActionResult result = controller!.GetArticleById(article.Id);
+            IActionResult result = controller!.GetArticleById(article.Id, token.ToString());
             articleLogicMock.VerifyAll();
             OkObjectResult objectResult = result as OkObjectResult;
 
