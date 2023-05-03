@@ -15,5 +15,24 @@ namespace BlogsApp.Logging.Entities
         public string ActionType { get; set; }
         public string SearchQuery { get; set; }
         public DateTime Timestamp { get; set; }
+
+        public LogEntry(int userId, User user, string actionType, string searchQuery, DateTime timestamp)
+        {
+            if (actionType == null)
+            {
+                throw new ArgumentException("Action type cannot be null");
+            }
+            if (searchQuery == null)
+            {
+                throw new ArgumentException("Search query cannot be null");
+            }
+            UserId = userId;
+            User = user;
+            ActionType = actionType;
+            SearchQuery = searchQuery;
+            Timestamp = timestamp;
+        }
+
+        public LogEntry() { }
     }
 }
