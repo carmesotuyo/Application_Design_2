@@ -45,9 +45,12 @@ namespace BlogsApp.BusinessLogic.Logics
             };
         }
 
-        public IEnumerable<Comment> GetCommentsSince(DateTime? lastLogout)
+        public IEnumerable<Comment> GetCommentsSince(User loggedUser, DateTime? lastLogout)
         {
-            throw new NotImplementedException();
+            List<Comment> comments = _commentRepository.GetAll(c => c.DateDeleted == null)
+                                        .Where(c => c.Article.UserId == loggedUser.Id && c.DateModified > lastLogout)
+                                        .ToList();
+            return comments;
         }
 
         private Func<Comment, bool> CommentById(int id)

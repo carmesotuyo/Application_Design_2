@@ -18,8 +18,10 @@ namespace BusinessLogic.Test
         private ICollection<Comment> comments;
         private Reply reply;
         private Comment comment;
+        private Comment comment2;
         private User userBlogger;
         private User userAdmin;
+        private Article article;
 
         [TestInitialize]
         public void TestInitialize()
@@ -30,8 +32,10 @@ namespace BusinessLogic.Test
             reply = new Reply();
             userBlogger = new User() { Blogger = true, Id = 1 };
             userAdmin = new User() { Blogger = false, Id = 2 };
-            comment = new Comment() { Reply = reply, User = userBlogger };
-            comments = new List<Comment>() { comment };
+            article = new Article() { UserId = userBlogger.Id };
+            comment = new Comment() { Reply = reply, User = userBlogger, Article = article, DateModified = DateTime.Today };
+            comment2 = new Comment() { Reply = reply, User = userBlogger, Article = article, DateModified = DateTime.Parse("2022/04/03") };
+            comments = new List<Comment>() { comment, comment2 };
         }
 
         [TestMethod]
@@ -73,6 +77,19 @@ namespace BusinessLogic.Test
             commentRepository.Setup(x => x.Update(It.IsAny<Comment>()));
 
             commentLogic.DeleteComment(comment.Id, userAdmin);
+        }
+
+
+        [TestMethod]
+        public void GetCommentsSinceLasLogout()
+        {
+            commentRepository.Setup(r => r.GetAll(It.IsAny<Func<Comment, bool>>())).Returns(comments);
+
+            IEnumerable<Comment> result = commentLogic.GetCommentsSince(userBlogger, DateTime.Parse("2023/04/03"));
+
+            commentRepository.VerifyAll();
+            Assert.AreEqual(result.Count(), 1);
+            Assert.AreEqual(result.ElementAt(0), comments.ElementAt(0));
         }
     }
 }

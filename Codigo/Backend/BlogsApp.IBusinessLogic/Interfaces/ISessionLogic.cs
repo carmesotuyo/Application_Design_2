@@ -8,6 +8,6 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         Guid Login(string username, string password);
         User GetUserFromToken(Guid aToken);
         void Logout(int sessionId, User loggedUser);
-        IEnumerable<Comment> GetCommentsWhileLoggedOut(int userId);
+        IEnumerable<Comment> GetCommentsWhileLoggedOut(User user);
     }
 }
