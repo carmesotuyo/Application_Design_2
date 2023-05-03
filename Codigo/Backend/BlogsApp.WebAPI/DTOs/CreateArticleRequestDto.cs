@@ -6,6 +6,7 @@ namespace BlogsApp.WebAPI.DTOs
     {
         public int? Id { get; set; }
         public string Name { get; set; }
+        public string Username { get; set; }
         public string Body { get; set; }
         public bool Private { get; set; }
         public int Template { get; set; }

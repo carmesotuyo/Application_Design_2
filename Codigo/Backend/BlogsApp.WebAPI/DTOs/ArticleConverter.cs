@@ -18,6 +18,7 @@ namespace BlogsApp.WebAPI.DTOs
             {
                 Id = article.Id,
                 Name = article.Name,
+                Username = article.User.Username,
                 Body = article.Body,
                 Private = article.Private,
                 Template = article.Template,
