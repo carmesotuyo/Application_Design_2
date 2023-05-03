@@ -128,6 +128,7 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void IsValidTokenOk()
         {
+            sessionRepositoryMock!.Setup(x => x.Exists(It.IsAny<Func<Session, bool>>())).Returns(true);
             Assert.IsTrue(sessionLogic.IsValidToken(Guid.NewGuid().ToString()));
         }
 
@@ -135,6 +136,7 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void InvalidToken()
         {
+            sessionRepositoryMock!.Setup(x => x.Exists(It.IsAny<Func<Session, bool>>())).Returns(true);
             Assert.IsFalse(sessionLogic.IsValidToken(null));
         }
 
