@@ -7,7 +7,6 @@ using Moq;
 using BlogsApp.Logging.Entities;
 using BlogsApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
 
 namespace BlogsApp.Logging.Test
 {
