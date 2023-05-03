@@ -29,20 +29,9 @@ namespace WebApi.Test
         {
             _loggerServiceMock = new Mock<ILoggerService>();
             _sessionLogicMock = new Mock<ISessionLogic>();
-
+            _logController = new LogController(_loggerServiceMock.Object, _sessionLogicMock.Object);
             user = new User();
             token = Guid.NewGuid();
-            httpContext = new DefaultHttpContext();
-            httpContext.Items["user"] = user;
-
-            ControllerContext controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-            _logController = new LogController(_loggerServiceMock.Object, _sessionLogicMock.Object)
-            {
-                ControllerContext = controllerContext
-            };
         }
 
         [TestMethod]
@@ -52,7 +41,6 @@ namespace WebApi.Test
             var from = DateTime.Now.AddDays(-1);
             var to = DateTime.Now;
             var loggedUser = new User { Admin = true };
-            _logController.HttpContext.Items["user"] = loggedUser;
             _sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
             //Act
@@ -71,7 +59,6 @@ namespace WebApi.Test
             var to = DateTime.Now;
             var loggedUser = new User { Admin = true };
             var logs = new List<LogEntry> { new LogEntry() };
-            _logController.HttpContext.Items["user"] = loggedUser;
             _loggerServiceMock.Setup(x => x.GetLogs(from, to, loggedUser)).Returns(logs);
             _sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
@@ -91,7 +78,6 @@ namespace WebApi.Test
             var from = DateTime.Now.AddDays(-1);
             var to = DateTime.Now;
             var loggedUser = new User { Admin = false };
-            _logController.HttpContext.Items["user"] = loggedUser;
             _sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
             var logs = new List<LogEntry> { new LogEntry() };
