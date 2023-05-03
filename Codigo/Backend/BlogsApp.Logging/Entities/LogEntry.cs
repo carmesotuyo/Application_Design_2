@@ -12,7 +12,7 @@ namespace BlogsApp.Logging.Entities
         public int Id { get; set; }
         public int UserId { get; set; }
         public string ActionType { get; set; }
-        public string SearchQuery { get; set; }
+        public string? SearchQuery { get; set; }
         public DateTime Timestamp { get; set; }
 
         public LogEntry(int userId, string actionType, string searchQuery, DateTime timestamp)
