@@ -5,6 +5,7 @@ using BlogsApp.IDataAccess.Interfaces;
 using System.Data;
 using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -34,7 +35,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public void DeleteArticle(int articleId, User loggedUser)
         {
-            Article article = _articleRepository.Get(ArticleById(articleId));
+            Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
             if(loggedUser.Id == article.UserId)
             {
                 foreach (Comment comment in article.Comments)
@@ -49,9 +50,9 @@ namespace BlogsApp.BusinessLogic.Logics
             };
         }
 
-        public Article GetArticleById(int id)
+        public Article GetArticleById(int id, User loggedUser)
         {
-            return _articleRepository.Get(ArticleById(id));
+            return _articleRepository.Get(ArticleById(id, loggedUser));
         }
 
         public IEnumerable<Article> GetArticles(User loggedUser, string? searchText)
@@ -88,7 +89,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public Article UpdateArticle(int articleId, Article anArticle, User loggedUser)
         {
-            Article article = _articleRepository.Get(ArticleById(articleId));
+            Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
             isValidArticle(anArticle);
             if (loggedUser.Id == article.UserId)
             {
@@ -106,9 +107,9 @@ namespace BlogsApp.BusinessLogic.Logics
             };
         }
 
-        private Func<Article, bool> ArticleById(int id)
+        private Func<Article, bool> ArticleById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted != null;
+            return a => a.Id == id && a.DateDeleted != null && (!a.Private || a.UserId == loggedUser.Id);
         }
 
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)

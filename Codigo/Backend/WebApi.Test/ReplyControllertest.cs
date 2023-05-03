@@ -15,7 +15,6 @@ namespace WebApi.Test
         private Mock<IReplyLogic> replyLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
         private ReplyController controller;
-        //HttpContext httpContext;
         private User user;
         private Reply reply;
         private Guid token;
@@ -29,18 +28,6 @@ namespace WebApi.Test
             user = new User();
             reply = new Reply();
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = user;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new ReplyController(replyLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
         }
 
 

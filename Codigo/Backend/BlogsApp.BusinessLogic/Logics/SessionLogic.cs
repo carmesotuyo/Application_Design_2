@@ -22,6 +22,7 @@ namespace BlogsApp.BusinessLogic.Logics
         public IEnumerable<Comment> GetCommentsWhileLoggedOut(int userId)
         {
             DateTime? lastLogout = GetLastLogoutDateTime(userId);
+            if (lastLogout == null) return new List<Comment>();
             return _commentLogic.GetCommentsSince(lastLogout);
         }
 
@@ -81,8 +82,9 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public bool IsValidToken(string token)
         {
-            Guid guidOut;
-            return Guid.TryParse(token, out guidOut);
+            Guid guidToken;
+            Guid.TryParse(token, out guidToken);
+            return token != null && _sessionRepository.Exists(s => s.Token == guidToken && s.DateTimeLogout == null);
         }
 
         public User GetUserFromToken(Guid aToken)

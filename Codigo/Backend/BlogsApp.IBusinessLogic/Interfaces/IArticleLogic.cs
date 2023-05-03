@@ -3,7 +3,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
 {
     public interface IArticleLogic
     {
-        Article GetArticleById(int id);
+        Article GetArticleById(int id, User loggedUser);
         IEnumerable<Article> GetArticles(User loggedUser, string? search);
         IEnumerable<Article> GetArticlesByUser(int userId, User loggedUser);
         IEnumerable<int> GetStatsByYear(int year, User loggedUser);

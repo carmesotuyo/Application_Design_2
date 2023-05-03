@@ -19,7 +19,6 @@ namespace WebApi.Test
         private Mock<IArticleLogic> articleLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
         private ArticleController controller;
-        //HttpContext httpContext;
 
         private Article article;
         private IEnumerable<Article> articles;
@@ -40,18 +39,6 @@ namespace WebApi.Test
             userAdmin = new User() { Admin = true };
             yearlyStats = new List<int>();
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = userBlogger;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new ArticleController(articleLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
         }
 
         [TestMethod]
@@ -73,9 +60,10 @@ namespace WebApi.Test
         [TestMethod]
         public void GetArticlesById()
         {
-            articleLogicMock.Setup(m => m.GetArticleById(It.IsAny<int>())).Returns(article);
+            articleLogicMock.Setup(m => m.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            IActionResult result = controller!.GetArticleById(article.Id);
+            IActionResult result = controller!.GetArticleById(article.Id, token.ToString());
             articleLogicMock.VerifyAll();
             OkObjectResult objectResult = result as OkObjectResult;
 

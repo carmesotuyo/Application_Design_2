@@ -15,7 +15,6 @@ namespace WebApi.Test
         Mock<ICommentLogic> commentLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
         private CommmentController controller;
-        //HttpContext httpContext;
 
         private Comment comment;
         private User user;
@@ -31,18 +30,6 @@ namespace WebApi.Test
             comment = new Comment();
             user = new User();
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = user;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new CommmentController(commentLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
         }
 
         [TestMethod]
