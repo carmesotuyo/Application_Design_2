@@ -160,5 +160,30 @@ namespace DataAccess.Test
             // Act and assert
             Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.GetAll(c => c.User.Id == _testUser.Id));
         }
+
+        [TestMethod]
+        public void Update_ShouldThrowNotFoundDbException_WhenCommentDoesNotExist()
+        {
+            // Act & Assert
+            Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.Update(_comment));
+        }
+
+        [TestMethod]
+        public void Update_ShouldUpdateComment_WhenCommentExists()
+        {
+            _dbContext.Set<Comment>().Add(_comment);
+            _dbContext.SaveChanges();
+
+            var updatedComment = _comment;
+            updatedComment.DateDeleted = DateTime.UtcNow;
+
+            // Act
+            _commentRepository.Update(updatedComment);
+
+            // Assert
+            var retrievedComment = _dbContext.Set<Comment>().FirstOrDefault(c => c.Id == _comment.Id);
+            Assert.IsNotNull(retrievedComment);
+            Assert.IsNotNull(retrievedComment.DateDeleted);
+        }
     }
 }
