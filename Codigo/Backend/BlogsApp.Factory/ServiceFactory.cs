@@ -5,8 +5,8 @@ using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using BlogsApp.Logging.Repositories;
-using BlogsApp.Logging.Services;
+using BlogsApp.Logging.DataAccess.Repositories;
+using BlogsApp.Logging.Logic.Services;
 
 namespace BlogsApp.Factory
 {

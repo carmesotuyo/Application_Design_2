@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using BlogsApp.Logging.Entities;
 
-namespace BlogsApp.Logging.Repositories
+namespace BlogsApp.Logging.DataAccess.Repositories
 {
     public interface ILogEntryRepository
     {
         void Add(LogEntry logEntry);
-        ICollection<LogEntry> GetLogsByActionTypeAndDates(string actionType, DateTime startDate, DateTime endDate);
+        ICollection<LogEntry> GetByDate(DateTime startDate, DateTime endDate);
     }
 }

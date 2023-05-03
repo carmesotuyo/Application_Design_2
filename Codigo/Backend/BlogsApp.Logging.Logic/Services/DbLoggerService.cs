@@ -1,12 +1,12 @@
 ﻿using BlogsApp.Logging.Entities;
-using BlogsApp.Logging.Repositories;
+using BlogsApp.Logging.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogsApp.Logging.Services
+namespace BlogsApp.Logging.Logic.Services
 {
     public class DbLoggerService : ILoggerService
     {
@@ -38,6 +38,11 @@ namespace BlogsApp.Logging.Services
                 Timestamp = DateTime.UtcNow
             };
             _logEntryRepository.Add(logEntry);
+        }
+
+        public ICollection<LogEntry> GetLogsByDate(DateTime startDate, DateTime endDate)
+        {
+            return _logEntryRepository.GetByDate(startDate, endDate);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using BlogsApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogsApp.Logging.Repositories
+namespace BlogsApp.Logging.DataAccess.Repositories
 {
     public class LogEntryRepository : ILogEntryRepository
     {
@@ -24,10 +24,10 @@ namespace BlogsApp.Logging.Repositories
             _context.SaveChanges();
         }
 
-        public ICollection<LogEntry> GetLogsByActionTypeAndDates(string actionType, DateTime startDate, DateTime endDate)
+        public ICollection<LogEntry> GetByDate(DateTime startDate, DateTime endDate)
         {
             return _context.LogEntries
-                .Where(log => log.ActionType == actionType && log.Timestamp >= startDate && log.Timestamp <= endDate)
+                .Where(log => log.Timestamp >= startDate && log.Timestamp <= endDate)
                 .Include(log => log.User)
                 .ToList();
         }
