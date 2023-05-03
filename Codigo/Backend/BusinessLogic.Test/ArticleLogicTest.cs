@@ -189,12 +189,12 @@ namespace BusinessLogic.Test
         {
             articuloTest.Comments = new List<Comment>() { new Comment {Id =1 }, new Comment { Id = 2 } };
             articleRepository.Setup(r => r.Get(It.IsAny<Func<Article, bool>>())).Returns(articuloTest);
-            commentLogic.Setup(r => r.DeleteComment(It.IsAny<int>()));
+            commentLogic.Setup(r => r.DeleteComment(It.IsAny<int>(), It.IsAny<User>()));
             articuloTest.Id = 15;
 
             articleLogic.DeleteArticle(articuloTest.Id, user);
 
-            commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>()), Times.Exactly(2));
+            commentLogic.Verify(r => r.DeleteComment(It.IsAny<int>(), It.IsAny<User>()), Times.Exactly(2));
             Assert.IsNotNull(articuloTest.DateDeleted);
         }
 

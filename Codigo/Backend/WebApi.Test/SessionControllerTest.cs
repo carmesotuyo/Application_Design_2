@@ -53,7 +53,7 @@ namespace WebApi.Test
         {
             sessionLogicMock!.Setup(m => m.Login(It.IsAny<string>(), It.IsAny<string>())).Returns(token);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
-            sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<int>())).Returns(comments);
+            sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<User>())).Returns(comments);
             loggerLogicMock.Setup(m => m.LogLogin(It.IsAny<int>()));
 
             var result = controller!.Login(credentials);

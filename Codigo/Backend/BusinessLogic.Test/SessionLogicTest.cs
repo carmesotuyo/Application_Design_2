@@ -116,9 +116,9 @@ namespace BusinessLogic.Test
         {
             session.DateTimeLogout = DateTime.Parse("2022/03/04");
             sessionRepositoryMock!.Setup(x => x.GetAll(It.IsAny<Func<Session, bool>>())).Returns(sessions);
-            commentLogicMock!.Setup(x => x.GetCommentsSince(It.IsAny<DateTime>())).Returns(commentsWhileLoggedOut);
+            commentLogicMock!.Setup(x => x.GetCommentsSince(It.IsAny<User>(),It.IsAny<DateTime>())).Returns(commentsWhileLoggedOut);
 
-            IEnumerable<Comment> receivedComments = sessionLogic!.GetCommentsWhileLoggedOut(session.Id);
+            IEnumerable<Comment> receivedComments = sessionLogic!.GetCommentsWhileLoggedOut(user);
             sessionRepositoryMock.VerifyAll();
 
             Assert.IsNotNull(receivedComments);
