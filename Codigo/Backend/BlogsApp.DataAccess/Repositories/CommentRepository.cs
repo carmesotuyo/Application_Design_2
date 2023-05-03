@@ -1,28 +1,30 @@
 ﻿using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
-        //private readonly DbSet<Comment> comments;
         private DbContext Context { get; }
 
         public CommentRepository(DbContext context)
         {
             Context = context;
-            //this.comments = context.Set<Comment>();
         }
 
         public Comment Add(Comment value)
         {
-            throw new NotImplementedException();
+            Context.Set<Comment>().Add(value);
+            Context.SaveChanges();
+            return value;
         }
 
         public bool Exists(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            return Context.Set<Comment>().Where(func).Any();
         }
 
         public Comment Get(Func<Comment, bool> func)
@@ -39,7 +41,5 @@ namespace BlogsApp.DataAccess.Repositories
         {
             throw new NotImplementedException();
         }
-
-        //.../Comments REPOSITORY CODE
     }
 }
