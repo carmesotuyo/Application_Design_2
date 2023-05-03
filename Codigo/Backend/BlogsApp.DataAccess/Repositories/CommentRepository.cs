@@ -1,45 +1,56 @@
 ﻿using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
-        //private readonly DbSet<Comment> comments;
         private DbContext Context { get; }
 
         public CommentRepository(DbContext context)
         {
             Context = context;
-            //this.comments = context.Set<Comment>();
         }
 
         public Comment Add(Comment value)
         {
-            throw new NotImplementedException();
+            Context.Set<Comment>().Add(value);
+            Context.SaveChanges();
+            return value;
         }
 
         public bool Exists(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            return Context.Set<Comment>().Where(func).Any();
         }
 
         public Comment Get(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            Comment comment = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            if (comment == null)
+                throw new NotFoundDbException("No se encontraron comentarios");
+            return comment;
         }
 
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            ICollection<Comment> comments = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            if (comments.Count == 0)
+                throw new NotFoundDbException("No se encontraron comentarios");
+            return comments;
         }
 
         public void Update(Comment value)
         {
-            throw new NotImplementedException();
+            bool exists = Context.Set<Comment>().Where(i => i.Id == value.Id).Any();
+            if (!exists)
+                throw new NotFoundDbException("No existe comentario con ese Id");
+            Comment original = Context.Set<Comment>().Find(value.Id);
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
         }
-
-        //.../Comments REPOSITORY CODE
     }
 }

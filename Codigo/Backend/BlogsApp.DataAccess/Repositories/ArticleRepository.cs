@@ -19,7 +19,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             bool exists = Context.Set<Article>().Where(i => i.Id == value.Id).Any();
             if (exists)
-                throw new AlreadyExistsDbException("El ya existe");
+                throw new AlreadyExistsDbException("El articulo ya existe");
             Context.Set<Article>().Add(value);
             Context.SaveChanges();
             return value;

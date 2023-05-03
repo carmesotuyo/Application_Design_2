@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BlogsApp.WebAPI.Filters;
 using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
+using BlogsApp.Logging.Logic.Services;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -12,11 +13,13 @@ namespace BlogsApp.WebAPI.Controllers
     {
         private readonly IArticleLogic articleLogic;
         private readonly ISessionLogic sessionLogic;
+        private readonly ILoggerService loggerService;
 
-        public ArticleController(IArticleLogic articleLogic, ISessionLogic sessionLogic)
+        public ArticleController(IArticleLogic articleLogic, ISessionLogic sessionLogic, ILoggerService loggerService)
         {
             this.articleLogic = articleLogic;
             this.sessionLogic = sessionLogic;
+            this.loggerService = loggerService;
         }
 
         [HttpGet]
@@ -24,6 +27,9 @@ namespace BlogsApp.WebAPI.Controllers
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            if (search != null) {
+                loggerService.LogSearch(loggedUser.Id, search);
+            };
             return new OkObjectResult(articleLogic.GetArticles(loggedUser, search));
         }
 

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using BlogsApp.Domain.Exceptions;
 using BlogsApp.WebAPI.DTOs;
+using BlogsApp.Logging.Logic.Services;
 
 namespace WebApi.Test
 {
@@ -26,12 +27,15 @@ namespace WebApi.Test
         private Comment comment;
         private List<Comment> comments;
         private LoginResponseDTO responseDTO;
+        private Mock<ILoggerService> loggerLogicMock;
 
         [TestInitialize]
         public void InitTest()
         {
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
-            controller = new SessionController(sessionLogicMock.Object);
+            loggerLogicMock = new Mock<ILoggerService>(MockBehavior.Strict);
+            controller = new SessionController(sessionLogicMock.Object, loggerLogicMock.Object);
+            
 
             session = new Session() { Id = 1 };
             username = "username";
@@ -50,6 +54,7 @@ namespace WebApi.Test
             sessionLogicMock!.Setup(m => m.Login(It.IsAny<string>(), It.IsAny<string>())).Returns(token);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
             sessionLogicMock!.Setup(m => m.GetCommentsWhileLoggedOut(It.IsAny<User>())).Returns(comments);
+            loggerLogicMock.Setup(m => m.LogLogin(It.IsAny<int>()));
 
             var result = controller!.Login(credentials);
             var objectResult = result as OkObjectResult;
@@ -57,6 +62,7 @@ namespace WebApi.Test
             var receivedDTO = objectResult.Value as LoginResponseDTO;
 
             sessionLogicMock.VerifyAll();
+            loggerLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(receivedDTO.Token, token);
             Assert.AreEqual(receivedDTO.Comments, comments);

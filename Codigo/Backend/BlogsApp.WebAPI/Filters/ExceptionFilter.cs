@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using BlogsApp.Domain.Exceptions;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.Logging.Logic.Services.Services;
 
 namespace BlogsApp.WebAPI.Filters
 {
@@ -20,6 +21,14 @@ namespace BlogsApp.WebAPI.Filters
                 {
                     StatusCode = 404,
                     Content = "Error retrieving data -- Data Not Found -- " + ex.Message
+                };
+            }
+            catch (UnauthorizedUserException ex)
+            {
+                context.Result = new ContentResult()
+                {
+                    StatusCode = 401,
+                    Content = "Authorization Error -- " + ex.Message
                 };
             }
             catch (AlreadyExistsDbException ex)

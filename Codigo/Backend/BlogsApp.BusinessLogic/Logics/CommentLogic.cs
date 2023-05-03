@@ -16,6 +16,19 @@ namespace BlogsApp.BusinessLogic.Logics
             _replyLogic = replyLogic;
         }
 
+        public Reply AddReply(Comment comment, Reply reply, User loggedUser)
+        {
+            if (loggedUser.Blogger && comment.Article.UserId == loggedUser.Id)
+            {
+                comment.Reply = reply;
+                Reply created = _replyLogic.CreateReply(reply, loggedUser);
+                this._commentRepository.Update(comment);
+                return created;
+            }
+
+            throw new UnauthorizedAccessException("Sólo los autores del artículo pueden responder a los comentarios");
+        }
+
         public Comment CreateComment(Comment comment, User loggedUser)
         {
             if (loggedUser.Blogger)

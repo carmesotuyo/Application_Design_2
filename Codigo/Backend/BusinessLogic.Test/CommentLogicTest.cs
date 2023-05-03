@@ -91,6 +91,24 @@ namespace BusinessLogic.Test
             Assert.AreEqual(result.Count(), 1);
             Assert.AreEqual(result.ElementAt(0), comments.ElementAt(0));
         }
+
+        [TestMethod]
+        public void CreateReply()
+        {
+            replyLogicMock.Setup(r => r.CreateReply(It.IsAny<Reply>(), It.IsAny<User>())).Returns(reply);
+            commentRepository.Setup(x => x.Update(It.IsAny<Comment>()));
+
+            Reply result = commentLogic.AddReply(comment, reply, userBlogger);
+
+            commentRepository.VerifyAll();
+            Assert.AreEqual(result, reply);
+        }
+
+        [TestMethod]
+        public void CreateReplyWithoutPermissions()
+        {
+            Assert.ThrowsException<UnauthorizedAccessException>(() => commentLogic.AddReply(comment, reply, userAdmin));
+        }
     }
 }
 
