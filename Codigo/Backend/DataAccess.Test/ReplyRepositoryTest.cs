@@ -57,34 +57,6 @@ namespace DataAccess.Test
         }
 
         [TestMethod]
-        public void Exists_ShouldReturnTrue_WhenReplyExists()
-        {
-            var reply = new Reply(_testUser, "Hola");
-            _dbContext.Set<Reply>().Add(reply);
-            _dbContext.SaveChanges();
-
-            // Act
-            var result = _replyRepository.Exists(r => r.Id == reply.Id);
-
-            // Assert
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public void Exists_ShouldReturnFalse_WhenReplyDoesNotExist()
-        {
-            var reply = new Reply(_testUser, "Hola");
-            _dbContext.Set<Reply>().Add(_reply);
-            _dbContext.SaveChanges();
-
-            // Act
-            var result = _replyRepository.Exists(r => r.Id == _reply.Id + 1);
-
-            // Assert
-            Assert.IsFalse(result);
-        }
-
-        [TestMethod]
         public void Get_ShouldReturnReply_WhenReplyExists()
         {
             var reply = new Reply(_testUser, "Body");
@@ -133,6 +105,35 @@ namespace DataAccess.Test
         {
             // Act & Assert
             Assert.ThrowsException<NotFoundDbException>(() => _replyRepository.GetAll(r => r.User.Id == 1));
+        }
+
+        [TestMethod]
+        public void Update_ShouldThrowNotFoundDbException_WhenReplyDoesNotExist()
+        {
+            // Arrange
+            var reply = new Reply(_testUser, "hola");
+
+            // Act & Assert
+            Assert.ThrowsException<NotFoundDbException>(() => _replyRepository.Update(reply));
+        }
+
+        [TestMethod]
+        public void Update_ShouldUpdateReply_WhenReplyExists()
+        {
+            var reply = new Reply(_testUser, "hola");
+            _dbContext.Replies.Add(reply);
+            _dbContext.SaveChanges();
+
+            var replyToUpdate = reply;
+            replyToUpdate.Body = "adios";
+
+            // Act
+            _replyRepository.Update(replyToUpdate);
+
+            // Assert
+            var updatedReply = _dbContext.Replies.FirstOrDefault(r => r.Id == replyToUpdate.Id);
+            Assert.IsNotNull(updatedReply);
+            Assert.AreEqual(replyToUpdate.Body, updatedReply.Body);
         }
     }
 }

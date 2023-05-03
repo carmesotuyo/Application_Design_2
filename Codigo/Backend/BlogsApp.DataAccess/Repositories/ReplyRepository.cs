@@ -45,7 +45,12 @@ namespace BlogsApp.DataAccess.Repositories
 
         public void Update(Reply value)
         {
-            throw new NotImplementedException();
+            bool exists = Context.Set<Reply>().Where(i => i.Id == value.Id).Any();
+            if (!exists)
+                throw new NotFoundDbException("No existe reply con ese Id");
+            Reply original = Context.Set<Reply>().Find(value.Id);
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
         }
     }
 }
