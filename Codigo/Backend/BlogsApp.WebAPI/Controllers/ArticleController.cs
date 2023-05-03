@@ -4,6 +4,7 @@ using BlogsApp.WebAPI.Filters;
 using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.Logging.Logic.Services;
+using BlogsApp.BusinessLogic.Logics;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -30,7 +31,8 @@ namespace BlogsApp.WebAPI.Controllers
             if (search != null) {
                 loggerService.LogSearch(loggedUser.Id, search);
             };
-            return new OkObjectResult(articleLogic.GetArticles(loggedUser, search));
+            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticles(loggedUser, search));
+            return new OkObjectResult(basicArticleDtos);
         }
 
         [HttpGet("{id}")]
@@ -38,7 +40,8 @@ namespace BlogsApp.WebAPI.Controllers
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(articleLogic.GetArticleById(id, loggedUser));
+            Article article = articleLogic.GetArticleById(id, loggedUser);
+            return new OkObjectResult(ArticleConverter.ToDto(article));
         }
 
         [HttpGet("stats")]
@@ -59,7 +62,7 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostArticle([FromBody] CreateArticleRequestDto articleDto, [FromHeader] string token)
+        public IActionResult PostArticle([FromBody] BasicArticleDto articleDto, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
@@ -69,11 +72,13 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateArticle([FromRoute] int id, [FromBody] Article article, [FromHeader] string token)
+        public IActionResult UpdateArticle([FromRoute] int id, [FromBody] UpdateArticleRequestDTO articleRequestDTO, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(articleLogic.UpdateArticle(id, article, loggedUser));
+            Article updatedArticle = articleRequestDTO.ApplyChangesToArticle(articleLogic.GetArticleById(id, loggedUser));
+            Article newArticle = articleLogic.UpdateArticle(id, updatedArticle, loggedUser);
+            return new OkObjectResult(ArticleConverter.ToDto(newArticle));
         }
     }
 }

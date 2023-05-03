@@ -69,7 +69,8 @@ namespace BlogsApp.WebAPI.Controllers
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(articleLogic.GetArticlesByUser(id,loggedUser));
+            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, loggedUser));
+            return new OkObjectResult(basicArticleDtos);
         }
     }
 }

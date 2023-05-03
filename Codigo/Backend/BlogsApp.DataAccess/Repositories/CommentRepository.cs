@@ -38,8 +38,7 @@ namespace BlogsApp.DataAccess.Repositories
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
         {
             ICollection<Comment> comments = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).Where(func).ToArray();
-            if (comments.Count == 0)
-                throw new NotFoundDbException("No se encontraron comentarios");
+            
             return comments;
         }
 
