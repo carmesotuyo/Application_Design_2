@@ -5,6 +5,7 @@ using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApp.Logging.Logic.Services;
+using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -13,18 +14,22 @@ namespace BlogsApp.WebAPI.Controllers
     public class LogController : BlogsAppControllerBase
     {
         private readonly ILoggerService loggerService;
+        private readonly ISessionLogic sessionLogic;
 
-        public LogController(ILoggerService loggerService)
+        public LogController(ILoggerService loggerService, ISessionLogic sessionLogic)
         {
             this.loggerService = loggerService;
+            this.sessionLogic = sessionLogic;
         }
 
         [HttpGet]
-        public IActionResult Get([FromQuery] DateTime from, [FromQuery] DateTime to)
+        public IActionResult Get([FromQuery] DateTime from, [FromQuery] DateTime to, [FromHeader] string token)
         {
-            User loggedUser = (User)this.HttpContext.Items["user"];
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             return new OkObjectResult(loggerService.GetLogs(from, to, loggedUser));
         }
     }
+
 }
 
