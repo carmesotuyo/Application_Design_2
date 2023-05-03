@@ -22,6 +22,7 @@ namespace BlogsApp.BusinessLogic.Logics
         public IEnumerable<Comment> GetCommentsWhileLoggedOut(int userId)
         {
             DateTime? lastLogout = GetLastLogoutDateTime(userId);
+            if (lastLogout == null) return new List<Comment>();
             return _commentLogic.GetCommentsSince(lastLogout);
         }
 
