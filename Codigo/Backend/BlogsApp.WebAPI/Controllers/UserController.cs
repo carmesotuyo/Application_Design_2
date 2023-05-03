@@ -71,7 +71,6 @@ namespace BlogsApp.WebAPI.Controllers
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, loggedUser));
             return new OkObjectResult(basicArticleDtos);
-            //return new OkObjectResult(articleLogic.GetArticlesByUser(id,loggedUser));
         }
     }
 }
