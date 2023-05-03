@@ -28,7 +28,7 @@ namespace BlogsApp.WebAPI.Controllers
             Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
-            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user.Id);
+            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user);
 
             var response = new LoginResponseDTO(token, comments);
 

@@ -40,7 +40,7 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 foreach (Comment comment in article.Comments)
                 {
-                    _commentLogic.DeleteComment(comment.Id);
+                    _commentLogic.DeleteComment(comment.Id, loggedUser);
                 }
                 article.DateDeleted = DateTime.Now;
                 this._articleRepository.Update(article);
