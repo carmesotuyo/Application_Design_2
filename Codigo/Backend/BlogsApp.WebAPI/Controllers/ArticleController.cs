@@ -59,11 +59,13 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostArticle([FromBody] Article article, [FromHeader] string token)
+        public IActionResult PostArticle([FromBody] CreateArticleRequestDto articleDto, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(articleLogic.CreateArticle(article, loggedUser));
+            Article article = ArticleConverter.FromDto(articleDto, loggedUser);
+            Article newArticle = articleLogic.CreateArticle(article, loggedUser);
+            return new OkObjectResult(ArticleConverter.ToDto(newArticle));
         }
 
         [HttpPut("{id}")]
