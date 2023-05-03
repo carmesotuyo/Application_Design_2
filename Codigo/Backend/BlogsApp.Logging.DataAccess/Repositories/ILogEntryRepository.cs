@@ -1,11 +1,11 @@
-﻿using BlogsApp.Logging.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlogsApp.Logging.Entities;
 
-namespace BlogsApp.Logging.Services
+namespace BlogsApp.Logging.Repositories
 {
     public interface ILogEntryRepository
     {

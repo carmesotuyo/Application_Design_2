@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlogsApp.IDataAccess\BlogsApp.IDataAccess.csproj" />
     <ProjectReference Include="..\BlogsApp.Domain\BlogsApp.Domain.csproj" />
+    <ProjectReference Include="..\BlogsApp.Logging\BlogsApp.Logging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
