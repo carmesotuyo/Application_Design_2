@@ -1,4 +1,5 @@
-﻿using BlogsApp.Domain.Entities;
+﻿using System.Xml.Linq;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 
@@ -15,7 +16,13 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public Reply CreateReply(Reply reply, User loggedUser)
         {
-            throw new NotImplementedException();
+            if (loggedUser.Blogger)
+            {
+                this._replyRepository.Add(reply);
+                return reply;
+            }
+
+            throw new UnauthorizedAccessException("Sólo Bloggers pueden responder comentarios");
         }
 
         public void DeleteReply(int commentId, User loggedUser)
