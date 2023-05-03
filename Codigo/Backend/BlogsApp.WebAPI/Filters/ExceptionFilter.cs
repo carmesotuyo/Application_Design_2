@@ -46,12 +46,20 @@ namespace BlogsApp.WebAPI.Filters
                     Content = "Error retrieving data -- No extraction methods found" + ex.Message
                 };
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
                 context.Result = new ContentResult()
                 {
                     StatusCode = 401,
-                    Content = "Authorization Error -- " + context.Exception.Message
+                    Content = "Authorization Error -- " + ex.Message
+                };
+            }
+            catch (InvalidDataException ex)
+            {
+                context.Result = new ContentResult()
+                {
+                    StatusCode = 400,
+                    Content = "Invalid data -- " + ex.Message
                 };
             }
             catch (Exception)

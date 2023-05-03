@@ -41,7 +41,7 @@
             int lengthWithoutSpaces = removeSpaces.Length;
             if (lengthWithoutSpaces < originalLength || originalLength < 1 || originalLength > 12)
             {
-                throw new InvalidDataException();
+                throw new InvalidDataException("Username no tiene el formato correcto - sin espacios, 12 caracteres máximo");
             }
         }
 
@@ -60,7 +60,7 @@
 
             if (!hasUser || !hasDomain)
             {
-                throw new InvalidDataException();
+                throw new InvalidDataException("Email no tiene el formato correcto - debe incluir '@' y '.com'");
             }
         }
     }
