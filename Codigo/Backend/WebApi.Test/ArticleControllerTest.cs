@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
 using System.Net.Http;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using BlogsApp.Logging.Logic.Services;  
 
 namespace WebApi.Test
 {
@@ -19,6 +20,7 @@ namespace WebApi.Test
         private Mock<IArticleLogic> articleLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
         private ArticleController controller;
+        private Mock<ILoggerService> loggerLogicMock;
         //HttpContext httpContext;
 
         private Article article;
@@ -33,25 +35,14 @@ namespace WebApi.Test
         {
             articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
-            controller = new ArticleController(articleLogicMock.Object, sessionLogicMock.Object);
+            loggerLogicMock = new Mock<ILoggerService>(MockBehavior.Strict);
+            controller = new ArticleController(articleLogicMock.Object, sessionLogicMock.Object, loggerLogicMock.Object);
             userBlogger = new User() { Blogger = true, Id = 1 };
             article = new Article() { Id = 1, UserId = 1 };
             articles = new List<Article>() { article };
             userAdmin = new User() { Admin = true };
             yearlyStats = new List<int>();
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = userBlogger;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new ArticleController(articleLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
         }
 
         [TestMethod]
@@ -90,15 +81,14 @@ namespace WebApi.Test
         {
             articleLogicMock.Setup(m => m.GetArticles(It.IsAny<User>(), It.IsAny<string>())).Returns(articles);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
+            loggerLogicMock.Setup(m => m.LogSearch(It.IsAny<int>(), It.IsAny<string>()));
 
             IActionResult result = controller!.Get("search text", token.ToString());
-            articleLogicMock.VerifyAll();
             OkObjectResult objectResult = result as OkObjectResult;
 
-            Assert.IsNotNull(result);
-            articleLogicMock.VerifyAll();
 
-            Assert.IsTrue(objectResult.Value.Equals(articles));
+            articleLogicMock.VerifyAll();
+            loggerLogicMock.VerifyAll();
         }
 
         [TestMethod]

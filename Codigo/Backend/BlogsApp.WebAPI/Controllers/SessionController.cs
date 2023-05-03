@@ -6,6 +6,7 @@ using BlogsApp.WebAPI.DTOs;
 using BlogsApp.BusinessLogic.Logics;
 using NuGet.Protocol.Plugins;
 using NuGet.Common;
+using BlogsApp.Logging.Logic.Services;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -13,10 +14,12 @@ namespace BlogsApp.WebAPI.Controllers
     public class SessionController : BlogsAppControllerBase
     {
         private readonly ISessionLogic sessionLogic;
+        private readonly ILoggerService _loggerService;
 
-        public SessionController(ISessionLogic sessionLogic)
+        public SessionController(ISessionLogic sessionLogic, ILoggerService loggerService)
         {
             this.sessionLogic = sessionLogic;
+            _loggerService = loggerService;
         }
 
         [HttpPost]
@@ -24,6 +27,7 @@ namespace BlogsApp.WebAPI.Controllers
         {
             Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
+            _loggerService.LogLogin(user.Id);
             IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user.Id);
 
             var response = new LoginResponseDTO(token, comments);
