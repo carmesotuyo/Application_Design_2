@@ -23,9 +23,9 @@ namespace BusinessLogic.Test
         {
             replyRepository = new Mock<IReplyRepository>(MockBehavior.Strict);
             replyLogic = new ReplyLogic(replyRepository.Object);
-            reply = new Reply();
-            user = new User() { Blogger = true };
-            userAdmin = new User() { Admin = true };
+            user = new User() { Blogger = true, Id = 1 };
+            userAdmin = new User() { Admin = true, Id = 2 };
+            reply = new Reply() { User = user };
         }
 
         [TestMethod]
@@ -40,9 +40,32 @@ namespace BusinessLogic.Test
         }
 
         [TestMethod]
-        public void CreateCommentWithoutPermissions()
+        public void CreateReplytWithoutPermissions()
         {
             Assert.ThrowsException<UnauthorizedAccessException>(() => replyLogic.CreateReply(reply, userAdmin));
+        }
+
+
+        [TestMethod]
+        public void DeleteReply()
+        {
+            replyRepository.Setup(r => r.Get(It.IsAny<Func<Reply, bool>>())).Returns(reply);
+            replyRepository.Setup(x => x.Update(It.IsAny<Reply>()));
+
+            replyLogic.DeleteReply(reply.Id, user);
+
+            replyRepository.VerifyAll();
+            Assert.IsNotNull(reply.DateDeleted);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void DeleteReplyWithoutPermissionsTest()
+        {
+            replyRepository.Setup(r => r.Get(It.IsAny<Func<Reply, bool>>())).Returns(reply);
+            replyRepository.Setup(x => x.Update(It.IsAny<Reply>()));
+
+            replyLogic.DeleteReply(reply.Id, userAdmin);
         }
     }
 }
