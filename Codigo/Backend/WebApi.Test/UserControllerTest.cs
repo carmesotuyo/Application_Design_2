@@ -18,7 +18,6 @@ namespace WebApi.Test
         private Mock<IArticleLogic> articleLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
         private UserController? controller;
-        //HttpContext httpContext;
 
         User loggedUser;
         User aValidBlogger;
@@ -67,18 +66,6 @@ namespace WebApi.Test
             article = new Article();
             userArticles = new List<Article>() { article };
             token = Guid.NewGuid();
-
-            //httpContext = new DefaultHttpContext();
-            //httpContext.Items["user"] = loggedUser;
-
-            //ControllerContext controllerContext = new ControllerContext()
-            //{
-            //    HttpContext = httpContext
-            //};
-            //controller = new UserController(userLogicMock.Object, articleLogicMock.Object)
-            //{
-            //    ControllerContext = controllerContext
-            //};
         }
 
 

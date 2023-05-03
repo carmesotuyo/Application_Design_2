@@ -64,7 +64,7 @@ namespace BusinessLogic.Test
         public void GetArticleByIdTest()
         {
             articleRepository.Setup(x => x.Get(It.IsAny<Func<Article, bool>>())).Returns(Articulo1);
-            Article result = articleLogic.GetArticleById(1);
+            Article result = articleLogic.GetArticleById(1, null);
             articleRepository.VerifyAll();
             Assert.IsTrue(result.Id == 1);
         }

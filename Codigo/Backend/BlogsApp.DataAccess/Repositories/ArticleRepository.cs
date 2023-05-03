@@ -34,7 +34,7 @@ namespace BlogsApp.DataAccess.Repositories
         {
             Article article = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).FirstOrDefault(func);
             if (article == null)
-                throw new NotFoundDbException("No se encontraron articulos");
+                throw new NotFoundDbException("No se encontró el artículo");
             return article;
         }
 
