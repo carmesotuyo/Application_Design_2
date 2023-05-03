@@ -24,6 +24,7 @@ namespace DataAccess.Test
         private static User _testUser2 = new User("usernam2", "password", "email@.com", "name", "last_name", false, false);
         private static Article _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
         private Comment _comment = new Comment(_testUser, "Hola", _testArticle);
+        private Reply _reply = new Reply(_testUser, "hola");
 
         [TestInitialize]
         public void TestInit()
@@ -53,6 +54,57 @@ namespace DataAccess.Test
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(reply.Id, result.Id);
+        }
+
+        [TestMethod]
+        public void Exists_ShouldReturnTrue_WhenReplyExists()
+        {
+            var reply = new Reply(_testUser, "Hola");
+            _dbContext.Set<Reply>().Add(reply);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _replyRepository.Exists(r => r.Id == reply.Id);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Exists_ShouldReturnFalse_WhenReplyDoesNotExist()
+        {
+            var reply = new Reply(_testUser, "Hola");
+            _dbContext.Set<Reply>().Add(_reply);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _replyRepository.Exists(r => r.Id == _reply.Id + 1);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void Get_ShouldReturnReply_WhenReplyExists()
+        {
+            var reply = new Reply(_testUser, "Body");
+            _dbContext.Set<Reply>().Add(reply);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _replyRepository.Get(r => r.Id == reply.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(reply.Id, result.Id);
+            Assert.AreEqual(reply.User, result.User);
+            Assert.AreEqual(reply.Body, result.Body);
+        }
+
+        [TestMethod]
+        public void Get_ShouldThrowNotFoundDbException_WhenReplyDoesNotExist()
+        {
+            Assert.ThrowsException<NotFoundDbException>(() => _replyRepository.Get(r => r.Id == 1));
         }
     }
 }

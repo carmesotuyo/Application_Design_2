@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
@@ -23,12 +24,15 @@ namespace BlogsApp.DataAccess.Repositories
 
         public bool Exists(Func<Reply, bool> func)
         {
-            throw new NotImplementedException();
+            return Context.Set<Reply>().Where(func).Any();
         }
 
         public Reply Get(Func<Reply, bool> func)
         {
-            throw new NotImplementedException();
+            Reply reply = Context.Set<Reply>().Include("User").Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            if (reply == null)
+                throw new NotFoundDbException("No se encontró el reply");
+            return reply;
         }
 
         public ICollection<Reply> GetAll(Func<Reply, bool> func)
