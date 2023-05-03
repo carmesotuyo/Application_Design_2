@@ -27,13 +27,13 @@
     <ProjectReference Include="..\BlogsApp.Factory\BlogsApp.Factory.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\BlogsApp.Logging.Logic\BlogsApp.Logging.Logic.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controllers\" />
     <None Remove="Filters\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Filters\" />
   </ItemGroup>
 </Project>

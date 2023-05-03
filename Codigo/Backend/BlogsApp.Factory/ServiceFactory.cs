@@ -5,6 +5,8 @@ using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using BlogsApp.Logging.DataAccess.Repositories;
+using BlogsApp.Logging.Logic.Services;
 
 namespace BlogsApp.Factory
 {
@@ -29,6 +31,8 @@ namespace BlogsApp.Factory
             services.AddScoped<ICommentLogic, CommentLogic>();
             services.AddScoped<IReplyRepository, ReplyRepository>();
             services.AddScoped<IReplyLogic, ReplyLogic>();
+            services.AddScoped<ILogEntryRepository, LogEntryRepository>();
+            services.AddScoped<ILoggerService, DbLoggerService>();
         }
 
         public void AddDbContextService() //string connectionString
