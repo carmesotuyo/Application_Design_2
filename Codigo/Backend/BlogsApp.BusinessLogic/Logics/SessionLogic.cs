@@ -84,7 +84,7 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             Guid guidToken;
             Guid.TryParse(token, out guidToken);
-            return token != null && _sessionRepository.Exists(s => s.Token == guidToken && s.DateTimeLogout != null);
+            return token != null && _sessionRepository.Exists(s => s.Token == guidToken && s.DateTimeLogout == null);
         }
 
         public User GetUserFromToken(Guid aToken)
