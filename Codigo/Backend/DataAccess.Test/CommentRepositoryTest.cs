@@ -63,13 +63,36 @@ namespace DataAccess.Test
         }
 
         [TestMethod]
-        public void Add_ShouldThrowAlreadyExistsDbException_WhenCommentExists()
+        public void Exists_ShouldReturnTrue_WhenCommentExists()
         {
-            _dbContext.Set<Comment>().Add(_comment);
+            // Arrange
+            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false);
+            var article = new Article("testarticle", "testbody", 1, user);
+            var comment = new Comment(user, "testcomment", article);
+
+            _dbContext.Set<Comment>().Add(comment);
             _dbContext.SaveChanges();
 
-            // Act and assert
-            Assert.ThrowsException<AlreadyExistsDbException>(() => _commentRepository.Add(_comment));
+            // Act
+            var result = _commentRepository.Exists(c => c.Id == comment.Id);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Exists_ShouldReturnFalse_WhenCommentDoesNotExist()
+        {
+            // Arrange
+            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false);
+            var article = new Article("testarticle", "testbody", 1, user);
+            var comment = new Comment(user, "testcomment", article);
+
+            // Act
+            var result = _commentRepository.Exists(c => c.Id == comment.Id);
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }
