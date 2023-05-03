@@ -37,12 +37,20 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
         {
-            throw new NotImplementedException();
+            ICollection<Comment> comments = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            if (comments.Count == 0)
+                throw new NotFoundDbException("No se encontraron comentarios");
+            return comments;
         }
 
         public void Update(Comment value)
         {
-            throw new NotImplementedException();
+            bool exists = Context.Set<Comment>().Where(i => i.Id == value.Id).Any();
+            if (!exists)
+                throw new NotFoundDbException("No existe comentario con ese Id");
+            Comment original = Context.Set<Comment>().Find(value.Id);
+            Context.Entry(original).CurrentValues.SetValues(value);
+            Context.SaveChanges();
         }
     }
 }

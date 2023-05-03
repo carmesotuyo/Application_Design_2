@@ -129,5 +129,36 @@ namespace DataAccess.Test
             // Act & Assert
             Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.Get(c => c.Id == nonExistentCommentId));
         }
+
+        [TestMethod]
+        public void GetAll_ShouldReturnAllCommentsMatchingCriteria()
+        {
+            // Arrange
+            var comment1 = new Comment(_testUser, "Comment 1", _testArticle);
+            var comment2 = new Comment(_testUser, "Comment 2", _testArticle);
+            _dbContext.Users.Add(_testUser);
+            _dbContext.Users.Add(_testUser2);
+            _dbContext.Articles.Add(_testArticle);
+            _dbContext.Comments.Add(comment1);
+            _dbContext.Comments.Add(comment2);
+            _dbContext.SaveChanges();
+
+            // Act
+            var comments = _commentRepository.GetAll(c => c.Article.Id == _testArticle.Id);
+
+            // Assert
+            Assert.AreEqual(2, comments.Count);
+        }
+
+        [TestMethod]
+        public void GetAll_ShouldThrowNotFoundDbException_WhenNoCommentExists()
+        {
+            // Arrange
+            _dbContext.Users.Add(_testUser);
+            _dbContext.SaveChanges();
+
+            // Act and assert
+            Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.GetAll(c => c.User.Id == _testUser.Id));
+        }
     }
 }
