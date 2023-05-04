@@ -22,7 +22,7 @@ namespace DataAccess.Test
         private static Article _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
         private Comment _comment = new Comment(_testUser, "Hola", _testArticle);
 
-        [TestInitialize]
+        [ClassInitialize]
         public void TestInit()
         {
             var options = new DbContextOptionsBuilder<Context>()
@@ -32,7 +32,7 @@ namespace DataAccess.Test
             _commentRepository = new CommentRepository(_dbContext);
         }
 
-        [TestCleanup]
+        [ClassCleanup]
         public void TestCleanup()
         {
             _dbContext.Database.EnsureDeleted();
