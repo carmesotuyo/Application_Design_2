@@ -6,16 +6,38 @@ namespace BlogsApp.WebAPI.DTOs
     {
         public static CommentDTO toDto(Comment comment)
         {
-            return new CommentDTO()
+            CommentDTO commentDto = new CommentDTO()
             {
                 Id = comment.Id,
                 User = new BasicUserDTO(comment.User),
                 ArticleId = comment.Article.Id,
                 Body = comment.Body,
-                Reply = ReplyConverter.toDto(comment.Reply, comment.Reply.User),
                 DateCreated = comment.DateCreated,
                 DateDeleted = comment.DateDeleted
             };
+
+            if (comment.Reply != null)
+            {
+                ReplyDTO replyDto = ReplyConverter.toDto(comment.Reply, comment.Reply.User);
+                commentDto.Reply = replyDto;
+            }
+
+
+            return commentDto;
+        }
+
+        public static BasicCommentDTO toBasicDto(Comment comment)
+        {
+            return new BasicCommentDTO()
+            {
+                Body = comment.Body,
+                ArticleId = comment.Article.Id
+            };
+        }
+
+        public static Comment FromDto(BasicCommentDTO dto, User user, Article article)
+        {
+            return new Comment(user, dto.Body, article);
         }
 
 

@@ -24,14 +24,15 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateComment([FromBody] CommentDTO comment, [FromHeader] string token)
+        public IActionResult CreateComment([FromBody] BasicCommentDTO comment, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
-            Comment createdCommented = commentLogic.CreateComment(new Comment(loggedUser, comment.Body, article), loggedUser);
-            return new OkObjectResult(CommentConverter.toDto(createdCommented));
+            Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
+            Comment createdCommented = commentLogic.CreateComment(newComment, loggedUser);
+            return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
 
         }
     }
