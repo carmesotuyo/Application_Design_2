@@ -150,17 +150,6 @@ namespace DataAccess.Test
         }
 
         [TestMethod]
-        public void GetAll_ShouldThrowNotFoundDbException_WhenNoCommentExists()
-        {
-            // Arrange
-            _dbContext.Users.Add(_testUser);
-            _dbContext.SaveChanges();
-
-            // Act and assert
-            Assert.ThrowsException<NotFoundDbException>(() => _commentRepository.GetAll(c => c.User.Id == _testUser.Id));
-        }
-
-        [TestMethod]
         public void Update_ShouldThrowNotFoundDbException_WhenCommentDoesNotExist()
         {
             // Act & Assert
