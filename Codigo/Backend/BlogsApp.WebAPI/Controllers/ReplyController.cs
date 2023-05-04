@@ -2,6 +2,7 @@
 using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
+using BlogsApp.WebAPI.DTOs;
 using BlogsApp.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
@@ -23,12 +24,14 @@ namespace BlogsApp.WebAPI.Controllers
 
 
         [HttpPost]
-        public IActionResult PostReply([FromBody] Reply reply, [FromHeader] string token)
+        public IActionResult PostReply([FromBody] BasicReplyDTO reply, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
-            return new OkObjectResult(replyLogic.CreateReply(reply, loggedUser));
+            Reply newReply = ReplyConverter.FromDto(reply, loggedUser);
+            Reply createdReply = replyLogic.CreateReply(newReply, loggedUser);
+            return new OkObjectResult(ReplyConverter.toBasicDto(createdReply));
         }
     }
 }

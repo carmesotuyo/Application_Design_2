@@ -4,7 +4,7 @@ namespace BlogsApp.WebAPI.DTOs
 {
     public class ReplyConverter
     {
-        public static Reply FromDto(ReplyDTO dto, User user)
+        public static Reply FromDto(BasicReplyDTO dto, User user)
         {
             return new Reply(user, dto.Body);
         }
@@ -17,6 +17,14 @@ namespace BlogsApp.WebAPI.DTOs
                 Body = reply.Body,
                 DateCreated = reply.DateCreated,
                 DateDeleted = reply.DateDeleted
+            };
+        }
+
+        public static BasicReplyDTO toBasicDto(Reply reply)
+        {
+            return new BasicReplyDTO()
+            {
+                Body = reply.Body
             };
         }
 

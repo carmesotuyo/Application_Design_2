@@ -10,4 +10,10 @@ namespace BlogsApp.WebAPI.DTOs
         public DateTime? DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
     }
+
+    public class BasicReplyDTO
+    {
+        public string Body { get; set; }
+        public int CommentId { get; set; }
+    }
 }
