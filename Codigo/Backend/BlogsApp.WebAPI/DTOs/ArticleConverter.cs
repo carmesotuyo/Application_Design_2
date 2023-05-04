@@ -35,5 +35,26 @@ namespace BlogsApp.WebAPI.DTOs
             }
             return basicArticleDtos;
         }
+
+        public static CompleteArticleDTO ToCompleteDto(Article article)
+        {
+            CompleteArticleDTO articleDto = new CompleteArticleDTO()
+            {
+                Id = article.Id,
+                Name = article.Name,
+                Username = article.User.Username,
+                Body = article.Body,
+                Private = article.Private,
+                Template = article.Template,
+                Image = article.Image
+            };
+
+            if (article.Comments!= null && article.Comments.Count > 0)
+            {
+                ICollection<CommentDTO> commentsDtos = CommentConverter.ToDtoList(article.Comments);
+                articleDto.commentsDtos = commentsDtos;
+            }
+            return articleDto;
+        }
     }
 }
