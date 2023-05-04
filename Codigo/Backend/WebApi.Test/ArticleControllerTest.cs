@@ -6,7 +6,6 @@ using Moq;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.Domain.Entities;
 using System.Data;
-using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
 using System.Net.Http;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
