@@ -41,7 +41,8 @@ namespace BlogsApp.WebAPI.Controllers
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             Article article = articleLogic.GetArticleById(id, loggedUser);
-            return new OkObjectResult(ArticleConverter.ToDto(article));
+
+            return new OkObjectResult(ArticleConverter.ToCompleteDto(article));
         }
 
         [HttpGet("stats")]
