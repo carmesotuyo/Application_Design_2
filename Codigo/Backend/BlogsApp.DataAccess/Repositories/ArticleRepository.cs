@@ -32,10 +32,19 @@ namespace BlogsApp.DataAccess.Repositories
 
         public Article Get(Func<Article, bool> func)
         {
-            Article article = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            Article article = Context.Set<Article>()
+                .Include(a => a.User)
+                .Include(a => a.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(a => a.Comments)
+                    .ThenInclude(c => c.Reply)
+                        .ThenInclude(r => r.User)
+                .Where(a => a.DateDeleted == null)
+                .FirstOrDefault(func);
             if (article == null)
                 throw new NotFoundDbException("No se encontró el artículo");
             return article;
+
         }
 
         public ICollection<Article> GetAll(Func<Article, bool> func)

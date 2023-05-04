@@ -13,7 +13,7 @@ namespace BlogsApp.Domain.Entities
         public DateTime? DateDeleted { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
-        public ICollection<Comment>? Comments;
+        public ICollection<Comment> Comments { get; set; }
         public int Template { get; set; }
         public string? Image { get; set; }
 
