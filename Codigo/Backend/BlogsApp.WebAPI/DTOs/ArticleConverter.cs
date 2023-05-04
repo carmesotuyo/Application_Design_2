@@ -38,7 +38,7 @@ namespace BlogsApp.WebAPI.DTOs
 
         public static CompleteArticleDTO ToCompleteDto(Article article)
         {
-            return new CompleteArticleDTO
+            CompleteArticleDTO articleDto = new CompleteArticleDTO()
             {
                 Id = article.Id,
                 Name = article.Name,
@@ -46,9 +46,15 @@ namespace BlogsApp.WebAPI.DTOs
                 Body = article.Body,
                 Private = article.Private,
                 Template = article.Template,
-                Image = article.Image,
-                commentsDtos = CommentConverter.ToDtoList(article.Comments)
+                Image = article.Image
             };
+
+            if (article.Comments!= null && article.Comments.Count > 0)
+            {
+                ICollection<CommentDTO> commentsDtos = CommentConverter.ToDtoList(article.Comments);
+                articleDto.commentsDtos = commentsDtos;
+            }
+            return articleDto;
         }
     }
 }

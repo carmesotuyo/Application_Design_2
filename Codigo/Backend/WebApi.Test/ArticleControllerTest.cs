@@ -162,6 +162,7 @@ namespace WebApi.Test
             articleLogicMock!.Setup(m => m.CreateArticle(It.IsAny<Article>(), It.IsAny<User>())).Returns(article);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
+
             var result = controller!.PostArticle(article, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
