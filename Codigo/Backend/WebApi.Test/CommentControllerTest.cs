@@ -14,6 +14,7 @@ namespace WebApi.Test
     {
         Mock<ICommentLogic> commentLogicMock;
         private Mock<ISessionLogic> sessionLogicMock;
+        private Mock<IArticleLogic> articleLogicMock;
         private CommmentController controller;
 
         private Comment comment;
@@ -25,7 +26,8 @@ namespace WebApi.Test
         {
             commentLogicMock = new Mock<ICommentLogic>(MockBehavior.Strict);
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
-            controller = new CommmentController(commentLogicMock.Object, sessionLogicMock.Object);
+            articleLogicMock = new Mock<IArticleLogic>(MockBehavior.Strict);
+            controller = new CommmentController(commentLogicMock.Object, sessionLogicMock.Object, articleLogicMock.Object);
 
             comment = new Comment();
             user = new User();
