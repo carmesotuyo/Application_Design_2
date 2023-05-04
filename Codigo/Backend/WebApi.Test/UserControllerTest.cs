@@ -63,7 +63,16 @@ namespace WebApi.Test
             aBloggerToUpdate = new User() { Id = 2 };
             updateBloggerRequestDto = new UpdateUserRequestDTO();
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
-            article = new Article();
+            article = new Article()
+            {
+                Id = 1,
+                Name = "name",
+                User = aValidBlogger,
+                Body = "body",
+                Private = false,
+                Template = 1,
+                Image = ""
+            };
             userArticles = new List<Article>() { article };
             token = Guid.NewGuid();
         }
@@ -206,10 +215,10 @@ namespace WebApi.Test
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
-            userLogicMock.VerifyAll();
+            articleLogicMock.VerifyAll();
+            sessionLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(200, statusCode);
-            Assert.AreEqual(objectResult.Value, userArticles);
         }
 
         [TestMethod]

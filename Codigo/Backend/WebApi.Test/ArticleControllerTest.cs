@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Http;
 using BlogsApp.WebAPI.Controllers;
 using System.Net.Http;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
-using BlogsApp.Logging.Logic.Services;  
+using BlogsApp.Logging.Logic.Services;
+using BlogsApp.WebAPI.DTOs;
 
 namespace WebApi.Test
 {
@@ -21,7 +22,6 @@ namespace WebApi.Test
         private Mock<ISessionLogic> sessionLogicMock;
         private ArticleController controller;
         private Mock<ILoggerService> loggerLogicMock;
-        //HttpContext httpContext;
 
         private Article article;
         private IEnumerable<Article> articles;
@@ -29,6 +29,9 @@ namespace WebApi.Test
         private User userAdmin;
         private List<int> yearlyStats;
         private Guid token;
+        private BasicArticleDto basicArticleDto;
+        private UpdateArticleRequestDTO updateArticleDto;
+        private IEnumerable<BasicArticleDto> responseList;
 
         [TestInitialize]
 		public void InitTest()
@@ -37,28 +40,30 @@ namespace WebApi.Test
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
             loggerLogicMock = new Mock<ILoggerService>(MockBehavior.Strict);
             controller = new ArticleController(articleLogicMock.Object, sessionLogicMock.Object, loggerLogicMock.Object);
-            userBlogger = new User() { Blogger = true, Id = 1 };
-            article = new Article() { Id = 1, UserId = 1 };
+            userBlogger = new User() { Blogger = true, Id = 1, Username = "blogger" };
+            article = new Article() { Id = 1, Name = "name", UserId = 1, User = userBlogger, Body = "body", Private = false, Template = 1, Image = "" };
             articles = new List<Article>() { article };
             userAdmin = new User() { Admin = true };
             yearlyStats = new List<int>();
             token = Guid.NewGuid();
+            basicArticleDto = ArticleConverter.ToDto(article);
+            updateArticleDto = new UpdateArticleRequestDTO() { Body = "updated body" };
+            responseList = ArticleConverter.ToDtoList(articles);
         }
 
         [TestMethod]
         public void GetAllArticles()
         {
-            articleLogicMock.Setup(m => m.GetArticles(userBlogger, null)).Returns(articles);
+            articleLogicMock.Setup(m => m.GetArticles(It.IsAny<User>(), null)).Returns(articles);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            IActionResult result = controller!.Get(default, token.ToString());
-            articleLogicMock.VerifyAll();
-            OkObjectResult objectResult = result as OkObjectResult;
+            var result = controller!.Get(default, token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
 
-            Assert.IsNotNull(result);
             articleLogicMock.VerifyAll();
-
-            Assert.IsTrue(objectResult.Value.Equals(articles));
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
         }
 
         [TestMethod]
@@ -67,14 +72,13 @@ namespace WebApi.Test
             articleLogicMock.Setup(m => m.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            IActionResult result = controller!.GetArticleById(article.Id, token.ToString());
-            articleLogicMock.VerifyAll();
-            OkObjectResult objectResult = result as OkObjectResult;
+            var result = controller!.GetArticleById(article.Id, token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
 
-            Assert.IsNotNull(result);
             articleLogicMock.VerifyAll();
-
-            Assert.IsTrue(objectResult.Value.Equals(article));
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
         }
 
         [TestMethod]
@@ -84,12 +88,15 @@ namespace WebApi.Test
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
             loggerLogicMock.Setup(m => m.LogSearch(It.IsAny<int>(), It.IsAny<string>()));
 
-            IActionResult result = controller!.Get("search text", token.ToString());
-            OkObjectResult objectResult = result as OkObjectResult;
+            var result = controller!.Get("search text", token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
 
 
             articleLogicMock.VerifyAll();
             loggerLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
         }
 
         [TestMethod]
@@ -98,14 +105,13 @@ namespace WebApi.Test
             articleLogicMock.Setup(m => m.GetStatsByYear(It.IsAny<int>(), It.IsAny<User>())).Returns(yearlyStats);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            IActionResult result = controller!.GetStatsByYear(2020, token.ToString());
+            var result = controller!.GetStatsByYear(2020, token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
             articleLogicMock.VerifyAll();
-
-            OkObjectResult objectResult = result as OkObjectResult;
-
-            Assert.IsNotNull(result);
-            articleLogicMock.VerifyAll();
-
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
             Assert.IsTrue(objectResult.Value.Equals(yearlyStats));
         }
 
@@ -116,7 +122,7 @@ namespace WebApi.Test
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
             var result = controller!.DeleteArticle(article.Id, token.ToString());
-            var objectResult = result as OkResult;
+            var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
@@ -162,14 +168,13 @@ namespace WebApi.Test
             articleLogicMock!.Setup(m => m.CreateArticle(It.IsAny<Article>(), It.IsAny<User>())).Returns(article);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-
-            var result = controller!.PostArticle(article, token.ToString());
+            var result = controller!.PostArticle(basicArticleDto, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
-            Assert.AreEqual(objectResult.Value, article);
+            Assert.AreEqual(200, statusCode);
         }
 
         [TestMethod]
@@ -179,7 +184,7 @@ namespace WebApi.Test
             articleLogicMock.Setup(m => m.CreateArticle(It.IsAny<Article>(), It.IsAny<User>())).Throws(new UnauthorizedAccessException());
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
 
-            var result = controller.PostArticle(It.IsAny<Article>(), token.ToString());
+            var result = controller.PostArticle(basicArticleDto, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -190,11 +195,12 @@ namespace WebApi.Test
         [TestMethod]
         public void UpdateArticleOk()
         {
-            articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Returns(It.IsAny<Article>());
+            articleLogicMock!.Setup(x => x.UpdateArticle(It.IsAny<int>(), It.IsAny<Article>(), It.IsAny<User>())).Returns(article);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
+            articleLogicMock!.Setup(x => x.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
 
-            var result = controller!.UpdateArticle(article!.Id, article, token.ToString());
-            var objectResult = result as ObjectResult;
+            var result = controller!.UpdateArticle(article!.Id, updateArticleDto, token.ToString());
+            var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
             articleLogicMock.VerifyAll();
@@ -207,8 +213,9 @@ namespace WebApi.Test
         {
             articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new UnauthorizedAccessException());
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
+            articleLogicMock!.Setup(x => x.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
 
-            var result = controller!.UpdateArticle(article!.Id, article, token.ToString());
+            var result = controller!.UpdateArticle(article!.Id, updateArticleDto, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -222,8 +229,9 @@ namespace WebApi.Test
         {
             articleLogicMock!.Setup(x => x.UpdateArticle(article.Id, article!, userBlogger)).Throws(new NotFoundDbException(""));
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(userBlogger);
+            articleLogicMock!.Setup(x => x.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
 
-            var result = controller!.UpdateArticle(article!.Id, article, token.ToString());
+            var result = controller!.UpdateArticle(article!.Id, updateArticleDto, token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 

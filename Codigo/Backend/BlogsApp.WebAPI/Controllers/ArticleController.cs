@@ -59,7 +59,7 @@ namespace BlogsApp.WebAPI.Controllers
             Guid tokenGuid = Guid.Parse(token);
             User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
             articleLogic.DeleteArticle(id, loggedUser);
-            return new OkResult();
+            return new OkObjectResult("Artículo eliminado correctamente");
         }
 
         [HttpPost]
