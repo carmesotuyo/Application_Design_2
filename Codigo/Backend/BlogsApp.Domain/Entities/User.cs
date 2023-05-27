@@ -13,7 +13,6 @@
         public DateTime? DateDeleted { get; set; }
         public ICollection<Article> Articles { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<Reply> Replies { get; set; }
 
         private string _username;
         private string _email;
@@ -29,7 +28,6 @@
             Admin = admin;
             Articles = new List<Article>();
             Comments = new List<Comment>();
-            Replies = new List<Reply>();
         }
 
         public User() { }
