@@ -100,7 +100,7 @@ namespace BusinessLogic.Test
         }
 
         [TestMethod]
-        public void CreateReplyWithoutPermissions()
+        public void CreateSubCommentWithoutPermissions()
         {
             Assert.ThrowsException<UnauthorizedAccessException>(() => commentLogic.ReplyToComment(comment, comment2, userAdmin));
         }

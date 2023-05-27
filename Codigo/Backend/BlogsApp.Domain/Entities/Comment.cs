@@ -21,6 +21,6 @@
             SubComments = new List<Comment>();
         }
 
-        public Comment() { }
+        public Comment() { SubComments = new List<Comment>(); }
     }
 }
