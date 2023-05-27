@@ -18,6 +18,7 @@ namespace WebApi.Test
         private CommmentController controller;
 
         private Comment comment;
+        private Comment parentComment;
         private BasicCommentDTO commentDTO;
         private User user;
         private Guid token;
@@ -33,6 +34,7 @@ namespace WebApi.Test
 
             article = new Article() { Id = 1 };
             comment = new Comment() { Body = "Body", Article = article };
+            parentComment = new Comment() { Body = "Parent", Article = article, Id = 1 };
             commentDTO = CommentConverter.toBasicDto(comment);
             user = new User();
             token = Guid.NewGuid();
@@ -72,6 +74,25 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
             sessionLogicMock.VerifyAll();
             Assert.AreEqual(500, statusCode);
+        }
+
+        [TestMethod]
+        public void CreateSubCommentFromParent()
+        {
+            commentLogicMock.Setup(m => m.ReplyToComment(It.IsAny<Comment>(), It.IsAny<Comment>(), It.IsAny<User>())).Returns(comment);
+            commentLogicMock.Setup(m => m.GetCommentById(It.IsAny<int>())).Returns(parentComment);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
+            articleLogicMock!.Setup(m => m.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
+
+            var result = controller.CreateSubCommentFromParent(commentDTO, parentComment.Id, token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            commentLogicMock.VerifyAll();
+            articleLogicMock.VerifyAll();
+            sessionLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
         }
     }
 }
