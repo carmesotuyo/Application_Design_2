@@ -63,5 +63,10 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             return a => a.Id == id && a.DateDeleted != null;
         }
+
+        public Comment GetCommentById(int id)
+        {
+            return _commentRepository.Get(CommentById(id));
+        }
     }
 }

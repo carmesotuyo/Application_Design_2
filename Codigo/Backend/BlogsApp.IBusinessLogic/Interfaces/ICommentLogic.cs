@@ -8,5 +8,6 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void DeleteComment(int commentId, User loggedUser);
         IEnumerable<Comment> GetCommentsSince(User loggedUser, DateTime? lastLogout);
         Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser);
+        Comment GetCommentById(int id);
     }
 }
