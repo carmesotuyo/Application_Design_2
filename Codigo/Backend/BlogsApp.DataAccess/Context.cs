@@ -1,5 +1,4 @@
-﻿using System;
-using BlogsApp.Domain.Entities;
+﻿using BlogsApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using BlogsApp.Logging.Entities;

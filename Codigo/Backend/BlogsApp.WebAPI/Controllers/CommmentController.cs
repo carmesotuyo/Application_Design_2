@@ -1,10 +1,8 @@
-﻿using System;
-using BlogsApp.Domain.Entities;
+﻿using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {

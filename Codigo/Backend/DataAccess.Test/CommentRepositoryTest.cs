@@ -4,11 +4,6 @@ using BlogsApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.DataAccess.Repositories;
 using BlogsApp.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Test
 {
