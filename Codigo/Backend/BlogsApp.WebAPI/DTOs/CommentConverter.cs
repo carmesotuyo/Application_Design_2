@@ -13,13 +13,13 @@ namespace BlogsApp.WebAPI.DTOs
                 ArticleId = comment.Article.Id,
                 Body = comment.Body,
                 DateCreated = comment.DateCreated,
-                DateDeleted = comment.DateDeleted
+                DateDeleted = comment.DateDeleted,
+                SubComments = new List<CommentDTO>()
             };
 
-            if (comment.Reply != null)
+            foreach(Comment subcomment in comment.SubComments)
             {
-                ReplyDTO replyDto = ReplyConverter.toDto(comment.Reply, comment.Reply.User);
-                commentDto.Reply = replyDto;
+                commentDto.SubComments.Add(toDto(subcomment));
             }
 
 
