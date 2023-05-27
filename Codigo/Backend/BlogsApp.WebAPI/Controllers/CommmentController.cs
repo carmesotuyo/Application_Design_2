@@ -33,7 +33,19 @@ namespace BlogsApp.WebAPI.Controllers
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
             Comment createdCommented = commentLogic.CreateComment(newComment, loggedUser);
             return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
+        }
 
+        [HttpPost("{id}")]
+        public IActionResult CreateSubCommentFromParent([FromBody] BasicCommentDTO comment, [FromRoute] int parentCommentId, [FromHeader] string token)
+        {
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+
+            Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
+            Comment parentComment = commentLogic.GetCommentById(parentCommentId);
+            Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
+            Comment createdCommented = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
+            return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
         }
     }
 }
