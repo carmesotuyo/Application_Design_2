@@ -18,9 +18,10 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (loggedUser.Blogger)
             {
+                Comment createdComment = this.CreateComment(newComment, loggedUser);
                 parentComment.SubComments.Add(newComment);
                 this._commentRepository.Update(parentComment);
-                return this.CreateComment(newComment, loggedUser);
+                return createdComment;
             }
 
             throw new UnauthorizedAccessException("Sólo Bloggers pueden hacer comentarios");
@@ -61,7 +62,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         private Func<Comment, bool> CommentById(int id)
         {
-            return a => a.Id == id && a.DateDeleted != null;
+            return a => a.Id == id && a.DateDeleted == null;
         }
 
         public Comment GetCommentById(int id)

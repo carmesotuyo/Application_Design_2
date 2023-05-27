@@ -33,7 +33,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("{parentCommentId}")]
         public IActionResult CreateSubCommentFromParent([FromBody] BasicCommentDTO comment, [FromRoute] int parentCommentId, [FromHeader] string token)
         {
             Guid tokenGuid = Guid.Parse(token);
@@ -42,8 +42,8 @@ namespace BlogsApp.WebAPI.Controllers
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
             Comment parentComment = commentLogic.GetCommentById(parentCommentId);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
-            Comment createdCommented = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
-            return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
+            Comment createdComment = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
+            return new OkObjectResult(CommentConverter.toBasicDto(createdComment));
         }
     }
 }
