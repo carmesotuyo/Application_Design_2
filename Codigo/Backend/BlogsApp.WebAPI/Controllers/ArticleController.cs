@@ -4,7 +4,6 @@ using BlogsApp.WebAPI.Filters;
 using BlogsApp.Domain.Entities;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.Logging.Logic.Services;
-using BlogsApp.BusinessLogic.Logics;
 
 namespace BlogsApp.WebAPI.Controllers
 {

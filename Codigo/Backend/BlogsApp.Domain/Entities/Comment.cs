@@ -6,7 +6,7 @@
         public User User { get;  set; }
         public string Body { get; set; }
         public Article Article { get; set; }
-        public Reply? Reply { get; set; }
+        public ICollection<Comment> SubComments { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
@@ -18,8 +18,9 @@
             Article = article;
             DateCreated = DateTime.Now;
             DateModified = DateTime.Now;
+            SubComments = new List<Comment>();
         }
 
-        public Comment() { }
+        public Comment() { SubComments = new List<Comment>(); }
     }
 }

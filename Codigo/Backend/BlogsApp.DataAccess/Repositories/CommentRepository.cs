@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
-using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {

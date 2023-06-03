@@ -8,25 +8,23 @@ namespace BlogsApp.BusinessLogic.Logics
     public class CommentLogic : ICommentLogic
     {
         private readonly ICommentRepository _commentRepository;
-        private readonly IReplyLogic _replyLogic;
 
-        public CommentLogic(ICommentRepository commentRepository, IReplyLogic replyLogic)
+        public CommentLogic(ICommentRepository commentRepository)
         {
             _commentRepository = commentRepository;
-            _replyLogic = replyLogic;
         }
 
-        public Reply AddReply(Comment comment, Reply reply, User loggedUser)
+        public Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser)
         {
-            if (loggedUser.Blogger && comment.Article.UserId == loggedUser.Id)
+            if (loggedUser.Blogger)
             {
-                comment.Reply = reply;
-                Reply created = _replyLogic.CreateReply(reply, loggedUser);
-                this._commentRepository.Update(comment);
-                return created;
+                Comment createdComment = this.CreateComment(newComment, loggedUser);
+                parentComment.SubComments.Add(newComment);
+                this._commentRepository.Update(parentComment);
+                return createdComment;
             }
 
-            throw new UnauthorizedAccessException("Sólo los autores del artículo pueden responder a los comentarios");
+            throw new UnauthorizedAccessException("Sólo Bloggers pueden hacer comentarios");
         }
 
         public Comment CreateComment(Comment comment, User loggedUser)
@@ -45,10 +43,6 @@ namespace BlogsApp.BusinessLogic.Logics
             Comment comment = _commentRepository.Get(CommentById(commentId));
             if (loggedUser.Id == comment.User.Id)
             {
-                if(comment.Reply != null)
-                {
-                    _replyLogic.DeleteReply(comment.Reply.Id, loggedUser);
-                }
                 comment.DateDeleted = DateTime.Now;
                 this._commentRepository.Update(comment);
             }
@@ -68,7 +62,12 @@ namespace BlogsApp.BusinessLogic.Logics
 
         private Func<Comment, bool> CommentById(int id)
         {
-            return a => a.Id == id && a.DateDeleted != null;
+            return a => a.Id == id && a.DateDeleted == null;
+        }
+
+        public Comment GetCommentById(int id)
+        {
+            return _commentRepository.Get(CommentById(id));
         }
     }
 }

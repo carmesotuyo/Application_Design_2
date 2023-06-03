@@ -1,10 +1,8 @@
-﻿using System;
-using BlogsApp.Domain.Entities;
+﻿using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.WebAPI.Filters;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Common;
 
 namespace BlogsApp.WebAPI.Controllers
 {
@@ -33,7 +31,19 @@ namespace BlogsApp.WebAPI.Controllers
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
             Comment createdCommented = commentLogic.CreateComment(newComment, loggedUser);
             return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
+        }
 
+        [HttpPost("{parentCommentId}")]
+        public IActionResult CreateSubCommentFromParent([FromBody] BasicCommentDTO comment, [FromRoute] int parentCommentId, [FromHeader] string token)
+        {
+            Guid tokenGuid = Guid.Parse(token);
+            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+
+            Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
+            Comment parentComment = commentLogic.GetCommentById(parentCommentId);
+            Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
+            Comment createdComment = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
+            return new OkObjectResult(CommentConverter.toBasicDto(createdComment));
         }
     }
 }

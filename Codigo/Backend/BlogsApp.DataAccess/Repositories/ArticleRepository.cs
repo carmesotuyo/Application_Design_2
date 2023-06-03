@@ -37,8 +37,8 @@ namespace BlogsApp.DataAccess.Repositories
                 .Include(a => a.Comments)
                     .ThenInclude(c => c.User)
                 .Include(a => a.Comments)
-                    .ThenInclude(c => c.Reply)
-                        .ThenInclude(r => r.User)
+                    .ThenInclude(c => c.SubComments)
+                        .ThenInclude(s => s.User)
                 .Where(a => a.DateDeleted == null)
                 .FirstOrDefault(func);
             if (article == null)
