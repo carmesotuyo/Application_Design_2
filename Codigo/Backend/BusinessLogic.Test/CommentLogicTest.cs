@@ -3,6 +3,7 @@ using Moq;
 using BlogsApp.IDataAccess.Interfaces;
 using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 
 namespace BusinessLogic.Test
 {
@@ -11,6 +12,7 @@ namespace BusinessLogic.Test
     {
         private Mock<ICommentRepository> commentRepository;
         private CommentLogic commentLogic;
+        private Mock<IUserLogic> userLogic;
         private ICollection<Comment> comments;
         private Comment comment;
         private Comment comment2;
@@ -22,8 +24,9 @@ namespace BusinessLogic.Test
         public void TestInitialize()
         {
             commentRepository = new Mock<ICommentRepository>(MockBehavior.Strict);
-            commentLogic = new CommentLogic(commentRepository.Object);
-            userBlogger = new User() { Blogger = true, Id = 1 };
+            userLogic = new Mock<IUserLogic>(MockBehavior.Strict);
+            commentLogic = new CommentLogic(commentRepository.Object, userLogic.Object);
+            userBlogger = new User() { Blogger = true, Id = 1, Comments = new List<Comment>()};
             userAdmin = new User() { Blogger = false, Id = 2 };
             article = new Article() { UserId = userBlogger.Id };
             comment = new Comment() { User = userBlogger, Article = article, DateModified = DateTime.Today };
@@ -35,6 +38,7 @@ namespace BusinessLogic.Test
         public void CreateComment()
         {
             commentRepository.Setup(x => x.Add(It.IsAny<Comment>())).Returns(comment);
+            userLogic.Setup(x => x.UpdateUser(It.IsAny<User>(), It.IsAny<User>())).Returns(userBlogger);
 
             Comment result = commentLogic.CreateComment(comment, userBlogger);
 
@@ -88,6 +92,7 @@ namespace BusinessLogic.Test
         {
             commentRepository.Setup(x => x.Add(It.IsAny<Comment>())).Returns(comment2);
             commentRepository.Setup(x => x.Update(It.IsAny<Comment>()));
+            userLogic.Setup(x => x.UpdateUser(It.IsAny<User>(), It.IsAny<User>())).Returns(userBlogger);
 
             Comment result = commentLogic.ReplyToComment(comment, comment2, userBlogger);
 

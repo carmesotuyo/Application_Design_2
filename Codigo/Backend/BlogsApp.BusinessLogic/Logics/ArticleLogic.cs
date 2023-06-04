@@ -3,21 +3,20 @@ using BlogsApp.Domain.Exceptions;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
 using System.Data;
-using System.Linq.Expressions;
-using static System.Net.Mime.MediaTypeNames;
-using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
     public class ArticleLogic : IArticleLogic
     {
         private readonly IArticleRepository _articleRepository;
+        private readonly IUserLogic _userLogic;
         private readonly ICommentLogic _commentLogic;
 
-        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic)
+        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic, IUserLogic userLogic)
         {
             _articleRepository = articleRepository;
             _commentLogic = commentLogic;
+            _userLogic = userLogic;
         }
 
         public Article CreateArticle(Article article, User loggedUser)
@@ -25,7 +24,8 @@ namespace BlogsApp.BusinessLogic.Logics
             if (loggedUser.Blogger && isValidArticle(article))
             {
                 this._articleRepository.Add(article);
-                
+                loggedUser.Articles.Add(article);
+                this._userLogic.UpdateUser(loggedUser, loggedUser);
                 return article;
             } else
             {

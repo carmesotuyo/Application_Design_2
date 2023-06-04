@@ -8,10 +8,12 @@ namespace BlogsApp.BusinessLogic.Logics
     public class CommentLogic : ICommentLogic
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserLogic _userLogic;
 
-        public CommentLogic(ICommentRepository commentRepository)
+        public CommentLogic(ICommentRepository commentRepository, IUserLogic userLogic)
         {
             _commentRepository = commentRepository;
+            _userLogic = userLogic;
         }
 
         public Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser)
@@ -32,6 +34,8 @@ namespace BlogsApp.BusinessLogic.Logics
             if (loggedUser.Blogger)
             {
                 this._commentRepository.Add(comment);
+                loggedUser.Comments.Add(comment);
+                this._userLogic.UpdateUser(loggedUser, loggedUser);
                 return comment;
             }
 

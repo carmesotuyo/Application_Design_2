@@ -42,7 +42,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public User Get(Func<User, bool> func)
         {
-            User user = Context.Set<User>().Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            User user = Context.Set<User>().Include(u => u.Articles).Where(a => a.DateDeleted == null).FirstOrDefault(func);
             if (user == null)
                 throw new NotFoundDbException("No se encontraron usuarios");
             return user;

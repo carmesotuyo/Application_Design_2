@@ -62,11 +62,11 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 return _userRepository.GetAll(m => m.DateDeleted == null)
                                                 .Select(m => new
-                                                {
-                                                    User = m,
-                                                    Points = m.Articles.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
-                                                              + m.Comments.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
-                                                })
+                                                 {
+                                                     User = m,
+                                                     Points = m.Articles?.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
+                                                              + m.Comments?.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
+                                                 })
                                                 .Where(m => m.Points > 0)
                                                 .OrderByDescending(m => m.Points)
                                                 .ThenBy(m => m.User.Id)

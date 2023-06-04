@@ -13,7 +13,7 @@ namespace BusinessLogic.Test
     [TestClass]
     public class ArticleLogicTests
     {
-        private static readonly User user = new User { Id = 1, Username = "TestUserName", Name = "Test User", Blogger = true };
+        private static readonly User user = new User { Id = 1, Username = "TestUserName", Name = "Test User", Blogger = true, Articles = new List<Article>() };
         private readonly Article Articulo1 = new Article { Id = 1, Name = "Test Article, text1", DateModified = DateTime.Today, DateCreated = DateTime.Parse("2022-01-05") };
 
         private readonly Article Articulo2 = new Article { Id = 2, Name = "Test Article 2", Body = "text1", DateModified = DateTime.Today, DateCreated = DateTime.Parse("2022-01-05") };
@@ -43,6 +43,7 @@ namespace BusinessLogic.Test
 
         private Mock<IArticleRepository> articleRepository;
         private Mock<ICommentLogic> commentLogic;
+        private Mock<IUserLogic> userLogic;
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
@@ -55,7 +56,8 @@ namespace BusinessLogic.Test
         {
             articleRepository = new Mock<IArticleRepository>(MockBehavior.Default);
             commentLogic = new Mock<ICommentLogic>(MockBehavior.Default);
-            articleLogic = new ArticleLogic(articleRepository.Object, commentLogic.Object);
+            userLogic = new Mock<IUserLogic>(MockBehavior.Strict);
+            articleLogic = new ArticleLogic(articleRepository.Object, commentLogic.Object, userLogic.Object);
             allArticles = new List<Article>() { Articulo1, Articulo2, Articulo3, Articulo4, Articulo5, Articulo6, Articulo7, Articulo8, Articulo9, Articulo10, Articulo11, Articulo12 };
             newArticle = new List<Article>() { Articulo11 };
         }
@@ -168,6 +170,7 @@ namespace BusinessLogic.Test
         public void CreateArticleTest()
         {
             articleRepository.Setup(x => x.Add(It.IsAny<Article>())).Returns(Articulo11);
+            userLogic.Setup(x => x.UpdateUser(It.IsAny<User>(), It.IsAny<User>())).Returns(user);
 
             Article result = articleLogic.CreateArticle(Articulo11, user);
 
