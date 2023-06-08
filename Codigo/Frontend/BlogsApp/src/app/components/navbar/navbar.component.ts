@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginService } from '../../services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,7 @@ import { LoginService } from '../../services/login.service';
 export class NavbarComponent {
   username: string | null = '';
 
-  constructor(private authService: AuthService, private loginService: LoginService) { }
+  constructor(private authService: AuthService, private loginService: LoginService, private router: Router) { }
 
   ngOnInit() {
     // Obtener el nombre de usuario del servicio de autenticación
@@ -18,7 +19,7 @@ export class NavbarComponent {
   }
 
   logout() {
-    const userId = '17'; // Reemplazar con el ID del usuario actual
+    const userId = '20'; // Reemplazar con el ID del usuario actual
     const token = this.authService.getToken(); // Obtener el token del almacenamiento local
   
     this.loginService.logout(userId, token).subscribe(
@@ -26,6 +27,7 @@ export class NavbarComponent {
         // Lógica adicional después del logout
         console.log('Logout correcto');
         this.authService.logout();
+        //this.router.navigateByUrl('/login');
       },
       (error) => {
         // Manejo de errores

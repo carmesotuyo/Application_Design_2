@@ -20,6 +20,14 @@ export class LoginComponent {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    //de prueba
+    if(this.authService.isAuthenticated()) {
+      //alert(this.authService.getToken());
+      //this.router.navigateByUrl('/home');
+    }
+
+
   }
 
   constructor(private loginService: LoginService, private router: Router, private formBuilder: FormBuilder, private authService: AuthService) {}
@@ -39,6 +47,7 @@ export class LoginComponent {
           //this.router.navigate(['/home']);
           console.log('Inicio de sesión correcto:', response.message);
           // Redirigir al usuario a la pantalla principal (HomeComponent) u otra vista deseada
+          this.router.navigateByUrl('/home');
         } else {
           console.log('Inicio de sesión fallido:', response.message);
         }
