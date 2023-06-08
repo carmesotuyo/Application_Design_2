@@ -149,10 +149,11 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userAdmin);
+            IDictionary<string, int> result = articleLogic.GetStatsByYear(2022, userAdmin);
 
             articleRepository.VerifyAll();
-            Assert.IsTrue(result.Count() == 7);
+            Assert.IsTrue(result.Keys.Count() == 12); // el resultado debe mostrar los 12 meses
+            Assert.AreEqual(result["January"], 3);
         }
 
         [TestMethod]
@@ -161,7 +162,7 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userBlogger);
+            IDictionary<string, int> result = articleLogic.GetStatsByYear(2022, userBlogger);
         }
 
         [TestMethod]
