@@ -18,7 +18,7 @@ export class NavbarComponent {
   }
 
   logout() {
-    const userId = '14'; // Reemplazar con el ID del usuario actual
+    const userId = '17'; // Reemplazar con el ID del usuario actual
     const token = this.authService.getToken(); // Obtener el token del almacenamiento local
   
     this.loginService.logout(userId, token).subscribe(

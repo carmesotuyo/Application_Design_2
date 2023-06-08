@@ -9,12 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from './services/login.service';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { HomeComponent } from './components/home/home.component';
+import { AuthService } from './services/auth.service';
+import { ArticleService } from './services/article.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    NavbarComponent
+    NavbarComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +27,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     FormsModule
   ],
   providers: [
-    LoginService
+    LoginService,
+    AuthService,
+    ArticleService
   ],
   bootstrap: [AppComponent]
 })
