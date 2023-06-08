@@ -12,21 +12,18 @@ namespace BlogsApp.WebAPI.Controllers
     public class ArticleController : BlogsAppControllerBase
     {
         private readonly IArticleLogic articleLogic;
-        private readonly ISessionLogic sessionLogic;
         private readonly ILoggerService loggerService;
 
-        public ArticleController(IArticleLogic articleLogic, ISessionLogic sessionLogic, ILoggerService loggerService)
+        public ArticleController(IArticleLogic articleLogic, ISessionLogic sessionLogic, ILoggerService loggerService) : base (sessionLogic)
         {
             this.articleLogic = articleLogic;
-            this.sessionLogic = sessionLogic;
             this.loggerService = loggerService;
         }
 
         [HttpGet]
         public IActionResult Get([FromQuery] string? search, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            User loggedUser = base.GetLoggedUser(token);
             if (search != null) {
                 loggerService.LogSearch(loggedUser.Id, search);
             };
@@ -37,9 +34,7 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetArticleById([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            Article article = articleLogic.GetArticleById(id, loggedUser);
+            Article article = articleLogic.GetArticleById(id, base.GetLoggedUser(token));
 
             return new OkObjectResult(ArticleConverter.ToCompleteDto(article));
         }
@@ -47,25 +42,20 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpGet("stats")]
         public IActionResult GetStatsByYear([FromQuery] int year, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(articleLogic.GetStatsByYear(year, loggedUser));
+            return new OkObjectResult(articleLogic.GetStatsByYear(year, base.GetLoggedUser(token)));
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteArticle([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            articleLogic.DeleteArticle(id, loggedUser);
+            articleLogic.DeleteArticle(id, base.GetLoggedUser(token));
             return new OkObjectResult("Artículo eliminado correctamente");
         }
 
         [HttpPost]
         public IActionResult PostArticle([FromBody] BasicArticleDto articleDto, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            User loggedUser = base.GetLoggedUser(token);
             Article article = ArticleConverter.FromDto(articleDto, loggedUser);
             Article newArticle = articleLogic.CreateArticle(article, loggedUser);
             return new OkObjectResult(ArticleConverter.ToDto(newArticle));
@@ -74,8 +64,7 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateArticle([FromRoute] int id, [FromBody] UpdateArticleRequestDTO articleRequestDTO, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            User loggedUser = base.GetLoggedUser(token);
             Article updatedArticle = articleRequestDTO.ApplyChangesToArticle(articleLogic.GetArticleById(id, loggedUser));
             Article newArticle = articleLogic.UpdateArticle(id, updatedArticle, loggedUser);
             return new OkObjectResult(ArticleConverter.ToDto(newArticle));

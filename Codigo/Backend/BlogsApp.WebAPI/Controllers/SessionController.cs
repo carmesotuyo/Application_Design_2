@@ -16,7 +16,7 @@ namespace BlogsApp.WebAPI.Controllers
         private readonly ISessionLogic sessionLogic;
         private readonly ILoggerService _loggerService;
 
-        public SessionController(ISessionLogic sessionLogic, ILoggerService loggerService)
+        public SessionController(ISessionLogic sessionLogic, ILoggerService loggerService) : base(sessionLogic)
         {
             this.sessionLogic = sessionLogic;
             _loggerService = loggerService;
@@ -39,9 +39,7 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpPatch("{id}")]
         public IActionResult Logout([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            sessionLogic.Logout(id, loggedUser);
+            sessionLogic.Logout(id, base.GetLoggedUser(token));
 
             return new OkObjectResult("Usuario deslogueado correctamente");
         }

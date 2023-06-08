@@ -14,20 +14,16 @@ namespace BlogsApp.WebAPI.Controllers
     public class LogController : BlogsAppControllerBase
     {
         private readonly ILoggerService loggerService;
-        private readonly ISessionLogic sessionLogic;
 
-        public LogController(ILoggerService loggerService, ISessionLogic sessionLogic)
+        public LogController(ILoggerService loggerService, ISessionLogic sessionLogic) : base (sessionLogic)
         {
             this.loggerService = loggerService;
-            this.sessionLogic = sessionLogic;
         }
 
         [HttpGet]
         public IActionResult Get([FromQuery] DateTime from, [FromQuery] DateTime to, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(loggerService.GetLogs(from, to, loggedUser));
+            return new OkObjectResult(loggerService.GetLogs(from, to, base.GetLoggedUser(token)));
         }
     }
 
