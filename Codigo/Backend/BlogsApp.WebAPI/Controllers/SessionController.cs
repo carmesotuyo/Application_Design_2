@@ -36,10 +36,10 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [ServiceFilter(typeof(AuthorizationFilter))]
-        [HttpPatch("{id}")]
-        public IActionResult Logout([FromRoute] int id, [FromHeader] string token)
+        [HttpPatch]
+        public IActionResult Logout([FromHeader] string token)
         {
-            sessionLogic.Logout(id, base.GetLoggedUser(token));
+            sessionLogic.Logout(base.GetLoggedUser(token));
 
             return new OkObjectResult("Usuario deslogueado correctamente");
         }
