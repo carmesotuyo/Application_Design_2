@@ -12,9 +12,17 @@
 
     }
 
-    public class BasicCommentDTO {
+    public class BasicCommentDTO
+    {
         public string Body { get; set; }
         public int ArticleId { get; set; }
+    }
+
+    public class NotificationCommentDto
+    {
+        public string Body { get; set; }
+        public int ArticleId { get; set; }
+        public int CommentId { get; set; }
     }
 
 }

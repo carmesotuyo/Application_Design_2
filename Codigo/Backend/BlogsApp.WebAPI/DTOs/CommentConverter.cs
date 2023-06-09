@@ -35,6 +35,16 @@ namespace BlogsApp.WebAPI.DTOs
             };
         }
 
+        public static NotificationCommentDto toNotificationDto(Comment comment)
+        {
+            return new NotificationCommentDto()
+            {
+                Body = comment.Body,
+                ArticleId = comment.Article.Id,
+                CommentId = comment.Id
+            };
+        }
+
         public static Comment FromDto(BasicCommentDTO dto, User user, Article article)
         {
             return new Comment(user, dto.Body, article);
