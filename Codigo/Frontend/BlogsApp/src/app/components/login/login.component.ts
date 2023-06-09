@@ -21,9 +21,8 @@ export class LoginComponent {
       password: ['', Validators.required]
     });
 
-    //de prueba
+    //Si hay una sesion activa que vaya al home
     if(this.authService.isAuthenticated()) {
-      //alert(this.authService.getToken());
       //this.router.navigateByUrl('/home');
     }
 

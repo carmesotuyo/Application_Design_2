@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Article } from '../../models/article.model';
 import { ArticleService } from '../../services/article.service';
-import { AuthService } from '../../services/auth.service';
 import { Observer, catchError, of, take } from 'rxjs';
 
 @Component({
@@ -17,11 +16,9 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private articleService: ArticleService,
-    private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.token = this.authService.getToken() || '';
     this.getArticles(this.token);
   }
 

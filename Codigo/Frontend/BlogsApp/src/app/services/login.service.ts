@@ -17,11 +17,8 @@ export class LoginService {
     return this.http.post<any>(this.apiUrl, body);
   }
 
-  logout(id: string, token: string | null ): Observable<any> {
-    const tokenString = token || '';
-    const headers = new HttpHeaders().set('token', tokenString);
+  logout(id: string): Observable<any> {
     const url = `${this.apiUrl}/${id}`;
-  
-    return this.http.patch(url, null, { headers });
+    return this.http.patch<any>(url, null);
   }
 }

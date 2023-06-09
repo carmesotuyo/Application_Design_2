@@ -25,15 +25,16 @@ export class AuthService {
   }
 
   public removeToken(): void {
+    //this.tokenSubject.next('');
     sessionStorage.removeItem(this._userTokenKey);
   }
 
   public isLoggedIn(): boolean {
-    return !!this.tokenSubject.value;
+    return !!this.getToken();
   }
 
   public logout(): void {
-    this.tokenSubject.next('');
+    //this.tokenSubject.next('');
     this.removeToken();
     // También puedes realizar otras acciones al cerrar sesión, como limpiar el almacenamiento local
   }
