@@ -47,7 +47,6 @@ namespace WebApi.Test
             user = new User();
             comment = new Comment() { Id = 1, Body = "body", Article = new Article() { Id = 1 } };
             comments = new List<Comment>() { comment };
-            //notifiedComment = new NotificationCommentDto() { CommentId = 1, Body = "body", ArticleId = 1 };
             notifiedComment = CommentConverter.toNotificationDto(comment);
             notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
             responseDTO = new LoginResponseDTO(token, notifiedComments);
