@@ -1,0 +1,13 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">BlogsApp</a>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <span class="navbar-text mr-2">Bienvenido, {{ username }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()" href="#">Cerrar sesión</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
