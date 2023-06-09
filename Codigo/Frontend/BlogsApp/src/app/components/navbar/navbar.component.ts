@@ -19,10 +19,8 @@ export class NavbarComponent {
     this.username = this.authService.getUsername();
   }
 
-  logout() {
-    const userId = '39'; // Reemplazar con el ID del usuario actual
-  
-    this.loginService.logout(userId).subscribe({
+  logout() {  
+    this.loginService.logout().subscribe({
       next: () => {
         // Lógica adicional después del logout
         console.log('Logout correcto');
