@@ -28,11 +28,21 @@ namespace BlogsApp.WebAPI.Controllers
             Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
-            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user);
 
-            var response = new LoginResponseDTO(token, comments);
+            var response = new LoginResponseDTO(token, GetAndConvertCommentsToResponse(user));
 
             return Ok(response);
+        }
+
+        private IEnumerable<BasicCommentDTO> GetAndConvertCommentsToResponse(User user)
+        {
+            List<BasicCommentDTO> comments = new List<BasicCommentDTO>();
+
+            foreach (Comment comment in sessionLogic.GetCommentsWhileLoggedOut(user))
+            {
+                comments.Add(CommentConverter.toBasicDto(comment));
+            }
+            return comments;
         }
 
         [ServiceFilter(typeof(AuthorizationFilter))]
