@@ -12,13 +12,15 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthService } from './services/auth.service';
 import { ArticleService } from './services/article.service';
+import { ArticleFilterPipe } from './components/home/pipes/article-filter.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     NavbarComponent,
-    HomeComponent
+    HomeComponent,
+    ArticleFilterPipe
   ],
   imports: [
     BrowserModule,

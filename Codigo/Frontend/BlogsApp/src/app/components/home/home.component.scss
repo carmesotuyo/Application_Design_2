@@ -2,6 +2,22 @@
     max-width: 800px;
     margin: 0 auto;
   }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  
+    input {
+      flex-grow: 1;
+      margin-right: 10px;
+      padding: 5px;
+    }
+  
+    button {
+      padding: 5px 10px;
+    }
+  }
   
   .card-container {
     display: flex;
