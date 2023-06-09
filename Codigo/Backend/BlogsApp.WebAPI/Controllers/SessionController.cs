@@ -29,18 +29,18 @@ namespace BlogsApp.WebAPI.Controllers
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
 
-            var response = new LoginResponseDTO(token, GetAndConvertCommentsToResponse(user));
+            var response = new LoginResponseDTO(token, GetAndConvertCommentsToNotify(user));
 
             return Ok(response);
         }
 
-        private IEnumerable<BasicCommentDTO> GetAndConvertCommentsToResponse(User user)
+        private IEnumerable<NotificationCommentDto> GetAndConvertCommentsToNotify(User user)
         {
-            List<BasicCommentDTO> comments = new List<BasicCommentDTO>();
+            List<NotificationCommentDto> comments = new List<NotificationCommentDto>();
 
             foreach (Comment comment in sessionLogic.GetCommentsWhileLoggedOut(user))
             {
-                comments.Add(CommentConverter.toBasicDto(comment));
+                comments.Add(CommentConverter.toNotificationDto(comment));
             }
             return comments;
         }
