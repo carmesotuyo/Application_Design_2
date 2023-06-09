@@ -11,21 +11,18 @@ namespace BlogsApp.WebAPI.Controllers
     public class CommmentController : BlogsAppControllerBase
     {
         private readonly ICommentLogic commentLogic;
-        private readonly ISessionLogic sessionLogic;
         private readonly IArticleLogic articleLogic;
 
-        public CommmentController(ICommentLogic commentLogic, ISessionLogic sessionLogic, IArticleLogic articleLogic)
+        public CommmentController(ICommentLogic commentLogic, ISessionLogic sessionLogic, IArticleLogic articleLogic) : base (sessionLogic)
         {
             this.commentLogic = commentLogic;
-            this.sessionLogic = sessionLogic;
             this.articleLogic = articleLogic;
         }
 
         [HttpPost]
         public IActionResult CreateComment([FromBody] BasicCommentDTO comment, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            User loggedUser = base.GetLoggedUser(token);
 
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
@@ -36,8 +33,7 @@ namespace BlogsApp.WebAPI.Controllers
         [HttpPost("{parentCommentId}")]
         public IActionResult CreateSubCommentFromParent([FromBody] BasicCommentDTO comment, [FromRoute] int parentCommentId, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
+            User loggedUser = base.GetLoggedUser(token);
 
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
             Comment parentComment = commentLogic.GetCommentById(parentCommentId);

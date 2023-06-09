@@ -26,6 +26,8 @@ namespace WebApi.Test
         private User user;
         private Comment comment;
         private List<Comment> comments;
+        private NotificationCommentDto notifiedComment;
+        private List<NotificationCommentDto> notifiedComments;
         private LoginResponseDTO responseDTO;
         private Mock<ILoggerService> loggerLogicMock;
 
@@ -43,9 +45,11 @@ namespace WebApi.Test
             credentials = new LoginRequestDTO(username, password);
             token = Guid.NewGuid();
             user = new User();
-            comment = new Comment();
+            comment = new Comment() { Id = 1, Body = "body", Article = new Article() { Id = 1 } };
             comments = new List<Comment>() { comment };
-            responseDTO = new LoginResponseDTO(token, comments);
+            notifiedComment = CommentConverter.toNotificationDto(comment);
+            notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
+            responseDTO = new LoginResponseDTO(token, notifiedComments);
         }
 
         [TestMethod]
@@ -65,7 +69,8 @@ namespace WebApi.Test
             loggerLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(receivedDTO.Token, token);
-            Assert.AreEqual(receivedDTO.Comments, comments);
+            Assert.AreEqual(receivedDTO.Comments.Count(), notifiedComments.Count());
+            Assert.AreEqual(receivedDTO.Comments.First().CommentId, notifiedComments.First().CommentId);
         }
 
         [TestMethod]
@@ -86,10 +91,10 @@ namespace WebApi.Test
         [TestMethod]
         public void LogoutOk()
         {
-            sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>()));
+            sessionLogicMock!.Setup(m => m.Logout(It.IsAny<User>()));
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id, token.ToString());
+            var result = controller!.Logout(token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 
@@ -102,10 +107,10 @@ namespace WebApi.Test
         [ExpectedException(typeof(BadHttpRequestException))]
         public void LogoutBadRequest()
         {
-            sessionLogicMock!.Setup(m => m.Logout(It.IsAny<int>(), It.IsAny<User>())).Throws(new BadHttpRequestException("Incorrect request to Logout", 400));
+            sessionLogicMock!.Setup(m => m.Logout(It.IsAny<User>())).Throws(new BadHttpRequestException("Incorrect request to Logout", 400));
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
 
-            var result = controller!.Logout(session.Id, token.ToString());
+            var result = controller!.Logout(token.ToString());
             var objectResult = result as ObjectResult;
             var statusCode = objectResult?.StatusCode;
 

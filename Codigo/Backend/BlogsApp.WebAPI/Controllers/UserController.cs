@@ -15,12 +15,11 @@ namespace BlogsApp.WebAPI.Controllers
     {
         private readonly IUserLogic userLogic;
         private readonly IArticleLogic articleLogic;
-        private readonly ISessionLogic sessionLogic;
-        public UserController(IUserLogic userLogic, IArticleLogic articleLogic, ISessionLogic sessionLogic) 
+
+        public UserController(IUserLogic userLogic, IArticleLogic articleLogic, ISessionLogic sessionLogic) : base(sessionLogic)
         {
             this.userLogic = userLogic;
             this.articleLogic = articleLogic;
-            this.sessionLogic = sessionLogic;
         }
 
         [HttpPost]
@@ -40,36 +39,27 @@ namespace BlogsApp.WebAPI.Controllers
                 return NotFound();
             }
             user = userDTO.ApplyChangesToUser(user);
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
 
-            return new OkObjectResult(userLogic.UpdateUser(loggedUser, user));
+            return new OkObjectResult(userLogic.UpdateUser(base.GetLoggedUser(token), user));
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-
-            return new OkObjectResult(userLogic.DeleteUser(loggedUser, id));
+            return new OkObjectResult(userLogic.DeleteUser(base.GetLoggedUser(token), id));
         }
 
         [HttpGet("ranking")]
         public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
+            return new OkObjectResult(userLogic.GetUsersRanking(base.GetLoggedUser(token), dateFrom, dateTo, top));
 
         }
 
         [HttpGet("{id}/articles")]
         public IActionResult GetUserArticles([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, loggedUser));
+            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, base.GetLoggedUser(token)));
             return new OkObjectResult(basicArticleDtos);
         }
     }

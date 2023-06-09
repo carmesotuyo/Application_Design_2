@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
+using System.Globalization;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -74,13 +75,22 @@ namespace BlogsApp.BusinessLogic.Logics
             return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId && (!m.Private || m.UserId == loggedUser.Id));
         }
 
-        public IEnumerable<int> GetStatsByYear(int year, User loggedUser)
+        public IDictionary<string, int> GetStatsByYear(int year, User loggedUser)
         {
             if(loggedUser.Admin)
             {
-                return _articleRepository.GetAll(m => m.DateCreated.Year == year)
-                                         .GroupBy(m => m.DateCreated.Month)
-                                         .Select(m => m.Count());
+                var months = Enumerable.Range(1, 12);
+
+                return months.GroupJoin(
+                                    _articleRepository.GetAll(a => a.DateCreated.Year == year),
+                                    month => month,
+                                    article => article.DateCreated.Month,
+                                    (month, articlesGroup) => new { Month = month, ArticleCount = articlesGroup.Count() }
+                                )
+                                .ToDictionary(
+                                    item => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month),
+                                    item => item.ArticleCount
+                                );
             } else
             {
                 throw new UnauthorizedAccessException("Se necesitan permisos de administrador");
