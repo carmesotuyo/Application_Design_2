@@ -32,28 +32,17 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public User DeleteUser(User loggedUser, int UserId)
         {
-            if (authorizedUser(loggedUser, UserId))
+            validateAuthorizedUser(loggedUser, UserId);
+            validateUserExists(UserId);
+
+            User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
+            user.DateDeleted = DateTime.Now;
+            foreach (Article article in user.Articles)
             {
-                if (_userRepository.Exists(m => m.Id == UserId))
-                {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
-                    user.DateDeleted = DateTime.Now;
-                    foreach (Article article in user.Articles)
-                    {
-                        _articleLogic.DeleteArticle(article.Id, user);
-                    }
-                    _userRepository.Update(user);
-                    return user;
-                }
-                else
-                {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
-                }
+                _articleLogic.DeleteArticle(article.Id, user);
             }
-            else 
-            {
-                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-            }
+            _userRepository.Update(user);
+            return user;
         }
 
         public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
@@ -88,48 +77,45 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(User loggedUser, User updatedUser)
+        public User? UpdateUser(User loggedUser, User userWithDataToUpdate)
         {
-            if (authorizedUser(loggedUser, updatedUser.Id))
-            {
-                if (_userRepository.Exists(m => m.Id == updatedUser.Id))
-                {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == updatedUser.Id);
+            validateAuthorizedUser(loggedUser, userWithDataToUpdate.Id);
+            validateUserExists(userWithDataToUpdate.Id);
 
-                    // Validamos que un usuario no se puede hacer Admin o Moderador a si mismo
-                    // Actualmente esta validacion no funciona, por alguna razon el user ya toma el valor de admin/moderador del updatedUser antes de ser actualizado, aunque ese no sea su valor real en la BD
-                    if (user.Id == loggedUser.Id && (user.Admin != updatedUser.Admin || user.Moderador != updatedUser.Moderador))
-                    {
-                        throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-                    }
-                    else
-                    {
-                        user = updatedUser;
-                        _userRepository.Update(user);
-                        return user;
-                    }
-                }
-                else
-                {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
-                }
+            User userFromDB = _userRepository.Get(m => m.DateDeleted == null && m.Id == userWithDataToUpdate.Id);
+            bool cambioAdmin = userFromDB.Admin != userWithDataToUpdate.Admin;
+            bool cambioModerador = userFromDB.Moderador != userWithDataToUpdate.Moderador;
+            bool esAdmin = loggedUser.Admin;
+
+            //si es admin permite todos los cambios para actualizar
+            if (esAdmin)
+            {
+                _userRepository.Update(userWithDataToUpdate);
+                return userWithDataToUpdate;
             }
+            //si no es admin y hay cambios en los roles no permite la accion
+            else if (cambioModerador || cambioAdmin)
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar cambios en los roles");
+            }
+            // si no es admin y no hay cambios en los roles le concede la actualizacion de usuario
             else
             {
+                _userRepository.Update(userWithDataToUpdate);
+                return userWithDataToUpdate;
+            }
+        }
+
+        private void validateAuthorizedUser(User loggedUser, int userWithDataToUpdateID)
+        {
+            if (loggedUser == null || (!loggedUser.Admin && loggedUser.Id != userWithDataToUpdateID))
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-            }
         }
 
-        private bool authorizedUser(User loggedUser, int userId) 
-        { 
-            if (loggedUser != null && (loggedUser.Admin || loggedUser.Id == userId))
-            {
-                return true;
-            } else
-            {
-               return false;
-            }
+        private void validateUserExists(int userId)
+        {
+            if (!_userRepository.Exists(m => m.Id == userId))
+                throw new NotFoundDbException("No existe un usuario con ese id.");
         }
-
     }
 }
