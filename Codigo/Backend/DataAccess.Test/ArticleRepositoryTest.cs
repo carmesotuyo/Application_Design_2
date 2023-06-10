@@ -32,7 +32,7 @@ namespace DataAccess.Test
             _articleRepository = new ArticleRepository(_dbContext);
             _userRepository = new UserRepository(_dbContext);
 
-            _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false);
+            _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false, false);
             _userRepository.Add(_testUser);
             _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
             _articleRepository.Add(_testArticle);
@@ -210,8 +210,8 @@ namespace DataAccess.Test
         [TestMethod]
         public void GetAll_ShouldReturnFilteredArticles_WhenFuncIsProvided()
         {
-            User user1 = new User("username", "password", "email@.com", "name", "last_name", false, false);
-            User user2 = new User("username2", "password", "email@.com", "name", "last_name", false, false);
+            User user1 = new User("username", "password", "email@.com", "name", "last_name", false, false, false);
+            User user2 = new User("username2", "password", "email@.com", "name", "last_name", false, false, false);
             var article1 = new Article { Name = "Article 1", Body = "Body 1", User = user1 };
             var article2 = new Article { Name = "Article 2", Body = "Body 2", User = user1 };
             var article3 = new Article { Name = "Article 3", Body = "Body 3", User = user2 };

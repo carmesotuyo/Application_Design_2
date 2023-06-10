@@ -36,8 +36,8 @@ namespace BusinessLogic.Test
             userLogic = new UserLogic(userRepositoryMock.Object, articleLogicMock.Object);
 
             adminUser = new User { Id = 1, Username = "admin", Admin = true };
-            normalUser = new User { Id = 2, Username = "user", Blogger = true };
-            normalUser2 = new User { Id = 3, Username = "blogger", Blogger = true };
+            normalUser = new User { Id = 2, Username = "user", Blogger = true, Admin = false, Moderador = false };
+            normalUser2 = new User { Id = 3, Username = "blogger", Blogger = true, Admin = false, Moderador = false };
             article1 = new Article { Id = 1, UserId = 2 };
             article2 = new Article { Id = 2, UserId = 2 };
             normalUser.Articles = new List<Article> { article1, article2 };
@@ -110,6 +110,51 @@ namespace BusinessLogic.Test
             userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(false);
 
             userLogic.UpdateUser(normalUser, user);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UserCantMakeItselfAdmin()
+        {
+            normalUser.Admin = false;
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Admin = true };
+
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            userLogic.UpdateUser(normalUser, userWithDataToUpdate);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UserCantMakeItselfModerador()
+        {
+            normalUser.Moderador = false;
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Moderador = true };
+
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            userLogic.UpdateUser(normalUser, userWithDataToUpdate);
+        }
+
+
+        [TestMethod]
+        public void AdminUpdatesOtherUser()
+        {
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Admin = true, Moderador = true };
+
+            normalUser = userLogic.UpdateUser(adminUser, userWithDataToUpdate);
+
+            userRepositoryMock.VerifyAll();
+            Assert.AreEqual(true, normalUser.Admin);
+            Assert.AreEqual(true, normalUser.Moderador);
         }
 
 

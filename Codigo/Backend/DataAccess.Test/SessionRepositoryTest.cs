@@ -42,7 +42,7 @@ namespace DataAccess.Test
         public void AddSession_UserAlreadyHasActiveSession_ThrowsAlreadyExistsDbException()
         {
             // Arrange
-            User user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false); // Asegúrate de que el email termine en ".com"
+            User user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false); // Asegúrate de que el email termine en ".com"
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 
@@ -85,7 +85,7 @@ namespace DataAccess.Test
                 Id = 1,
                 // Agrega aquí las propiedades requeridas adicionales
             };
-            User user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            User user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false);
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 
@@ -113,7 +113,7 @@ namespace DataAccess.Test
             var session = new Session
             {
                 Id = 1,
-                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
+                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false),
                 Token = Guid.NewGuid(),
                 DateTimeLogin = DateTime.Now,
                 DateTimeLogout = null
@@ -147,7 +147,7 @@ namespace DataAccess.Test
             var session = new Session
             {
                 Id = 1,
-                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false),
+                User = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false),
                 Token = Guid.NewGuid(),
                 DateTimeLogin = DateTime.Now,
                 DateTimeLogout = null
@@ -161,7 +161,7 @@ namespace DataAccess.Test
         public void Get_SessionExists_ReturnsSession()
         {
             // Arrange
-            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false);
             var session = new Session { Id = 1, Token = Guid.NewGuid(), User = user, DateTimeLogin = DateTime.Now };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
@@ -179,7 +179,7 @@ namespace DataAccess.Test
         public void Get_SessionDoesNotExist_ThrowsNotFoundDbException()
         {
             // Arrange
-            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
+            var user = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false);
             var session = new Session { Id = 1, Token = Guid.NewGuid(), User = user, DateTimeLogin = DateTime.Now };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
@@ -192,8 +192,8 @@ namespace DataAccess.Test
         public void GetSessions_Successful()
         {
             // Arrange
-            var user1 = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false);
-            var user2 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var user1 = new User("testuser", "pass", "aa@aa.com", "nano", "nanito", true, false, false);
+            var user2 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false, false);
             var session1 = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
             var session2 = new Session { Id = 2, User = user2, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddDays(-1), DateTimeLogout = DateTime.Now };
             var session3 = new Session { Id = 3, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddHours(-2), DateTimeLogout = DateTime.Now.AddHours(-1) };
@@ -215,7 +215,7 @@ namespace DataAccess.Test
         public void GetSessions_NoSessionsFound()
         {
             // Arrange
-            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false, false);
             _dbContext.Users.Add(user1);
             _dbContext.SaveChanges();
 
@@ -230,7 +230,7 @@ namespace DataAccess.Test
         public void Exists_SessionExists_ReturnsTrue()
         {
             // Arrange
-            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false, false);
             var session = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
@@ -246,7 +246,7 @@ namespace DataAccess.Test
         public void Exists_SessionDoesNotExist_ReturnsFalse()
         {
             // Arrange
-            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false);
+            var user1 = new User("testuser2", "pass", "ba@aa.com", "nano", "nanito", true, false, false);
             var session = new Session { Id = 1, User = user1, Token = Guid.NewGuid(), DateTimeLogin = DateTime.Now.AddMinutes(-30) };
             _dbContext.Set<Session>().Add(session);
             _dbContext.SaveChanges();
