@@ -88,14 +88,19 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(User loggedUser, User anUser)
+        public User? UpdateUser(User loggedUser, User updatedUser)
         {
-            if (authorizedUser(loggedUser, anUser.Id))
+            if (authorizedUser(loggedUser, updatedUser.Id))
             {
-                if (_userRepository.Exists(m => m.Id == anUser.Id))
+                if (_userRepository.Exists(m => m.Id == updatedUser.Id))
                 {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == anUser.Id);
-                    user = anUser;
+                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == updatedUser.Id);
+
+                    // Validamos que un usuario no se puede hacer Admin o Moderador a si mismo
+                    if (user.Id == loggedUser.Id && (user.Admin != updatedUser.Admin || user.Moderador != updatedUser.Moderador))
+                        throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+
+                    user = updatedUser;
                     _userRepository.Update(user);
                     return user;
                 }

@@ -46,8 +46,8 @@ namespace BusinessLogic.Test
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
-        private readonly User userBlogger = new User("User1", "1234", "aaa@222.com", "User", "Seru", true, false);
-        private readonly User userAdmin = new User("User2", "1234", "aaa@222.com", "User", "Seru", false, true);
+        private readonly User userBlogger = new User("User1", "1234", "aaa@222.com", "User", "Seru", true, false, false);
+        private readonly User userAdmin = new User("User2", "1234", "aaa@222.com", "User", "Seru", false, true, false);
 
 
         [TestInitialize]
