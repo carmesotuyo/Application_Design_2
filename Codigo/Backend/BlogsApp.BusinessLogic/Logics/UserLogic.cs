@@ -97,12 +97,17 @@ namespace BlogsApp.BusinessLogic.Logics
                     User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == updatedUser.Id);
 
                     // Validamos que un usuario no se puede hacer Admin o Moderador a si mismo
+                    // Actualmente esta validacion no funciona, por alguna razon el user ya toma el valor de admin/moderador del updatedUser antes de ser actualizado, aunque ese no sea su valor real en la BD
                     if (user.Id == loggedUser.Id && (user.Admin != updatedUser.Admin || user.Moderador != updatedUser.Moderador))
+                    {
                         throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-
-                    user = updatedUser;
-                    _userRepository.Update(user);
-                    return user;
+                    }
+                    else
+                    {
+                        user = updatedUser;
+                        _userRepository.Update(user);
+                        return user;
+                    }
                 }
                 else
                 {
