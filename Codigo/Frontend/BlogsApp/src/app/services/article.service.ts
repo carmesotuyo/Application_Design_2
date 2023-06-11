@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
+import { IDeleteResponse } from '../interfaces/delete-response-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -39,16 +40,24 @@ export class ArticleService {
     );
   }
 
-
-
-
-
-
-  getArticle(id: number, token: string): Observable<Article> {
+  getArticle(id: number): Observable<Article> {
     const url = `${this.apiUrl}/${id}`;
-    const headers = new HttpHeaders().set('token', token);
-
-    return this.http.get<Article>(url, { headers });
+    return this.http.get<Article>(url);
   }
+
+  postArticle(article: Article): Observable<any> {
+    return this.http.post<any>(this.apiUrl, article);
+  }
+
+  public putArticle(articleToUpdate: Article): Observable<Article> {
+    const url = `${this.apiUrl}/${articleToUpdate.id}`;
+    return this.http.put<Article>(`${url}`, articleToUpdate);
+  }
+
+  public deleteMovie(articleId: number): Observable<IDeleteResponse> {
+    const url = `${this.apiUrl}/${articleId}`;
+    return this.http.delete<IDeleteResponse>(`${url}`);
+  }
+
 }
 
