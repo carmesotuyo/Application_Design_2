@@ -8,10 +8,12 @@ namespace BlogsApp.BusinessLogic.Logics
     public class CommentLogic : ICommentLogic
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IOffensiveWordsValidator _offensiveWordsValidator;
 
-        public CommentLogic(ICommentRepository commentRepository)
+        public CommentLogic(ICommentRepository commentRepository, IOffensiveWordsValidator offensiveWordsValidator)
         {
             _commentRepository = commentRepository;
+            _offensiveWordsValidator = offensiveWordsValidator;
         }
 
         public Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser)
@@ -31,6 +33,13 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (loggedUser.Blogger)
             {
+                List<string> offensiveWordsFound = _offensiveWordsValidator.reviewComment(comment);
+                if (offensiveWordsFound.Count() > 0)
+                {
+                    comment.State = Domain.Enums.ContentState.InReview;
+                    _offensiveWordsValidator.NotifyAdminsAndModerators(comment.Body, offensiveWordsFound);
+                }
+
                 this._commentRepository.Add(comment);
                 return comment;
             }

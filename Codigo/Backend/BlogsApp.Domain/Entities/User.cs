@@ -11,6 +11,7 @@
         public bool Blogger { get; set; }
         public bool Admin { get; set; }
         public bool Moderador { get; set; }
+        public bool HasContentToReview { get; set; }
         public DateTime? DateDeleted { get; set; }
         public ICollection<Article> Articles { get; set; }
         public ICollection<Comment> Comments { get; set; }

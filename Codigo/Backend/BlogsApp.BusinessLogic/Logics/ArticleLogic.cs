@@ -14,17 +14,26 @@ namespace BlogsApp.BusinessLogic.Logics
     {
         private readonly IArticleRepository _articleRepository;
         private readonly ICommentLogic _commentLogic;
+        private readonly IOffensiveWordsValidator _offensiveWordsValidator;
 
-        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic)
+        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic, IOffensiveWordsValidator offensiveWordsValidator)
         {
             _articleRepository = articleRepository;
             _commentLogic = commentLogic;
+            _offensiveWordsValidator = offensiveWordsValidator;
         }
 
         public Article CreateArticle(Article article, User loggedUser)
         {
             if (loggedUser.Blogger && isValidArticle(article))
             {
+                List<string> offensiveWordsFound = _offensiveWordsValidator.reviewArticle(article);
+                if (offensiveWordsFound.Count() > 0)
+                {
+                    article.State = Domain.Enums.ContentState.InReview;
+                    _offensiveWordsValidator.NotifyAdminsAndModerators((article.Name).Concat(article.Body).ToString(), offensiveWordsFound);
+                }
+
                 this._articleRepository.Add(article);
                 
                 return article;
@@ -101,7 +110,19 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
             isValidArticle(anArticle);
-            if (loggedUser.Id == article.UserId)
+
+            List<string> offensiveWordsFound = _offensiveWordsValidator.reviewArticle(anArticle);
+            if (offensiveWordsFound.Count() > 0)
+            {
+                article.State = Domain.Enums.ContentState.InReview;
+                _offensiveWordsValidator.NotifyAdminsAndModerators((article.Name).Concat(article.Body).ToString(), offensiveWordsFound);
+            }
+            else if (article.State == Domain.Enums.ContentState.InReview)
+            {
+                article.State = Domain.Enums.ContentState.Visible;
+            }
+
+            if (loggedUser.Id == article.UserId || loggedUser.Admin || loggedUser.Moderador)
             {
                 article.Name = anArticle.Name;
                 article.Body = anArticle.Body;
@@ -113,7 +134,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 return article;
             } else
             {
-                throw new UnauthorizedAccessException("Sólo el creador del artículo puede modificarlo");
+                throw new UnauthorizedAccessException("Sólo el creador del artículo o un moderador pueden modificarlo");
             };
         }
 
