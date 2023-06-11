@@ -16,6 +16,7 @@ import { ArticleFilterPipe } from './components/home/pipes/article-filter.pipe';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ArticleFormComponent } from './components/article-form/article-form.component';
+import { ArticleViewComponent } from './components/article-view/article-view.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ArticleFormComponent } from './components/article-form/article-form.com
     NavbarComponent,
     HomeComponent,
     ArticleFilterPipe,
-    ArticleFormComponent
+    ArticleFormComponent,
+    ArticleViewComponent
   ],
   imports: [
     BrowserModule,

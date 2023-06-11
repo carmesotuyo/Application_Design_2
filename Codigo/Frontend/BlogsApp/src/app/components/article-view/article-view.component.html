@@ -1,0 +1,49 @@
+<div class="article-view-container">
+    <h2>{{ article?.name }}</h2>
+    
+    <div *ngIf="article?.template === 0">
+        <p>Autor: {{ article?.username }}</p>
+      <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      <p>{{ article?.body }}</p>
+    </div>
+
+    <div *ngIf="article?.template === 1">
+        <p>Autor: {{ article?.username }}</p>
+        <p>{{ article?.body }}</p>
+      <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      
+    </div>
+
+    <div *ngIf="article?.template === 2">
+        <p>Autor: {{ article?.username }}</p>
+      <img class="inLineclass" *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      <p>{{ article?.body }}</p>
+    </div>
+
+    <div *ngIf="article?.template === 3">
+        <p>Autor: {{ article?.username }}</p>
+      <img class="inLineclass" *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      <p>{{ article?.body }}</p>
+        <img class="inLineclass" *ngIf="article?.image" [src]="getSecondImage()" alt="Imagen 2">
+    </div>
+
+  
+    <h3>Comentarios</h3>
+  <ng-container *ngFor="let comment of comments">
+    <ng-template [ngTemplateOutlet]="commentTemplate" [ngTemplateOutletContext]="{ $implicit: comment }"></ng-template>
+  </ng-container>
+</div>
+
+<ng-template #commentTemplate let-comment>
+  <div class="comment-card">
+    <p class="comment-author">{{ comment.user.username }}:</p>
+    <p class="comment-body">{{ comment.body }}</p>
+    
+    <div *ngIf="comment.subComments.length > 0" class="sub-comments">
+      <ng-container *ngFor="let subComment of comment.subComments">
+        <ng-template [ngTemplateOutlet]="commentTemplate" [ngTemplateOutletContext]="{ $implicit: subComment }"></ng-template>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+  

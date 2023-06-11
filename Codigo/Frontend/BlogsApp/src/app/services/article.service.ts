@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
 import { IDeleteResponse } from '../interfaces/delete-response-interface';
+import { ArticleView } from '../models/articleView.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +41,9 @@ export class ArticleService {
     );
   }
 
-  getArticle(id: number): Observable<Article> {
+  getArticle(id: number): Observable<ArticleView> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.get<Article>(url);
+    return this.http.get<ArticleView>(url);
   }
 
   postArticle(article: Article): Observable<any> {
