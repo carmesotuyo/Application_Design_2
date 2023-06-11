@@ -53,6 +53,7 @@ namespace BlogsApp.BusinessLogic.Logics
                     _commentLogic.DeleteComment(comment.Id, loggedUser);
                 }
                 article.DateDeleted = DateTime.Now;
+                article.State = Domain.Enums.ContentState.Deleted;
                 this._articleRepository.Update(article);
             } else
             {
@@ -69,7 +70,9 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (searchText == null)
             {
-                return _articleRepository.GetAll(m => m.DateDeleted == null && (m.Private == false || m.UserId == loggedUser.Id))
+                return _articleRepository.GetAll(m => m.DateDeleted == null
+                                    && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                    && (m.Private == false || m.UserId == loggedUser.Id))
                                  .OrderByDescending(m => m.DateModified)
                                  .Take(10);
             }
@@ -81,7 +84,9 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public IEnumerable<Article> GetArticlesByUser(int userId, User loggedUser)
         {
-            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId && (!m.Private || m.UserId == loggedUser.Id));
+            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId
+                                            && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                            && (!m.Private || m.UserId == loggedUser.Id));
         }
 
         public IDictionary<string, int> GetStatsByYear(int year, User loggedUser)
@@ -119,7 +124,8 @@ namespace BlogsApp.BusinessLogic.Logics
             }
             else if (article.State == Domain.Enums.ContentState.InReview)
             {
-                article.State = Domain.Enums.ContentState.Visible;
+                // si un contenido entra acá es porque estaba en revisión y fue editado, se le quitaron las palabras ofensivas
+                article.State = Domain.Enums.ContentState.Edited;
             }
 
             if (loggedUser.Id == article.UserId || loggedUser.Admin || loggedUser.Moderador)
@@ -140,12 +146,13 @@ namespace BlogsApp.BusinessLogic.Logics
 
         private Func<Article, bool> ArticleById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted == null && (!a.Private || a.UserId == loggedUser.Id);
+            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited) && (!a.Private || a.UserId == loggedUser.Id);
         }
 
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
         {
             return article => article.DateDeleted == null &&
+                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited) &&
                               (article.Name.Contains(text) || article.Body.Contains(text)) &&
                               (article.Private == false || article.UserId == loggedUser.Id);
         }

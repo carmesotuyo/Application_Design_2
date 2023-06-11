@@ -53,6 +53,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (loggedUser.Id == comment.User.Id)
             {
                 comment.DateDeleted = DateTime.Now;
+                comment.State = Domain.Enums.ContentState.Deleted;
                 this._commentRepository.Update(comment);
             }
             else
@@ -64,14 +65,16 @@ namespace BlogsApp.BusinessLogic.Logics
         public IEnumerable<Comment> GetCommentsSince(User loggedUser, DateTime? lastLogout)
         {
             List<Comment> comments = _commentRepository.GetAll(c => c.DateDeleted == null)
-                                        .Where(c => c.Article.UserId == loggedUser.Id && c.DateModified > lastLogout)
+                                        .Where(c => c.Article.UserId == loggedUser.Id &&
+                                            (c.State == Domain.Enums.ContentState.Visible || c.State == Domain.Enums.ContentState.Edited) &&
+                                            c.DateModified > lastLogout)
                                         .ToList();
             return comments;
         }
 
         private Func<Comment, bool> CommentById(int id)
         {
-            return a => a.Id == id && a.DateDeleted == null;
+            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited);
         }
 
         public Comment GetCommentById(int id)
