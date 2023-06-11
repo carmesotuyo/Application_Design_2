@@ -1,40 +1,44 @@
 <div class="article-form-container">
-  <h2>{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
-  <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
-    <div class="form-group">
-      <label for="name">Nombre</label>
-      <input type="text" id="name" formControlName="name" required>
-      <div class="error-message" *ngIf="name?.invalid && name?.touched">
-        Nombre es requerido.
+    <h2>{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
+    <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input type="text" id="name" formControlName="name" required>
+        <div class="error-message" *ngIf="name?.invalid && name?.touched">
+          Nombre es requerido.
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="body">Cuerpo</label>
-      <textarea id="body" formControlName="body" required></textarea>
-      <div class="error-message" *ngIf="body?.invalid && body?.touched">
-        Cuerpo es requerido.
+      <div class="form-group">
+        <label for="body">Cuerpo</label>
+        <textarea id="body" formControlName="body" required></textarea>
+        <div class="error-message" *ngIf="body?.invalid && body?.touched">
+          Cuerpo es requerido.
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="isPrivate">Privado</label>
-      <input type="checkbox" id="isPrivate" formControlName="isPrivate">
-    </div>
-    <div class="form-group">
-      <label for="template">Plantilla</label>
-      <select id="template" formControlName="template" required>
-        <option value="0">Plantilla 1</option>
-        <option value="1">Plantilla 2</option>
-        <option value="2">Plantilla 3</option>
-        <option value="3">Plantilla 4</option>
-      </select>
-      <div class="error-message" *ngIf="template?.invalid && template?.touched">
-        Plantilla es requerida.
+      <div class="form-group">
+        <label for="isPrivate">Privado</label>
+        <input type="checkbox" id="isPrivate" formControlName="isPrivate">
       </div>
-    </div>
-    <div class="form-group">
-      <label for="image">Imagen</label>
-      <input type="text" id="image" formControlName="image">
-    </div>
-    <button type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
-  </form>
-</div>
+      <div class="form-group">
+        <label for="template">Plantilla</label>
+        <select id="template" formControlName="template" required>
+          <option value=0>Plantilla 1</option>
+          <option value=1>Plantilla 2</option>
+          <option value=2>Plantilla 3</option>
+          <option value=3>Plantilla 4</option>
+        </select>
+        <div class="error-message" *ngIf="template?.invalid && template?.touched">
+          Plantilla es requerida.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="image">Imagen</label>
+        <input type="text" id="image1" formControlName="image1">
+      </div>
+      <div class="form-group" *ngIf="mostrarImg2">
+        <label for="image2">Imagen 2</label>
+        <input type="text" id="image2" formControlName="image2">
+      </div>
+      <button type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
+    </form>
+  </div>

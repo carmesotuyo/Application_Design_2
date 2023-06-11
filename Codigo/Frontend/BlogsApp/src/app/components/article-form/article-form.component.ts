@@ -13,6 +13,7 @@ import { ValidateString } from 'src/app/validators/string.validator';
   styleUrls: ['./article-form.component.scss'],
 })
 export class ArticleFormComponent implements OnInit {
+  mostrarImg2 = false;
   public articleForm = new FormGroup({
     name: new FormControl('', [Validators.required, ValidateString]),
     body: new FormControl('', [Validators.required, ValidateString]),
@@ -47,13 +48,18 @@ export class ArticleFormComponent implements OnInit {
     return this.articleForm.get('template');
   }
 
-  public get image() {
-    return this.articleForm.get('image');
+  public get image1() {
+    return this.articleForm.get('image1');
+  }
+
+  public get image2() {
+    return this.articleForm.get('image2');
   }
 
   public ngOnInit(): void {
-    const id = this.route.snapshot.params?.['id'];
-    if (!!id && id !== 'new') {
+    //const id = this.route.snapshot.params?.['id'];
+    const id = 15;
+    if (!!id) {
       this.isEditing = true;
       this.articleId = id;
       this.articleService
@@ -69,6 +75,14 @@ export class ArticleFormComponent implements OnInit {
           this.setArticle(article);
         });
     }
+    this.template?.valueChanges.subscribe((value) => {
+      if (Number(value) === 3) {
+        console.log('template cambió a plantilla 3')
+        this.mostrarImg2 = true;
+      } else {
+        this.mostrarImg2 = false;
+      }
+    });
   }
 
   public submitArticle(): void {
@@ -82,6 +96,7 @@ export class ArticleFormComponent implements OnInit {
   }
 
   private createArticle(): void {
+    const image = `${this.articleForm.value.image1 ?? ''} ${this.articleForm.value.image2 ?? ''}`
     const article: Article = {
       id: 0,
       name: this.articleForm.value.name ?? '',
@@ -89,7 +104,7 @@ export class ArticleFormComponent implements OnInit {
       body: this.articleForm.value.body ?? '',
       private: this.articleForm.value.isPrivate ?? false,
       template: this.articleForm.value.template ?? 0,
-      image: this.articleForm.value.image ?? '',
+      image: image,
     };
 
 
@@ -113,6 +128,7 @@ export class ArticleFormComponent implements OnInit {
 
   private updateArticle(): void {
     if (!!this.articleId) {
+      const image = `${this.articleForm.value.image1 ?? ''} ${this.articleForm.value.image2 ?? ''}`
       const article: Article = {
         username: 'FerSpi',
         id: this.articleId as number,
@@ -120,7 +136,7 @@ export class ArticleFormComponent implements OnInit {
         body: this.articleForm.value.body ?? '',
         private: this.articleForm.value.isPrivate ?? false,
         template: this.articleForm.value.template ?? 0,
-        image: this.articleForm.value.image ?? '',
+        image: image,
       };
 
       this.articleService
@@ -135,18 +151,20 @@ export class ArticleFormComponent implements OnInit {
         .subscribe((article: Article) => {
           if (!!article?.id) {
             alert('Artículo modificado!!');
-            this.router.navigateByUrl('/article-list');
+            this.router.navigateByUrl('/home');
           }
         });
     }
   }
 
   private setArticle(article: Article): void {
+    const image = article.image?.split(' ') as string[] | undefined;
     this.name?.setValue(article.name != null ? String(article.name) : '');
     this.body?.setValue(article.body != null ? String(article.body) : '');
     this.isPrivate?.setValue(article.private != null ? article.private : false);
     this.template?.setValue(article.template != null ? article.template : 0);
-    this.image?.setValue(article.image != null ? String(article.image) : '');
+    this.image1?.setValue(image != null ? String(image[0]) : '');
+    this.image2?.setValue(image != null ? String(image[1]) : '');
   }
 
   private cleanForm(): void {
@@ -154,6 +172,7 @@ export class ArticleFormComponent implements OnInit {
     this.body?.setValue('');
     this.isPrivate?.setValue(true);
     this.template?.setValue(0);
-    this.image?.setValue('');
+    this.image1?.setValue('');
+    this.image2?.setValue('');
   }
 }
