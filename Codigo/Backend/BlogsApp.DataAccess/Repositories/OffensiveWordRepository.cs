@@ -45,6 +45,8 @@ namespace BlogsApp.DataAccess.Repositories
 
         public void Remove(OffensiveWord word)
         {
+            if (!Exists(i => i.Id == word.Id || i.Word == word.Word))
+                throw new NotFoundDbException("La palabra que se desea borrar no existe");
             Context.Set<OffensiveWord>().Remove(word);
             Context.SaveChanges();
         }
