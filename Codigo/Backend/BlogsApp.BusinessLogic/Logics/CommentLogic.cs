@@ -8,10 +8,12 @@ namespace BlogsApp.BusinessLogic.Logics
     public class CommentLogic : ICommentLogic
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IOffensiveWordsValidator _offensiveWordsValidator;
 
-        public CommentLogic(ICommentRepository commentRepository)
+        public CommentLogic(ICommentRepository commentRepository, IOffensiveWordsValidator offensiveWordsValidator)
         {
             _commentRepository = commentRepository;
+            _offensiveWordsValidator = offensiveWordsValidator;
         }
 
         public Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser)
@@ -31,6 +33,13 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (loggedUser.Blogger)
             {
+                List<string> offensiveWordsFound = _offensiveWordsValidator.reviewComment(comment);
+                if (offensiveWordsFound.Count() > 0)
+                {
+                    comment.State = Domain.Enums.ContentState.InReview;
+                    _offensiveWordsValidator.NotifyAdminsAndModerators(comment.Body, offensiveWordsFound);
+                }
+
                 this._commentRepository.Add(comment);
                 return comment;
             }
@@ -44,6 +53,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (loggedUser.Id == comment.User.Id)
             {
                 comment.DateDeleted = DateTime.Now;
+                comment.State = Domain.Enums.ContentState.Deleted;
                 this._commentRepository.Update(comment);
             }
             else
@@ -55,14 +65,16 @@ namespace BlogsApp.BusinessLogic.Logics
         public IEnumerable<Comment> GetCommentsSince(User loggedUser, DateTime? lastLogout)
         {
             List<Comment> comments = _commentRepository.GetAll(c => c.DateDeleted == null)
-                                        .Where(c => c.Article.UserId == loggedUser.Id && c.DateModified > lastLogout)
+                                        .Where(c => c.Article.UserId == loggedUser.Id &&
+                                            (c.State == Domain.Enums.ContentState.Visible || c.State == Domain.Enums.ContentState.Edited) &&
+                                            c.DateModified > lastLogout)
                                         .ToList();
             return comments;
         }
 
         private Func<Comment, bool> CommentById(int id)
         {
-            return a => a.Id == id && a.DateDeleted == null;
+            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited);
         }
 
         public Comment GetCommentById(int id)

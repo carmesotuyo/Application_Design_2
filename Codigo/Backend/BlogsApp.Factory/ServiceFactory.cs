@@ -31,6 +31,8 @@ namespace BlogsApp.Factory
             services.AddScoped<ICommentLogic, CommentLogic>();
             services.AddScoped<ILogEntryRepository, LogEntryRepository>();
             services.AddScoped<ILoggerService, DbLoggerService>();
+            services.AddScoped<IOffensiveWordRepository, OffensiveWordRepository>();
+            services.AddScoped<IOffensiveWordsValidator, OffensiveWordsValidator>();
         }
 
         public void AddDbContextService()
