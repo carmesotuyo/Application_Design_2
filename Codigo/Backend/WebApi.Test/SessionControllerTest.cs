@@ -30,6 +30,8 @@ namespace WebApi.Test
         private List<NotificationCommentDto> notifiedComments;
         private LoginResponseDTO responseDTO;
         private Mock<ILoggerService> loggerLogicMock;
+        private Article article;
+        private User authorUser;
 
         [TestInitialize]
         public void InitTest()
@@ -45,7 +47,9 @@ namespace WebApi.Test
             credentials = new LoginRequestDTO(username, password);
             token = Guid.NewGuid();
             user = new User();
-            comment = new Comment() { Id = 1, Body = "body", Article = new Article() { Id = 1 } };
+            article = new Article() { Name = "article name", Id = 1 };
+            authorUser = new User() { Username = "username" };
+            comment = new Comment() { Id = 1, Body = "body", Article = article, User = authorUser };
             comments = new List<Comment>() { comment };
             notifiedComment = CommentConverter.toNotificationDto(comment);
             notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
