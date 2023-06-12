@@ -14,14 +14,13 @@ export class ArticleService {
   constructor(private http: HttpClient) { }
 
   getArticles(token: string, search?: string): Observable<Article[]> {
-    const headers = new HttpHeaders().set('token', token);
     let params = new HttpParams();
   
     if (search !== undefined && search !== null) {
       params = params.set('search', search);
     }
   
-    return this.http.get<Article[]>(this.apiUrl, { headers, params }).pipe(
+    return this.http.get<Article[]>(this.apiUrl, { params }).pipe(
       tap((articles: Article[]) => {
         // Verificar si la respuesta es una lista vacía
         if (articles.length === 0) {
@@ -55,9 +54,9 @@ export class ArticleService {
     return this.http.put<Article>(`${url}`, articleToUpdate);
   }
 
-  public deleteArticle(articleId: number): Observable<IDeleteResponse> {
+  public deleteArticle(articleId: number): Observable<any> {
     const url = `${this.apiUrl}/${articleId}`;
-    return this.http.delete<IDeleteResponse>(`${url}`);
+    return this.http.delete<any>(`${url}`);
   }
 
 }
