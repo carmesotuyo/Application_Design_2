@@ -10,6 +10,8 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void NotifyAdminsAndModerators(string content, List<string> offensiveWords);
         void AddOffensiveWord(User loggedUser, string word);
         void RemoveOffensiveWord(User loggedUser, string word);
+        ICollection<Article> GetArticlesToReview(User loggedUser);
+        ICollection<Comment> GetCommentsToReview(User loggedUser);
     }
 
 }

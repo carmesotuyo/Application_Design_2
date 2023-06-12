@@ -102,6 +102,25 @@ namespace WebApi.Test
             sessionLogicMock.VerifyAll();
             Assert.AreEqual(500, statusCode);
         }
+
+        [TestMethod]
+        public void GetContentToReview()
+        {
+            List<Article> articles = new List<Article>();
+            List<Comment> comments = new List<Comment>();
+
+            offensiveWordValidatorMock.Setup(m => m.GetArticlesToReview(It.IsAny<User>())).Returns(articles);
+            offensiveWordValidatorMock.Setup(m => m.GetCommentsToReview(It.IsAny<User>())).Returns(comments);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(moderator);
+
+            var result = controller!.GetContentToReview(token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            offensiveWordValidatorMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
+        }
     }
 }
 

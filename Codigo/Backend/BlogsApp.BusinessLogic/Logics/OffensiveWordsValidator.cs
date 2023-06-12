@@ -81,6 +81,16 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             return FindOffensiveWords(comment.Body);
         }
+
+        public ICollection<Article> GetArticlesToReview(User loggedUser)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<Comment> GetCommentsToReview(User loggedUser)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
