@@ -31,7 +31,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     article.State = Domain.Enums.ContentState.InReview;
-                    _offensiveWordsValidator.NotifyAdminsAndModerators((article.Name).Concat(article.Body).ToString(), offensiveWordsFound);
+                    _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
                 }
 
                 this._articleRepository.Add(article);
@@ -120,7 +120,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (offensiveWordsFound.Count() > 0)
             {
                 article.State = Domain.Enums.ContentState.InReview;
-                _offensiveWordsValidator.NotifyAdminsAndModerators((article.Name).Concat(article.Body).ToString(), offensiveWordsFound);
+                _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
             }
             else if (article.State == Domain.Enums.ContentState.InReview)
             {
