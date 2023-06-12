@@ -27,7 +27,7 @@ namespace BlogsApp.WebAPI.Controllers
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
             Comment createdCommented = commentLogic.CreateComment(newComment, loggedUser);
-            return new OkObjectResult(CommentConverter.toBasicDto(createdCommented));
+            return new OkObjectResult(CommentConverter.toDto(createdCommented));
         }
 
         [HttpPost("{parentCommentId}")]
@@ -39,7 +39,7 @@ namespace BlogsApp.WebAPI.Controllers
             Comment parentComment = commentLogic.GetCommentById(parentCommentId);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
             Comment createdComment = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
-            return new OkObjectResult(CommentConverter.toBasicDto(createdComment));
+            return new OkObjectResult(CommentConverter.toDto(createdComment));
         }
     }
 }
