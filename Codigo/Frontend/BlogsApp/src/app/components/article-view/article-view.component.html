@@ -1,14 +1,16 @@
+<app-navbar></app-navbar>
 <div class="article-view-container mat-typography">
     <div class="article-view-header">
-      <button mat-raised-button color="accent" [routerLink]="['/home']">Volver</button>
-      <button mat-raised-button color="primary" *ngIf="isOwner" [routerLink]="['/edit', article?.id]">Editar</button>
-    <button mat-raised-button color="warn" *ngIf="isOwner" (click)="deleteArticle()">Eliminar</button>
+      <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/home']">Volver</button>
+      <button mat-raised-button color="primary" class="custom-button" *ngIf="isOwner" [routerLink]="['/edit', article?.id]">Editar</button>
+    <button mat-raised-button color="warn" class="custom-button" *ngIf="isOwner" (click)="deleteArticle()">Eliminar</button>
     </div>
     <h2>{{ article?.name }}</h2>
   
     <div *ngIf="article?.template === 0">
       <p>Autor: {{ article?.username }}</p>
       <img mat-card-image *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      
       <p>{{ article?.body }}</p>
     </div>
   

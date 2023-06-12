@@ -1,5 +1,6 @@
+<app-navbar></app-navbar>
 <div class="article-form-container mat-typography">
-  <button mat-raised-button color="accent" [routerLink]="['/home']">Volver</button>
+  
   <h2 class="form-title">{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
   <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
     <mat-form-field class="form-field">
@@ -31,6 +32,10 @@
       <mat-label>Imagen 2</mat-label>
       <input matInput id="image2" formControlName="image2">
     </mat-form-field>
-    <button mat-raised-button color="primary" type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
+    <div>
+      <button mat-raised-button color="primary" class="custom-button" type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
+      <span class="spacer"></span>
+      <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/home']">Volver</button>
+    </div>
   </form>
 </div>

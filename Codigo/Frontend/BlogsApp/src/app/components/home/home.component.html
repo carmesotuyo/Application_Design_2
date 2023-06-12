@@ -5,8 +5,8 @@
       <mat-form-field class="search-field">
         <input matInput type="text" [(ngModel)]="searchKeyword" placeholder="Buscar">
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="onSearch()">Buscar</button>
-      <button mat-raised-button color="accent" [routerLink]="['/add']">Crear Articulo</button>
+      <button mat-raised-button color="primary" class="custom-button" (click)="onSearch()">Buscar</button>
+      <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/add']">Crear Articulo</button>
     </div>
 
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

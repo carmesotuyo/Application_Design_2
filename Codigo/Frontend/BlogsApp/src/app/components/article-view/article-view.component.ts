@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ArticleView } from '../models/articleView.model';
+import { ArticleView } from '../../models/articleView.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ArticleService } from '../services/article.service';
+import { ArticleService } from '../../services/article.service';
 import { CommentDto } from 'src/app/models/comment.model';
 import { CommentService } from 'src/app/services/comment.service';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-article-view',

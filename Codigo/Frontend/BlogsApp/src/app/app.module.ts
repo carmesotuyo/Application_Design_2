@@ -15,7 +15,7 @@ import { ArticleService } from './services/article.service';
 import { ArticleFilterPipe } from './components/home/pipes/article-filter.pipe';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ArticleFormComponent } from './components/article-form/article-form.component';
-import { ArticleViewComponent } from './article-view/article-view.component';
+import { ArticleViewComponent } from './components/article-view/article-view.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
