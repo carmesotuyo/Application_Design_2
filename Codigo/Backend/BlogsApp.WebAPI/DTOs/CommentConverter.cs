@@ -41,6 +41,8 @@ namespace BlogsApp.WebAPI.DTOs
             {
                 Body = comment.Body,
                 ArticleId = comment.Article.Id,
+                ArticleName = comment.Article.Name,
+                Username = comment.User.Name,
                 CommentId = comment.Id
             };
         }
