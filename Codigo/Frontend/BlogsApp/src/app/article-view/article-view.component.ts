@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ArticleView } from '../../models/articleView.model';
+import { ArticleView } from '../models/articleView.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ArticleService } from '../../services/article.service';
+import { ArticleService } from '../services/article.service';
 import { CommentDto } from 'src/app/models/comment.model';
 import { CommentService } from 'src/app/services/comment.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-article-view',
@@ -15,12 +16,15 @@ export class ArticleViewComponent implements OnInit {
   comments: CommentDto[] | null = [];
   newComment: string = '';
   showOptions = false;
+  isOwner = false;
+  userName = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private articleService: ArticleService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +32,12 @@ export class ArticleViewComponent implements OnInit {
     this.articleService.getArticle(articleId).subscribe((article) => {
       this.article = article;
       this.comments = article.commentsDtos;
+      this.userName = this.article.username;
+      const userLogged = this.authService.getUsername();
+      const userOwner = this.userName;
+      if (userLogged === userOwner) {
+        this.isOwner = true;
+      }
     });
   }
 
@@ -77,7 +87,9 @@ export class ArticleViewComponent implements OnInit {
 
   deleteArticle(): void {
     if (this.article) {
+      const articleToDelete = this.article;
       this.articleService.deleteArticle(this.article.id).subscribe(() => {
+        this.articleService.articleDeleted.next(articleToDelete);
         alert('Articulo eliminado');
         this.router.navigateByUrl('/home');
       });

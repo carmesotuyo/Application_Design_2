@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, catchError, tap, throwError } from 'rxjs';
+import { Observable, Subject, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
 import { IDeleteResponse } from '../interfaces/delete-response-interface';
 import { ArticleView } from '../models/articleView.model';
@@ -10,6 +10,7 @@ import { ArticleView } from '../models/articleView.model';
 })
 export class ArticleService {
   private apiUrl = 'http://localhost:5050/api/articles'; // Reemplaza la URL con la ruta de tu API de artículos
+  articleDeleted = new Subject<Article>();
 
   constructor(private http: HttpClient) { }
 

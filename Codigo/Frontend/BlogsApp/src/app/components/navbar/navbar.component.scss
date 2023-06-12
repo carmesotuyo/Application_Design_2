@@ -1,21 +1,8 @@
-.navbar {
-    background-color: #333;
-  }
-  
-  .navbar-brand {
-    color: #fff;
-    font-size: 1.5rem;
-  }
-  
-  .navbar-nav .nav-item {
-    margin-right: 10px;
-  }
-  
-  .navbar-nav .nav-link {
-    color: #fff;
-  }
-  
-  .navbar-text {
-    color: #fff;
-    margin-right: 10px;
-  }
+.mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

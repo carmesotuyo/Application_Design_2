@@ -1,45 +1,36 @@
-<div class="article-form-container">
-    <button [routerLink]="['/home']">Volver</button>
-    <h2>{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
-    <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
-      <div class="form-group">
-        <label for="name">Nombre</label>
-        <input type="text" id="name" formControlName="name" required>
-        <div class="error-message" *ngIf="name?.invalid && name?.touched">
-          Nombre es requerido.
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="body">Cuerpo</label>
-        <textarea id="body" formControlName="body" required></textarea>
-        <div class="error-message" *ngIf="body?.invalid && body?.touched">
-          Cuerpo es requerido.
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="isPrivate">Privado</label>
-        <input type="checkbox" id="isPrivate" formControlName="isPrivate">
-      </div>
-      <div class="form-group">
-        <label for="template">Plantilla</label>
-        <select id="template" formControlName="template" required>
-          <option value=0>Plantilla 1</option>
-          <option value=1>Plantilla 2</option>
-          <option value=2>Plantilla 3</option>
-          <option value=3>Plantilla 4</option>
-        </select>
-        <div class="error-message" *ngIf="template?.invalid && template?.touched">
-          Plantilla es requerida.
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="image">Imagen</label>
-        <input type="text" id="image1" formControlName="image1">
-      </div>
-      <div class="form-group" *ngIf="mostrarImg2">
-        <label for="image2">Imagen 2</label>
-        <input type="text" id="image2" formControlName="image2">
-      </div>
-      <button type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
-    </form>
-  </div>
+<div class="article-form-container mat-typography">
+  <button mat-raised-button color="accent" [routerLink]="['/home']">Volver</button>
+  <h2 class="form-title">{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
+  <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
+    <mat-form-field class="form-field">
+      <mat-label>Nombre</mat-label>
+      <input matInput id="name" formControlName="name" required>
+      <mat-error *ngIf="name?.invalid && name?.touched">Nombre es requerido.</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Cuerpo</mat-label>
+      <textarea matInput id="body" formControlName="body" required></textarea>
+      <mat-error *ngIf="body?.invalid && body?.touched">Cuerpo es requerido.</mat-error>
+    </mat-form-field>
+    <mat-checkbox class="form-field" id="isPrivate" formControlName="isPrivate">Privado</mat-checkbox>
+    <mat-form-field class="form-field">
+      <mat-label>Plantilla</mat-label>
+      <mat-select id="template" formControlName="template" required>
+        <mat-option value=0>Plantilla 1</mat-option>
+        <mat-option value=1>Plantilla 2</mat-option>
+        <mat-option value=2>Plantilla 3</mat-option>
+        <mat-option value=3>Plantilla 4</mat-option>
+      </mat-select>
+      <mat-error *ngIf="template?.invalid && template?.touched">Plantilla es requerida.</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Imagen</mat-label>
+      <input matInput id="image1" formControlName="image1">
+    </mat-form-field>
+    <mat-form-field class="form-field" *ngIf="mostrarImg2">
+      <mat-label>Imagen 2</mat-label>
+      <input matInput id="image2" formControlName="image2">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">{{ isEditing ? 'Guardar Cambios' : 'Crear Artículo' }}</button>
+  </form>
+</div>

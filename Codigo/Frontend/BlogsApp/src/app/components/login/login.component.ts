@@ -43,6 +43,7 @@ export class LoginComponent {
           const token = response.token;
           this.authService.setToken(token);
           this.authService.setUsername(this.username);
+          
           //this.router.navigate(['/home']);
           console.log('Inicio de sesión correcto:', response.message);
           // Redirigir al usuario a la pantalla principal (HomeComponent) u otra vista deseada
