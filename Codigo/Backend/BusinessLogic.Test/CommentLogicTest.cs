@@ -3,6 +3,7 @@ using Moq;
 using BlogsApp.IDataAccess.Interfaces;
 using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 
 namespace BusinessLogic.Test
 {
@@ -10,6 +11,7 @@ namespace BusinessLogic.Test
 	public class CommentLogicTest
     {
         private Mock<ICommentRepository> commentRepository;
+        private Mock<IOffensiveWordsValidator> offensiveWordsValidator;
         private CommentLogic commentLogic;
         private ICollection<Comment> comments;
         private Comment comment;
@@ -22,7 +24,8 @@ namespace BusinessLogic.Test
         public void TestInitialize()
         {
             commentRepository = new Mock<ICommentRepository>(MockBehavior.Strict);
-            commentLogic = new CommentLogic(commentRepository.Object);
+            offensiveWordsValidator = new Mock<IOffensiveWordsValidator>(MockBehavior.Strict);
+            commentLogic = new CommentLogic(commentRepository.Object, offensiveWordsValidator.Object);
             userBlogger = new User() { Blogger = true, Id = 1 };
             userAdmin = new User() { Blogger = false, Id = 2 };
             article = new Article() { UserId = userBlogger.Id };
@@ -35,6 +38,7 @@ namespace BusinessLogic.Test
         public void CreateComment()
         {
             commentRepository.Setup(x => x.Add(It.IsAny<Comment>())).Returns(comment);
+            offensiveWordsValidator.Setup(x => x.reviewComment(It.IsAny<Comment>())).Returns(new List<string>());
 
             Comment result = commentLogic.CreateComment(comment, userBlogger);
 
@@ -88,6 +92,7 @@ namespace BusinessLogic.Test
         {
             commentRepository.Setup(x => x.Add(It.IsAny<Comment>())).Returns(comment2);
             commentRepository.Setup(x => x.Update(It.IsAny<Comment>()));
+            offensiveWordsValidator.Setup(x => x.reviewComment(It.IsAny<Comment>())).Returns(new List<string>());
 
             Comment result = commentLogic.ReplyToComment(comment, comment2, userBlogger);
 
