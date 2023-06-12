@@ -2,6 +2,7 @@
 using BlogsApp.Domain.Entities;
 using BlogsApp.IDataAccess.Interfaces;
 using BlogsApp.IBusinessLogic.Interfaces;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -84,12 +85,37 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public ICollection<Article> GetArticlesToReview(User loggedUser)
         {
-            throw new NotImplementedException();
+            validateAuthorizedUser(loggedUser);
+            checkUserHasContentToReview(loggedUser);
+            return _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
         }
 
         public ICollection<Comment> GetCommentsToReview(User loggedUser)
         {
-            throw new NotImplementedException();
+            validateAuthorizedUser(loggedUser);
+            checkUserHasContentToReview(loggedUser);
+            return _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+        }
+
+        private void validateAuthorizedUser(User loggedUser)
+        {
+            if (!loggedUser.Admin && !loggedUser.Moderador)
+                throw new UnauthorizedAccessException("No tiene permiso para revisar el contenido");
+        }
+
+        private void checkUserHasContentToReview(User loggedUser)
+        {
+            if (!loggedUser.HasContentToReview)
+                throw new NotFoundDbException("No tienes contenido para revisar");
+        }
+
+        public void UnflagReviewContentForUser(User loggedUser, User userToUnflag)
+        {
+            if (loggedUser.Id != userToUnflag.Id)
+                throw new UnauthorizedAccessException("No tiene permiso para realizar esta acción");
+
+            userToUnflag.HasContentToReview = false;
+            _userRepository.Update(userToUnflag);
         }
     }
 

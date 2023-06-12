@@ -111,6 +111,7 @@ namespace WebApi.Test
 
             offensiveWordValidatorMock.Setup(m => m.GetArticlesToReview(It.IsAny<User>())).Returns(articles);
             offensiveWordValidatorMock.Setup(m => m.GetCommentsToReview(It.IsAny<User>())).Returns(comments);
+            offensiveWordValidatorMock.Setup(m => m.UnflagReviewContentForUser(It.IsAny<User>(), It.IsAny<User>()));
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(moderator);
 
             var result = controller!.GetContentToReview(token.ToString());

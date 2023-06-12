@@ -12,6 +12,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void RemoveOffensiveWord(User loggedUser, string word);
         ICollection<Article> GetArticlesToReview(User loggedUser);
         ICollection<Comment> GetCommentsToReview(User loggedUser);
+        void UnflagReviewContentForUser(User loggedUser, User userToUnflag);
     }
 
 }

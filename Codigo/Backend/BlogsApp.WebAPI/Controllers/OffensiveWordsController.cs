@@ -43,6 +43,7 @@ namespace BlogsApp.WebAPI.Controllers
 
             ICollection<ContentDTO> articlesToReview = ContentConverter.ArticlesToContentList(offensiveWordsValidator.GetArticlesToReview(loggedUser));
             ICollection<ContentDTO> commentsToReview = ContentConverter.CommentsToContentList(offensiveWordsValidator.GetCommentsToReview(loggedUser));
+            offensiveWordsValidator.UnflagReviewContentForUser(loggedUser, loggedUser);
 
             return new OkObjectResult(articlesToReview.Concat(commentsToReview));
         }
