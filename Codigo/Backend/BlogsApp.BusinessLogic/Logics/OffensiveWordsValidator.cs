@@ -66,7 +66,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public List<string> reviewArticle(Article article)
         {
-            string content = (article.Name).Concat(article.Body).ToString();
+            string content = article.Name + article.Body;
             return FindOffensiveWords(content);
         }
 
