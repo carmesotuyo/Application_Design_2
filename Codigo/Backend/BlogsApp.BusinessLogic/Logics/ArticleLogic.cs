@@ -122,9 +122,9 @@ namespace BlogsApp.BusinessLogic.Logics
                 article.State = Domain.Enums.ContentState.InReview;
                 _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
             }
-            else if (article.State == Domain.Enums.ContentState.InReview)
+            else if (article.State == Domain.Enums.ContentState.InReview || article.State == Domain.Enums.ContentState.Visible)
             {
-                // si un contenido entra acá es porque estaba en revisión y fue editado, se le quitaron las palabras ofensivas
+                // si un contenido entra acá es porque o estaba en revisión y fue editado (se le quitaron las palabras ofensivas en la edición), o estaba publicado normal y fue editado y la edición no cuenta con palabras ofensivas
                 article.State = Domain.Enums.ContentState.Edited;
             }
 
