@@ -3,6 +3,7 @@ import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { CommentService } from 'src/app/services/comment.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,7 @@ export class LoginComponent {
 
   }
 
-  constructor(private loginService: LoginService, private router: Router, private formBuilder: FormBuilder, private authService: AuthService) {}
+  constructor(private loginService: LoginService, private router: Router, private formBuilder: FormBuilder, private authService: AuthService, private commentService: CommentService) {}
 
   login() {
     this.loginForm = this.formBuilder.group({
@@ -43,9 +44,12 @@ export class LoginComponent {
           const token = response.token;
           this.authService.setToken(token);
           this.authService.setUsername(this.username);
+          this.commentService.setOfflineComments(response.comments);
+          alert('despues del login' + this.commentService.getOfflineComments());
           
           //this.router.navigate(['/home']);
           console.log('Inicio de sesión correcto:', response.message);
+          console.log(this.commentService.getOfflineComments())
           // Redirigir al usuario a la pantalla principal (HomeComponent) u otra vista deseada
           this.router.navigateByUrl('/home');
         } else {

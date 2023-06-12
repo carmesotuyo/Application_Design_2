@@ -113,34 +113,6 @@ export class ArticleViewComponent implements OnInit {
       });
   }
 
-  // deleteArticle(): void {
-  //   if (this.article) {
-  //     const articleToDelete = this.article;
-  //     this.articleService.deleteArticle(this.article.id).subscribe(() => {
-  //       this.articleService.articleDeleted.next(articleToDelete);
-  //       alert('Articulo eliminado');
-  //       this.router.navigateByUrl('/home');
-  //     });
-  //   }
-  // }
-
-  // deleteArticle(): void {
-  //   if (this.article) {
-  //     const articleToDelete = this.article;
-  //     this.articleService.deleteArticle(this.article.id).subscribe(
-  //       () => {
-  //         this.articleService.articleDeleted.next(articleToDelete);
-  //         alert('Artículo eliminado');
-  //         this.router.navigateByUrl('/home');
-  //       },
-  //       (error) => {
-  //         console.error('Error al eliminar el artículo', error);
-  //         // Manejar el error de eliminación
-  //       }
-  //     );
-  //   }
-  // }
-
   deleteArticle(): void {
     if (this.article) {
       const articleToDelete = this.article;

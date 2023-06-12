@@ -15,3 +15,9 @@ export interface CommentDto {
     body: string;
     articleId: number;
   }
+
+  export interface CommentNotify {
+    body: string;
+    articleId: number;
+    commentId: number;
+  }

@@ -1,0 +1,9 @@
+<h2>Comentarios recibidos mientras estabas offline</h2>
+<mat-card class="comment-card" *ngFor="let comment of data.comments">
+  <mat-card-title>Te escribieron: {{comment.body}}</mat-card-title>
+  <mat-card-content>{{comment.articleId}}</mat-card-content>
+  <mat-form-field class="reply-field">
+    <textarea matInput [(ngModel)]="replies[comment.commentId]"></textarea>
+  </mat-form-field>
+  <button mat-button (click)="replyToComment(comment, replies[comment.commentId])">Responder</button>
+</mat-card>

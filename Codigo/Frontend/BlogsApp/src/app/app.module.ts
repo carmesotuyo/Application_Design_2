@@ -26,6 +26,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { CommentsModalComponent } from './components/comments-modal/comments-modal.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     ArticleFilterPipe,
     ArticleFormComponent,
     ArticleViewComponent,
-    UserFormComponent
+    UserFormComponent,
+    CommentsModalComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     MatIconModule,
     MatCheckboxModule,
     MatSelectModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule
   ],
   providers: [
     LoginService,
