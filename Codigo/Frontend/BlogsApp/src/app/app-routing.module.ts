@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard],},
   {path: 'add', component: ArticleFormComponent},
+  { path: 'edit/:id', component: ArticleFormComponent },
   { path: 'articles/:id', component: ArticleViewComponent },
   { path: '**', redirectTo: '', }, // this line goes at the end
 ];

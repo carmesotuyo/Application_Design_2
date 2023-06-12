@@ -55,7 +55,7 @@ export class ArticleService {
     return this.http.put<Article>(`${url}`, articleToUpdate);
   }
 
-  public deleteMovie(articleId: number): Observable<IDeleteResponse> {
+  public deleteArticle(articleId: number): Observable<IDeleteResponse> {
     const url = `${this.apiUrl}/${articleId}`;
     return this.http.delete<IDeleteResponse>(`${url}`);
   }

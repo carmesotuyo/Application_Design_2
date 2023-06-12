@@ -73,5 +73,6 @@ export class HomeComponent implements OnInit {
     if(!articles) this.articles = [];
     else this.articles = articles;
   };
+
 }
 

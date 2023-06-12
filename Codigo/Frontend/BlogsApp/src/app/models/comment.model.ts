@@ -10,3 +10,8 @@ export interface CommentDto {
     dateDeleted: string | null;
     subComments: CommentDto[];
   }
+
+  export interface CommentBasic {
+    body: string;
+    articleId: number;
+  }

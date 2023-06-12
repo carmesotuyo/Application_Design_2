@@ -1,19 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { ArticleView   } from '../../models/articleView.model';
-import { ActivatedRoute } from '@angular/router';
+import { ArticleView } from '../../models/articleView.model';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { CommentDto } from 'src/app/models/comment.model';
+import { CommentService } from 'src/app/services/comment.service';
 
 @Component({
   selector: 'app-article-view',
   templateUrl: './article-view.component.html',
-  styleUrls: ['./article-view.component.scss']
+  styleUrls: ['./article-view.component.scss'],
 })
 export class ArticleViewComponent implements OnInit {
   article: ArticleView | null = null;
   comments: CommentDto[] | null = [];
+  newComment: string = '';
+  showOptions = false;
 
-  constructor(private route: ActivatedRoute, private articleService: ArticleService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private articleService: ArticleService,
+    private commentService: CommentService
+  ) {}
 
   ngOnInit(): void {
     const articleId = this.route.snapshot.params['id'];
@@ -37,5 +45,52 @@ export class ArticleViewComponent implements OnInit {
       return images[1];
     }
     return '';
+  }
+
+  toggleCommentOptions(): void {
+    //comment.showOptions = !comment.showOptions;
+    this.showOptions = !this.showOptions;
+  }
+
+  replyToComment(comment: CommentDto): void {
+    // Code to handle replying to a comment
+    this.commentService
+      .postReply(
+        { body: this.newComment, articleId: this.article!.id },
+        comment.id
+      )
+      .subscribe((comment) => {
+        //this.comments!.push(comment);
+        this.newComment = '';
+      });
+    alert('Replying to comment ' + comment.id + 'de ' + comment.user.username);
+  }
+
+  addComment(): void {
+    this.commentService
+      .postComment({ body: this.newComment, articleId: this.article!.id })
+      .subscribe((comment) => {
+        //this.comments!.push(comment);
+        this.newComment = '';
+      });
+  }
+
+  deleteArticle(): void {
+    if (this.article) {
+      this.articleService.deleteArticle(this.article.id).subscribe(() => {
+        alert('Articulo eliminado');
+        this.router.navigateByUrl('/home');
+      });
+    }
+  }
+
+  editArticle(): void {
+    if (this.article) {
+      this.router.navigateByUrl('/edit/' + this.article.id);
+    }
+  }
+
+  goBack(): void {
+    this.router.navigateByUrl('/home');
   }
 }

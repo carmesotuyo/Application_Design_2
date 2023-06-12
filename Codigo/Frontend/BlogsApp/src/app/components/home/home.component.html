@@ -4,6 +4,7 @@
     <div class="search-container">
       <input type="text" [(ngModel)]="searchKeyword" placeholder="Buscar">
       <button (click)="onSearch()">Buscar</button>
+      <button [routerLink]="['/add']">Crear Articulo</button>
     </div>
 
     <div *ngIf="errorMessage">{{ errorMessage }}</div>

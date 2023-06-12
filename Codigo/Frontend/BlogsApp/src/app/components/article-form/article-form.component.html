@@ -1,4 +1,5 @@
 <div class="article-form-container">
+    <button [routerLink]="['/home']">Volver</button>
     <h2>{{ isEditing ? 'Editar Artículo' : 'Crear Artículo' }}</h2>
     <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
       <div class="form-group">
