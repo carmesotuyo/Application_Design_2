@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommentBasic } from '../models/comment.model';
+import { CommentBasic, CommentDto } from '../models/comment.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,12 +11,12 @@ export class CommentService {
 
   constructor(private http: HttpClient) { }
 
-  postComment(comment: CommentBasic): Observable<any> {
-    return this.http.post<any>(this.apiUrl, comment);
+  postComment(comment: CommentBasic): Observable<CommentDto> {
+    return this.http.post<CommentDto>(this.apiUrl, comment);
   }
 
-  postReply(comment: CommentBasic, idParent: number): Observable<any> {
+  postReply(comment: CommentBasic, idParent: number): Observable<CommentDto> {
     const url = `${this.apiUrl}/${idParent}`;
-    return this.http.post<any>(url, comment);
+    return this.http.post<CommentDto>(url, comment);
   }
 }

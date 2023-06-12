@@ -55,9 +55,9 @@ export class ArticleService {
     return this.http.put<Article>(`${url}`, articleToUpdate);
   }
 
-  public deleteArticle(articleId: number): Observable<any> {
+  deleteArticle(articleId: number): Observable<any> {
     const url = `${this.apiUrl}/${articleId}`;
-    return this.http.delete<any>(`${url}`);
+    return this.http.delete(url);
   }
 
 }

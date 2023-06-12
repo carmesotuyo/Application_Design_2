@@ -3,64 +3,90 @@
     <div class="article-view-header">
       <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/home']">Volver</button>
       <button mat-raised-button color="primary" class="custom-button" *ngIf="isOwner" [routerLink]="['/edit', article?.id]">Editar</button>
-    <button mat-raised-button color="warn" class="custom-button" *ngIf="isOwner" (click)="deleteArticle()">Eliminar</button>
+      <button mat-raised-button color="warn" class="custom-button" *ngIf="isOwner" (click)="deleteArticle()">Eliminar</button>
     </div>
-    <h2>{{ article?.name }}</h2>
-  
-    <div *ngIf="article?.template === 0">
-      <p>Autor: {{ article?.username }}</p>
-      <img mat-card-image *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
-      
-      <p>{{ article?.body }}</p>
+
+    <mat-card *ngIf="article?.template === 0">
+      <mat-card-header>
+        <mat-card-title>{{ article?.name }}</mat-card-title>
+        <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
+      </mat-card-header>
+      <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      <mat-card-content>
+        <p>{{ article?.body }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="article?.template === 1">
+      <mat-card-header>
+        <mat-card-title>{{ article?.name }}</mat-card-title>
+        <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ article?.body }}</p>
+      </mat-card-content>
+      <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+    </mat-card>
+
+    <mat-card *ngIf="article?.template === 2">
+      <mat-card-header>
+        <mat-card-title>{{ article?.name }}</mat-card-title>
+        <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="template4">
+          <img *ngIf="article?.image" class="in-line" [src]="getFirstImage()" alt="Imagen 1">
+          <p>{{ article?.body }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="article?.template === 3">
+      <mat-card-header>
+        <mat-card-title>{{ article?.name }}</mat-card-title>
+        <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
+      </mat-card-header>
+      <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+      <mat-card-content>
+        <p>{{ article?.body }}</p>
+      </mat-card-content>
+      <img *ngIf="article?.image" [src]="getSecondImage()" alt="Imagen 2">
+    </mat-card>
+    <br>
+    <br>
+    <br>
+    <div class="comment-section">
+      <h3>Comentarios</h3>
+      <hr>
+
+      <mat-form-field class="add-comment">
+        <mat-label>Agregar un comentario</mat-label>
+        <input matInput type="text" [(ngModel)]="newComment">
+        <button mat-raised-button color="primary" (click)="addComment()">Agregar</button>
+      </mat-form-field>
+
+      <ul>
+        <ng-container *ngTemplateOutlet="commentTemplate; context: { $implicit: article?.commentsDtos }"></ng-container>
+        <ng-template #commentTemplate let-comments>
+          <li *ngFor="let comment of comments" class="comment-card">
+            <mat-card class="comment-header">
+              <mat-card-header>
+                <mat-card-title>{{ comment.user.username }}</mat-card-title>
+                <mat-card-content>{{ comment.body }}</mat-card-content>
+              </mat-card-header>
+              <mat-form-field class="add-comment">
+                <mat-label>Responder a este comentario</mat-label>
+                <input matInput type="text" [(ngModel)]="newComments[comment.id]">
+        <button mat-raised-button color="primary" (click)="replyToComment(comment, newComments[comment.id])">Enviar</button>
+                <!-- <input matInput type="text" [(ngModel)]="newComment">
+                <button mat-raised-button color="primary" (click)="replyToComment(comment)">Enviar</button> -->
+              </mat-form-field>
+            </mat-card>
+            <ul *ngIf="comment.subComments.length > 0" class="sub-comments">
+              <ng-container *ngTemplateOutlet="commentTemplate; context: { $implicit: comment.subComments }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+      </ul>
     </div>
-  
-    <div *ngIf="article?.template === 1">
-      <p>Autor: {{ article?.username }}</p>
-      <p>{{ article?.body }}</p>
-      <img mat-card-image *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
-    </div>
-  
-    <div *ngIf="article?.template === 2">
-      <p>Autor: {{ article?.username }}</p>
-      <img mat-card-image *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1" class="in-line">
-      <p>{{ article?.body }}</p>
-    </div>
-  
-    <div *ngIf="article?.template === 3">
-      <p>Autor: {{ article?.username }}</p>
-      <img mat-card-image *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
-      <p>{{ article?.body }}</p>
-      <img mat-card-image *ngIf="article?.image" [src]="getSecondImage()" alt="Imagen 2">
-    </div>
-  
-    <mat-form-field class="add-comment">
-      <mat-label>Agregar un comentario</mat-label>
-      <input matInput type="text" [(ngModel)]="newComment">
-      <button mat-raised-button color="primary" (click)="addComment()">Agregar</button>
-    </mat-form-field>
-  
-    <h3>Comentarios</h3>
-    <hr>
-    <ul>
-      <ng-container *ngTemplateOutlet="commentTemplate; context: { $implicit: article?.commentsDtos }"></ng-container>
-      <ng-template #commentTemplate let-comments>
-        <li *ngFor="let comment of comments" class="comment-card">
-          <mat-card class="comment-header">
-            <mat-card-header>
-              <mat-card-title>{{ comment.user.username }}:</mat-card-title>
-              <mat-card-content>{{ comment.body }}</mat-card-content>
-            </mat-card-header>
-            <mat-form-field class="add-comment">
-              <mat-label>Responder a este comentario</mat-label>
-              <input matInput type="text" [(ngModel)]="newComment">
-              <button mat-raised-button color="primary" (click)="replyToComment(comment)">Enviar</button>
-            </mat-form-field>
-          </mat-card>
-          <ul *ngIf="comment.subComments.length > 0" class="sub-comments">
-            <ng-container *ngTemplateOutlet="commentTemplate; context: { $implicit: comment.subComments }"></ng-container>
-          </ul>
-        </li>
-      </ng-template>
-    </ul>
-  </div>
-  
+</div>
