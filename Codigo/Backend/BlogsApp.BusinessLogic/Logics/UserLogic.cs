@@ -22,9 +22,6 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             IsUserValid(user);
             _userRepository.Add(user!);
-            if (user.Admin || user.Moderador)
-                // ACA VA EL SUBSCRIBE
-                throw new NotImplementedException();
             return user;
         }
 
@@ -94,13 +91,6 @@ namespace BlogsApp.BusinessLogic.Logics
             if (esAdmin)
             {
                 _userRepository.Update(userWithDataToUpdate);
-                if(userWithDataToUpdate.Admin || userWithDataToUpdate.Moderador)
-                {
-                    //subscribe
-                } else if (!userWithDataToUpdate.Admin && !userWithDataToUpdate.Moderador)
-                {
-                    //unsubscribe
-                }
                 return userWithDataToUpdate;
             }
             //si no es admin y hay cambios en los roles no permite la accion
