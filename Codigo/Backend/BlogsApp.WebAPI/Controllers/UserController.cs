@@ -62,5 +62,12 @@ namespace BlogsApp.WebAPI.Controllers
             IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, base.GetLoggedUser(token)));
             return new OkObjectResult(basicArticleDtos);
         }
+
+        [HttpGet]
+        public IActionResult GetUsers([FromHeader] string token)
+        {
+            IEnumerable<UserDto> userDtos = UserConverter.ToDtoList(userLogic.GetUsers(base.GetLoggedUser(token)));
+            return new OkObjectResult(userDtos);
+        }
     }
 }

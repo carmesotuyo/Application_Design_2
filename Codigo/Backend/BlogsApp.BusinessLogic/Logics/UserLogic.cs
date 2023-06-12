@@ -30,6 +30,20 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
+        public IEnumerable<User> GetUsers(User loggedUser)
+        {
+            if (loggedUser != null)
+            {
+                return _userRepository.GetAll(m => m.DateDeleted == null)
+                                 .OrderByDescending(m => m.Name)
+                                 .Take(10);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+            }
+        }
+
         public User DeleteUser(User loggedUser, int UserId)
         {
             validateAuthorizedUser(loggedUser, UserId);
