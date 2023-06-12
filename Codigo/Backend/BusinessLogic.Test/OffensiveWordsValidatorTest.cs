@@ -18,6 +18,7 @@ namespace BusinessLogic.Test
 		private Mock<IOffensiveWordRepository> offensiveWordsRepo;
         private Mock<IArticleRepository> articleRepository;
         private Mock<ICommentRepository> commentRepository;
+        private Mock<IUserRepository> userRepository;
         private IOffensiveWordsValidator offensiveWordsValidator;
         private ICollection<OffensiveWord> offensiveWords;
         private readonly User moderator = new User() { Moderador = true };
@@ -40,8 +41,9 @@ namespace BusinessLogic.Test
 
             articleRepository = new Mock<IArticleRepository>(MockBehavior.Strict);
             commentRepository = new Mock<ICommentRepository>(MockBehavior.Strict);
+            userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
 
-            offensiveWordsValidator = new OffensiveWordsValidator(offensiveWordsRepo.Object, articleRepository.Object, commentRepository.Object);
+            offensiveWordsValidator = new OffensiveWordsValidator(offensiveWordsRepo.Object, articleRepository.Object, commentRepository.Object, userRepository.Object);
             article = new Article() { Name = "offensive", Body = "something offensive" };
             comment = new Comment() { Body = "this is offensive" };
         }
@@ -49,7 +51,11 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void NotifyAdminsAndModeratorsTest()
         {
-            // COMPLETE
+            userRepository.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>())).Returns(new List<User>() { moderator });
+            userRepository.Setup(x => x.Update(It.IsAny<User>()));
+
+            offensiveWordsValidator.NotifyAdminsAndModerators(article.Name, new List<string>() { "offensive" });
+            userRepository.VerifyAll();
         }
 
         [TestMethod]

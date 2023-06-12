@@ -10,14 +10,16 @@ namespace BlogsApp.BusinessLogic.Logics
         private readonly IOffensiveWordRepository _offensiveWordRepository;
         private readonly IArticleRepository _articleRepository;
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
         private List<string> offensiveWords;
 
-        public OffensiveWordsValidator(IOffensiveWordRepository offensiveWordRepository, IArticleRepository articleRepository, ICommentRepository commentRepository)
+        public OffensiveWordsValidator(IOffensiveWordRepository offensiveWordRepository, IArticleRepository articleRepository, ICommentRepository commentRepository, IUserRepository userRepository)
         {
             this._offensiveWordRepository = offensiveWordRepository;
             offensiveWords = offensiveWordRepository.GetAll(w => true).Select(w => w.Word).ToList();
             _articleRepository = articleRepository;
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
         }
 
         private List<string> FindOffensiveWords(string content)
@@ -38,7 +40,12 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public void NotifyAdminsAndModerators(string content, List<string> offensiveWords)
         {
-            throw new NotImplementedException();
+            ICollection<User> adminsAndModerators = _userRepository.GetAll(u => u.DateDeleted == null && (u.Admin || u.Moderador));
+            foreach(User user in adminsAndModerators)
+            {
+                user.HasContentToReview = true;
+                _userRepository.Update(user);
+            }
         }
 
         public void AddOffensiveWord(User loggedUser, string word)
