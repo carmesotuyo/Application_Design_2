@@ -31,6 +31,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { UserArticlesComponent } from './components/user-articles/user-articles.component';
 import { ImporterComponent } from './components/importer/importer.component';
+import { NavBarAdminComponent } from './components/nav-bar-admin/nav-bar-admin.component';
+import { LogsComponent } from './components/logs/logs.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatTableModule} from '@angular/material/table';
+import { LogsService } from './services/logs.service';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -44,7 +50,9 @@ import { ImporterComponent } from './components/importer/importer.component';
     UserFormComponent,
     CommentsModalComponent,
     UserArticlesComponent,
-    ImporterComponent
+    ImporterComponent,
+    NavBarAdminComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
@@ -62,12 +70,16 @@ import { ImporterComponent } from './components/importer/importer.component';
     MatSelectModule,
     MatToolbarModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDatepickerModule,
+    MatTableModule,
+    MatNativeDateModule
   ],
   providers: [
     LoginService,
     AuthService,
     ArticleService,
+    LogsService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
