@@ -33,6 +33,7 @@ namespace BlogsApp.DataAccess.Repositories
         public Article Get(Func<Article, bool> func)
         {
             Article article = Context.Set<Article>()
+                .Include(a => a.OffensiveWords)
                 .Include(a => a.User)
                 .Include(a => a.Comments)
                     .ThenInclude(c => c.User)
@@ -49,7 +50,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Article> GetAll(Func<Article, bool> func)
         {
-            ICollection<Article> articles = Context.Set<Article>().Include("User").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            ICollection<Article> articles = Context.Set<Article>().Include(a => a.User).Include(a => a.OffensiveWords).Where(a => a.DateDeleted == null).Where(func).ToArray();
             if (articles.Count == 0)
                 throw new NotFoundDbException("No se encontraron articulos");
             return articles;

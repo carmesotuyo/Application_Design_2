@@ -22,9 +22,6 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             IsUserValid(user);
             _userRepository.Add(user!);
-            if (user.Admin || user.Moderador)
-                // ACA VA EL SUBSCRIBE
-                throw new NotImplementedException();
             return user;
         }
 

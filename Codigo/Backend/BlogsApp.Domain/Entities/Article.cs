@@ -18,6 +18,7 @@ namespace BlogsApp.Domain.Entities
         public ICollection<Comment> Comments { get; set; }
         public int Template { get; set; }
         public string? Image { get; set; }
+        public ICollection<OffensiveWord> OffensiveWords { get; set; }
 
 
         public Article(string name, string body, int template, User user)
@@ -30,6 +31,7 @@ namespace BlogsApp.Domain.Entities
             UserId = user.Id;
             Comments = new List<Comment>();
             Template = template;
+            OffensiveWords = new List<OffensiveWord>();
         }
 
         public Article() { }

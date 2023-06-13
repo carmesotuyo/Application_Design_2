@@ -9,6 +9,7 @@ using BlogsApp.Domain;
 using System.Linq.Expressions;
 using BlogsApp.DataAccess.Migrations;
 using BlogsApp.DataAccess.Repositories;
+using BlogsApp.DataAccess.Interfaces.Exceptions;
 
 namespace BusinessLogic.Test
 {
@@ -18,10 +19,11 @@ namespace BusinessLogic.Test
 		private Mock<IOffensiveWordRepository> offensiveWordsRepo;
         private Mock<IArticleRepository> articleRepository;
         private Mock<ICommentRepository> commentRepository;
+        private Mock<IUserRepository> userRepository;
         private IOffensiveWordsValidator offensiveWordsValidator;
         private ICollection<OffensiveWord> offensiveWords;
-        private readonly User moderator = new User() { Moderador = true };
-        private readonly User commonUser = new User() { Moderador = false, Admin = false };
+        private User moderator;
+        private User commonUser;
         private OffensiveWord word;
         private OffensiveWord word2;
         private Article article;
@@ -34,14 +36,17 @@ namespace BusinessLogic.Test
             word = new OffensiveWord() { Id = 1, Word = "offensive" };
             word2 = new OffensiveWord() { Id = 2, Word = "offensive2" };
             offensiveWords = new List<OffensiveWord>() { word, word2 };
+            moderator = new User() { Id = 1, Moderador = true, HasContentToReview = true };
+            commonUser = new User() { Id = 2, Moderador = false, Admin = false };
 
             offensiveWordsRepo = new Mock<IOffensiveWordRepository>(MockBehavior.Strict);
             offensiveWordsRepo.Setup(x => x.GetAll(It.IsAny<Func<OffensiveWord, bool>>())).Returns(offensiveWords);
 
             articleRepository = new Mock<IArticleRepository>(MockBehavior.Strict);
             commentRepository = new Mock<ICommentRepository>(MockBehavior.Strict);
+            userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
 
-            offensiveWordsValidator = new OffensiveWordsValidator(offensiveWordsRepo.Object, articleRepository.Object, commentRepository.Object);
+            offensiveWordsValidator = new OffensiveWordsValidator(offensiveWordsRepo.Object, articleRepository.Object, commentRepository.Object, userRepository.Object);
             article = new Article() { Name = "offensive", Body = "something offensive" };
             comment = new Comment() { Body = "this is offensive" };
         }
@@ -49,7 +54,11 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void NotifyAdminsAndModeratorsTest()
         {
-            // COMPLETE
+            userRepository.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>())).Returns(new List<User>() { moderator });
+            userRepository.Setup(x => x.Update(It.IsAny<User>()));
+
+            offensiveWordsValidator.NotifyAdminsAndModerators();
+            userRepository.VerifyAll();
         }
 
         [TestMethod]
@@ -135,6 +144,76 @@ namespace BusinessLogic.Test
 
             List<string> result = offensiveWordsValidator.reviewComment(comment);
             Assert.IsTrue(result.Count() == 0);
+        }
+
+        [TestMethod]
+        public void GetArticlesToReviewOk()
+        {
+            List<Article> articles = new List<Article>() { article };
+            articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(articles);
+
+            IEnumerable<Article> result = offensiveWordsValidator.GetArticlesToReview(moderator);
+
+            articleRepository.VerifyAll();
+            Assert.IsTrue(result.Count() == 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void GetArticlesToReviewWithoutPermission()
+        {
+            IEnumerable<Article> result = offensiveWordsValidator.GetArticlesToReview(commonUser);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetArticlesToReviewWithoutFlagEnabled()
+        {
+            moderator.HasContentToReview = false;
+            IEnumerable<Article> result = offensiveWordsValidator.GetArticlesToReview(moderator);
+        }
+
+        [TestMethod]
+        public void GetCommentsToReviewOk()
+        {
+            List<Comment> comments = new List<Comment>() { comment };
+            commentRepository.Setup(x => x.GetAll(It.IsAny<Func<Comment, bool>>())).Returns(comments);
+
+            IEnumerable<Comment> result = offensiveWordsValidator.GetCommentsToReview(moderator);
+
+            commentRepository.VerifyAll();
+            Assert.IsTrue(result.Count() == 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void GetCommentsToReviewWithoutPermission()
+        {
+            IEnumerable<Comment> result = offensiveWordsValidator.GetCommentsToReview(commonUser);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundDbException))]
+        public void GetCommentsToReviewWithoutFlagEnabled()
+        {
+            moderator.HasContentToReview = false;
+            IEnumerable<Comment> result = offensiveWordsValidator.GetCommentsToReview(moderator);
+        }
+
+        [TestMethod]
+        public void UnflagReviewContentOk()
+        {
+            userRepository.Setup(x => x.Update(It.IsAny<User>()));
+            offensiveWordsValidator.UnflagReviewContentForUser(moderator, moderator);
+            userRepository.VerifyAll();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UnflagReviewContentWithoutPermission()
+        {
+            userRepository.Setup(x => x.Update(It.IsAny<User>()));
+            offensiveWordsValidator.UnflagReviewContentForUser(commonUser, moderator);
         }
     }
 }
