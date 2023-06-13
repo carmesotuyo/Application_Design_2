@@ -1,11 +1,11 @@
-<h2>Comentarios recibidos mientras estabas offline</h2>
+<h2 class="modal-title">Comentarios recibidos mientras estabas offline</h2>
 <div class="comment-container">
   <mat-card class="comment-card" *ngFor="let comment of data.comments">
     <mat-card-title>Te ecribieron: {{comment.body}}</mat-card-title>
     <mat-card-content>{{comment.articleId}}</mat-card-content>
     <mat-form-field class="reply-field">
-      <textarea matInput [(ngModel)]="replies[comment.id]"></textarea>
+        <textarea matInput [(ngModel)]="comment.reply"></textarea>
     </mat-form-field>
-    <button mat-button (click)="replyToComment(comment, replies[comment.id])">Responder</button>
+    <button mat-button (click)="replyToComment(comment)">Responder</button>
   </mat-card>
 </div>

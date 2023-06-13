@@ -45,11 +45,6 @@ export class LoginComponent {
           this.authService.setToken(token);
           this.authService.setUsername(this.username);
           this.commentService.setOfflineComments(response.comments);
-          alert('despues del login' + this.commentService.getOfflineComments());
-          
-          //this.router.navigate(['/home']);
-          console.log('Inicio de sesión correcto:', response.message);
-          console.log(this.commentService.getOfflineComments())
           // Redirigir al usuario a la pantalla principal (HomeComponent) u otra vista deseada
           this.router.navigateByUrl('/home');
         } else {

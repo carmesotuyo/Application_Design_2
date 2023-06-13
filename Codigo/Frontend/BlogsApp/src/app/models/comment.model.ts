@@ -20,4 +20,5 @@ export interface CommentDto {
     body: string;
     articleId: number;
     commentId: number;
+    reply: string;
   }

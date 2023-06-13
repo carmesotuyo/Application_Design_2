@@ -17,13 +17,17 @@ export class CommentsModalComponent implements OnInit {
     private commentService: CommentService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.data.comments.forEach((comment: CommentNotify) => {
+      comment.reply = '';
+    });
+  }
 
-  replyToComment(comment: CommentNotify, replyText: string): void {
-    if(replyText) {
+  replyToComment(comment: CommentNotify): void {
+    if(comment.reply) {
       this.commentService
         .postReply(
-          { body: replyText, articleId: comment.articleId },
+          { body: comment.reply, articleId: comment.articleId },
           comment.commentId
         )
         .subscribe(() => {
@@ -32,7 +36,7 @@ export class CommentsModalComponent implements OnInit {
           // Actualizar comentarios offline
           this.commentService.removeOfflineComment(comment.commentId);
         });
-      alert('Replying to comment ' + comment.commentId + '.');
+      alert('Comentario enviado correctamente');
     } else {
       alert('Debe ingresar un texto para responder al comentario ' + comment.commentId);
     }
