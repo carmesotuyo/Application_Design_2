@@ -30,11 +30,14 @@ export class ArticleViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getArticle();
+  }
+
+  getArticle(): void {
     const articleId = this.route.snapshot.params['id'];
     this.articleService.getArticle(articleId).subscribe((article) => {
       this.article = article;
       this.comments = article.commentsDtos! ? article.commentsDtos : [];
-      //this.comments.push(...article.commentsDtos!);
       this.checkOwnership();
     });
   }
@@ -76,9 +79,9 @@ export class ArticleViewComponent implements OnInit {
           { body: replyText, articleId: this.article!.id },
           comment.id
         )
-        .subscribe((newComment) => {
-          comment.subComments.push(newComment);
+        .subscribe(() => {
           this.newComments[comment.id] = '';
+          this.getArticle();
         });
       // Código para mostrar una notificación en lugar de alert
       alert('Respuesta creada con éxito');
@@ -89,15 +92,12 @@ export class ArticleViewComponent implements OnInit {
   }
 
   addComment(): void {
-    alert(this.comments);
     this.commentService
       .postComment({ body: this.newComment, articleId: this.article!.id })
-      .subscribe((newComment) => {
-        this.comments.push(newComment);
+      .subscribe(() => {
         this.newComment = '';
-        this.cdr.detectChanges();
+        this.getArticle();
       });
-      alert(this.comments + '==== desppues')
   }
 
   deleteArticle(): void {
