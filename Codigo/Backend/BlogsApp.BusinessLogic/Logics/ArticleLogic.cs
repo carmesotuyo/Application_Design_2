@@ -14,17 +14,26 @@ namespace BlogsApp.BusinessLogic.Logics
     {
         private readonly IArticleRepository _articleRepository;
         private readonly ICommentLogic _commentLogic;
+        private readonly IOffensiveWordsValidator _offensiveWordsValidator;
 
-        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic)
+        public ArticleLogic(IArticleRepository articleRepository, ICommentLogic commentLogic, IOffensiveWordsValidator offensiveWordsValidator)
         {
             _articleRepository = articleRepository;
             _commentLogic = commentLogic;
+            _offensiveWordsValidator = offensiveWordsValidator;
         }
 
         public Article CreateArticle(Article article, User loggedUser)
         {
             if (loggedUser.Blogger && isValidArticle(article))
             {
+                List<string> offensiveWordsFound = _offensiveWordsValidator.reviewArticle(article);
+                if (offensiveWordsFound.Count() > 0)
+                {
+                    article.State = Domain.Enums.ContentState.InReview;
+                    _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
+                }
+
                 this._articleRepository.Add(article);
                 
                 return article;
@@ -44,6 +53,7 @@ namespace BlogsApp.BusinessLogic.Logics
                     _commentLogic.DeleteComment(comment.Id, loggedUser);
                 }
                 article.DateDeleted = DateTime.Now;
+                article.State = Domain.Enums.ContentState.Deleted;
                 this._articleRepository.Update(article);
             } else
             {
@@ -60,7 +70,9 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             if (searchText == null)
             {
-                return _articleRepository.GetAll(m => m.DateDeleted == null && (m.Private == false || m.UserId == loggedUser.Id))
+                return _articleRepository.GetAll(m => m.DateDeleted == null
+                                    && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                    && (m.Private == false || m.UserId == loggedUser.Id))
                                  .OrderByDescending(m => m.DateModified)
                                  .Take(10);
             }
@@ -72,7 +84,9 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public IEnumerable<Article> GetArticlesByUser(int userId, User loggedUser)
         {
-            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId && (!m.Private || m.UserId == loggedUser.Id));
+            return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId
+                                            && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                            && (!m.Private || m.UserId == loggedUser.Id));
         }
 
         public IDictionary<string, int> GetStatsByYear(int year, User loggedUser)
@@ -101,7 +115,20 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
             isValidArticle(anArticle);
-            if (loggedUser.Id == article.UserId)
+
+            List<string> offensiveWordsFound = _offensiveWordsValidator.reviewArticle(anArticle);
+            if (offensiveWordsFound.Count() > 0)
+            {
+                article.State = Domain.Enums.ContentState.InReview;
+                _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
+            }
+            else if (article.State == Domain.Enums.ContentState.InReview)
+            {
+                // si un contenido entra acá es porque estaba en revisión y fue editado, se le quitaron las palabras ofensivas
+                article.State = Domain.Enums.ContentState.Edited;
+            }
+
+            if (loggedUser.Id == article.UserId || loggedUser.Admin || loggedUser.Moderador)
             {
                 article.Name = anArticle.Name;
                 article.Body = anArticle.Body;
@@ -113,18 +140,19 @@ namespace BlogsApp.BusinessLogic.Logics
                 return article;
             } else
             {
-                throw new UnauthorizedAccessException("Sólo el creador del artículo puede modificarlo");
+                throw new UnauthorizedAccessException("Sólo el creador del artículo o un moderador pueden modificarlo");
             };
         }
 
         private Func<Article, bool> ArticleById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted == null && (!a.Private || a.UserId == loggedUser.Id);
+            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited) && (!a.Private || a.UserId == loggedUser.Id);
         }
 
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
         {
             return article => article.DateDeleted == null &&
+                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited) &&
                               (article.Name.Contains(text) || article.Body.Contains(text)) &&
                               (article.Private == false || article.UserId == loggedUser.Id);
         }

@@ -12,6 +12,7 @@ namespace BlogsApp.DataAccess
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<OffensiveWord> OffensiveWords { get; set; }
 
 
         public Context(DbContextOptions options) : base(options) { }
@@ -30,8 +31,8 @@ namespace BlogsApp.DataAccess
                  .Build();
 
                 //var connectionString = configuration.GetConnectionString(@"BlogsAppDBCarme");
-                var connectionString = configuration.GetConnectionString(@"BlogsAppDBFer");
-                //var connectionString = configuration.GetConnectionString(@"BlogsAppDBGime");
+                //var connectionString = configuration.GetConnectionString(@"BlogsAppDBFer");
+                var connectionString = configuration.GetConnectionString(@"BlogsAppDBGime");
 
                 optionsBuilder.UseSqlServer(connectionString!);
             }

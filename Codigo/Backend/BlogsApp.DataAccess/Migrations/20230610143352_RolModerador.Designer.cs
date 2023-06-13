@@ -4,6 +4,7 @@ using BlogsApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogsApp.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230610143352_RolModerador")]
+    partial class RolModerador
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +55,6 @@ namespace BlogsApp.DataAccess.Migrations
 
                     b.Property<bool>("Private")
                         .HasColumnType("bit");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.Property<int>("Template")
                         .HasColumnType("int");
@@ -96,9 +96,6 @@ namespace BlogsApp.DataAccess.Migrations
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -111,23 +108,6 @@ namespace BlogsApp.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("BlogsApp.Domain.Entities.OffensiveWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OffensiveWords");
                 });
 
             modelBuilder.Entity("BlogsApp.Domain.Entities.Session", b =>
@@ -177,9 +157,6 @@ namespace BlogsApp.DataAccess.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasContentToReview")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

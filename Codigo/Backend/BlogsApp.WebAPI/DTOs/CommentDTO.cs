@@ -22,6 +22,8 @@
     {
         public string Body { get; set; }
         public int ArticleId { get; set; }
+        public string ArticleName { get; set; }
+        public string Username { get; set; }
         public int CommentId { get; set; }
     }
 

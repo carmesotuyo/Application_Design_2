@@ -45,6 +45,7 @@ namespace WebApi.Test
                 "Juan",
                 "Perez",
                  true,
+                 false,
                  false
             );
             aValidBlogger.Id = 2;

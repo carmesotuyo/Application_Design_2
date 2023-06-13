@@ -12,8 +12,8 @@ namespace DataAccess.Test
     {
         private Context _dbContext;
         private CommentRepository _commentRepository;
-        private static User _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false);
-        private static User _testUser2 = new User("usernam2", "password", "email@.com", "name", "last_name", false, false);
+        private static User _testUser = new User("username", "password", "email@.com", "name", "last_name", false, false, false);
+        private static User _testUser2 = new User("usernam2", "password", "email@.com", "name", "last_name", false, false, false);
         private static Article _testArticle = new Article("Test Article", "Test Content", 1, _testUser);
         private Comment _comment = new Comment(_testUser, "Hola", _testArticle);
 
@@ -60,7 +60,7 @@ namespace DataAccess.Test
         public void Exists_ShouldReturnTrue_WhenCommentExists()
         {
             // Arrange
-            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false);
+            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false, false);
             var article = new Article("testarticle", "testbody", 1, user);
             var comment = new Comment(user, "testcomment", article);
 
@@ -78,7 +78,7 @@ namespace DataAccess.Test
         public void Exists_ShouldReturnFalse_WhenCommentDoesNotExist()
         {
             // Arrange
-            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false);
+            var user = new User("testuser", "testpassword", "testemail@aa.com", "testname", "testlastname", false, false, false);
             var article = new Article("testarticle", "testbody", 1, user);
             var comment = new Comment(user, "testcomment", article);
 
