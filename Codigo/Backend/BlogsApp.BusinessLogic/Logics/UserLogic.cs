@@ -32,7 +32,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public IEnumerable<User> GetUsers(User loggedUser)
         {
-            if (loggedUser != null)
+            if ((loggedUser != null) && (isAdmin(loggedUser)))
             {
                 return _userRepository.GetAll(m => m.DateDeleted == null)
                                  .OrderByDescending(m => m.Name)
@@ -42,6 +42,11 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
+        }
+
+        bool isAdmin (User loggedUser)
+        {
+            return loggedUser.Admin;
         }
 
         public User DeleteUser(User loggedUser, int UserId)
