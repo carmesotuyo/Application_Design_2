@@ -53,7 +53,7 @@ namespace WebApi.Test
             comments = new List<Comment>() { comment };
             notifiedComment = CommentConverter.toNotificationDto(comment);
             notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
-            responseDTO = new LoginResponseDTO(token, notifiedComments);
+            responseDTO = new LoginResponseDTO(1, token, notifiedComments);
         }
 
         [TestMethod]
