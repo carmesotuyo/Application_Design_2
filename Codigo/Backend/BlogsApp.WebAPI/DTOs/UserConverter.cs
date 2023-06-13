@@ -25,7 +25,6 @@ namespace BlogsApp.WebAPI.DTOs
         {
             User userDataToUpdate = new User();
 
-
             userDataToUpdate.Id = userId;
 
             if (!string.IsNullOrEmpty(userDto.Name)) { userDataToUpdate.Name = userDto.Name;  } else { userDataToUpdate.Name = user.Name; }
