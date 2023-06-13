@@ -11,5 +11,8 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         User GetUserById(int userId);
         IEnumerable<User> GetUsers(User loggedUser);
         User? UpdateUser(User loggedUser, User user);
+        bool IsAdmin(User loggedUser);
+        bool IsModerator(User loggedUser);
+
     }
 }

@@ -22,6 +22,9 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             IsUserValid(user);
             _userRepository.Add(user!);
+            if (user.Admin || user.Moderador)
+                // ACA VA EL SUBSCRIBE
+                throw new NotImplementedException();
             return user;
         }
 
@@ -43,9 +46,14 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-        bool isAdmin (User loggedUser)
+        public bool IsAdmin(User loggedUser)
         {
             return loggedUser.Admin;
+        }
+
+        public bool IsModerator(User loggedUser)
+        {
+            return loggedUser.Moderador;
         }
 
         public User DeleteUser(User loggedUser, int UserId)
@@ -109,6 +117,13 @@ namespace BlogsApp.BusinessLogic.Logics
             if (esAdmin)
             {
                 _userRepository.Update(userWithDataToUpdate);
+                if(userWithDataToUpdate.Admin || userWithDataToUpdate.Moderador)
+                {
+                    //subscribe
+                } else if (!userWithDataToUpdate.Admin && !userWithDataToUpdate.Moderador)
+                {
+                    //unsubscribe
+                }
                 return userWithDataToUpdate;
             }
             //si no es admin y hay cambios en los roles no permite la accion

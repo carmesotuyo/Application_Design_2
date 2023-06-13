@@ -12,6 +12,7 @@ namespace BlogsApp.DataAccess
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<OffensiveWord> OffensiveWords { get; set; }
 
 
         public Context(DbContextOptions options) : base(options) { }

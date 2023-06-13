@@ -51,7 +51,7 @@ namespace BlogsApp.WebAPI.Controllers
         {
             sessionLogic.Logout(base.GetLoggedUser(token));
 
-            return new OkObjectResult("Usuario deslogueado correctamente");
+            return new OkObjectResult(new { message = "Usuario deslogueado correctamente" });
         }
 
     }
