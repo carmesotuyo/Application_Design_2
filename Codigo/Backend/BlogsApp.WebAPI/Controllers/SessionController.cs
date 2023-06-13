@@ -28,11 +28,21 @@ namespace BlogsApp.WebAPI.Controllers
             Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
-            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user);
 
-            var response = new LoginResponseDTO(token, comments);
+            var response = new LoginResponseDTO(token, GetAndConvertCommentsToNotify(user));
 
             return Ok(response);
+        }
+
+        private IEnumerable<NotificationCommentDto> GetAndConvertCommentsToNotify(User user)
+        {
+            List<NotificationCommentDto> comments = new List<NotificationCommentDto>();
+
+            foreach (Comment comment in sessionLogic.GetCommentsWhileLoggedOut(user))
+            {
+                comments.Add(CommentConverter.toNotificationDto(comment));
+            }
+            return comments;
         }
 
         [ServiceFilter(typeof(AuthorizationFilter))]
@@ -41,7 +51,7 @@ namespace BlogsApp.WebAPI.Controllers
         {
             sessionLogic.Logout(base.GetLoggedUser(token));
 
-            return new OkObjectResult("Usuario deslogueado correctamente");
+            return new OkObjectResult(new { message = "Usuario deslogueado correctamente" });
         }
 
     }

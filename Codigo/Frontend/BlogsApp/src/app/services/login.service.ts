@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Login_URL, Home_URL } from '../utils/routes'
 import { environment } from '../../environments/environment';
@@ -15,5 +15,10 @@ export class LoginService {
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
     return this.http.post<any>(this.apiUrl, body);
+  }
+
+  logout(): Observable<any> {
+    const url = `${this.apiUrl}`;
+    return this.http.patch<any>(url, null);
   }
 }

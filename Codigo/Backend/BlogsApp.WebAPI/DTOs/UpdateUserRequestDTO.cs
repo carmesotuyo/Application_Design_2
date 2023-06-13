@@ -11,6 +11,7 @@ namespace BlogsApp.WebAPI.DTOs
         public string? LastName { get; set; }
         public bool? Blogger { get; set; }
         public bool? Admin { get; set; }
+        public bool? Moderador { get; set; }
 
         public User ApplyChangesToUser(User user)
         {
@@ -34,6 +35,9 @@ namespace BlogsApp.WebAPI.DTOs
 
             if (Admin.HasValue)
                 user.Admin = Admin.Value;
+
+            if (Moderador.HasValue)
+                user.Moderador = Moderador.Value;
 
             return user;
         }
