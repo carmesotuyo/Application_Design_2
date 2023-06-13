@@ -37,7 +37,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     comment.State = Domain.Enums.ContentState.InReview;
-                    _offensiveWordsValidator.NotifyAdminsAndModerators(comment.Body, offensiveWordsFound);
+                    _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 
                 this._commentRepository.Add(comment);

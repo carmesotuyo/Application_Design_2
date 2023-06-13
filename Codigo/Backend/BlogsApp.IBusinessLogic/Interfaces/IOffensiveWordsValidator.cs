@@ -7,7 +7,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     {
         List<string> reviewArticle(Article article);
         List<string> reviewComment(Comment comment);
-        void NotifyAdminsAndModerators(string content, List<string> offensiveWords);
+        void NotifyAdminsAndModerators();
         void AddOffensiveWord(User loggedUser, string word);
         void RemoveOffensiveWord(User loggedUser, string word);
         ICollection<Article> GetArticlesToReview(User loggedUser);

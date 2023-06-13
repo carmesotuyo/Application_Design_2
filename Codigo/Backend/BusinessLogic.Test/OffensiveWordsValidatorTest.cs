@@ -57,7 +57,7 @@ namespace BusinessLogic.Test
             userRepository.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>())).Returns(new List<User>() { moderator });
             userRepository.Setup(x => x.Update(It.IsAny<User>()));
 
-            offensiveWordsValidator.NotifyAdminsAndModerators(article.Name, new List<string>() { "offensive" });
+            offensiveWordsValidator.NotifyAdminsAndModerators();
             userRepository.VerifyAll();
         }
 

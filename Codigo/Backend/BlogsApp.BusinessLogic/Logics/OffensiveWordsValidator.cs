@@ -39,7 +39,7 @@ namespace BlogsApp.BusinessLogic.Logics
             return foundOffensiveWords;
         }
 
-        public void NotifyAdminsAndModerators(string content, List<string> offensiveWords)
+        public void NotifyAdminsAndModerators()
         {
             ICollection<User> adminsAndModerators = _userRepository.GetAll(u => u.DateDeleted == null && (u.Admin || u.Moderador));
             foreach(User user in adminsAndModerators)
