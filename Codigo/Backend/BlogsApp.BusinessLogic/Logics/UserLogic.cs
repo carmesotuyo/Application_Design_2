@@ -30,6 +30,16 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
+        public bool IsAdmin(User loggedUser)
+        {
+            return loggedUser.Admin;
+        }
+
+        public bool IsModerator(User loggedUser)
+        {
+            return loggedUser.Moderador;
+        }
+
         public User DeleteUser(User loggedUser, int UserId)
         {
             if (authorizedUser(loggedUser, UserId))
