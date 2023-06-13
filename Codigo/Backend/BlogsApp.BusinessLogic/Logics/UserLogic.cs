@@ -35,8 +35,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if ((loggedUser != null) && (isAdmin(loggedUser)))
             {
                 return _userRepository.GetAll(m => m.DateDeleted == null)
-                                 .OrderByDescending(m => m.Name)
-                                 .Take(10);
+                                 .OrderByDescending(m => m.Name);
             }
             else
             {
