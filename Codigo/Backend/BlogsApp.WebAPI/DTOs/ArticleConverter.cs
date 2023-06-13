@@ -22,7 +22,8 @@ namespace BlogsApp.WebAPI.DTOs
                 Body = article.Body,
                 Private = article.Private,
                 Template = article.Template,
-                Image = article.Image
+                Image = article.Image,
+                UserId = article.UserId
             };
         }
 

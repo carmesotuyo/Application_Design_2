@@ -11,5 +11,6 @@ namespace BlogsApp.WebAPI.DTOs
         public bool Private { get; set; }
         public int Template { get; set; }
         public string? Image { get; set; }
+        public int UserId { get; set; }
     }
 }
