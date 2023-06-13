@@ -19,12 +19,14 @@ namespace WebApi.Test
         private Mock<ISessionLogic> sessionLogicMock;
         private UserController? controller;
 
+        User user;
         User loggedUser;
         User aValidBlogger;
         User aBloggerToUpdate;
         CreateUserRequestDTO aValidBloggerDTO;
         UpdateUserRequestDTO updateBloggerRequestDto;
         ICollection<User> usersRanking;
+        ICollection<User> users;
         ICollection<Article> userArticles;
         Article article;
         private Guid token;
@@ -37,6 +39,7 @@ namespace WebApi.Test
             sessionLogicMock = new Mock<ISessionLogic>(MockBehavior.Strict);
             controller = new UserController(userLogicMock.Object, articleLogicMock.Object, sessionLogicMock.Object);
 
+            
             loggedUser = new User() { Id = 1 };
             aValidBlogger = new User(
                 "JPerez",
@@ -64,6 +67,7 @@ namespace WebApi.Test
             aBloggerToUpdate = new User() { Id = 2 };
             updateBloggerRequestDto = new UpdateUserRequestDTO();
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
+            users = new List<User>() { aValidBlogger, aBloggerToUpdate };
             article = new Article()
             {
                 Id = 1,
@@ -251,6 +255,38 @@ namespace WebApi.Test
             articleLogicMock.VerifyAll();
             Assert.AreEqual(500, statusCode);
         }
+
+        [TestMethod]
+        public void GetUserByIdOk()
+        {
+            userLogicMock.Setup(m => m.GetUserById(It.IsAny<int>())).Returns(aValidBlogger);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(aValidBlogger);
+
+            var result = controller!.GetUserById(token.ToString(), aValidBlogger.Id);
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            userLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
+        }
+
+
+        [TestMethod]
+        public void GetUsers()
+        {
+            userLogicMock.Setup(m => m.GetUsers(It.IsAny<User>())).Returns(users);
+            sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(aValidBlogger);
+
+            var result = controller!.GetUsers(token.ToString());
+            var objectResult = result as OkObjectResult;
+            var statusCode = objectResult?.StatusCode;
+
+            userLogicMock.VerifyAll();
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(200, statusCode);
+        }
+
     }
 }
 
