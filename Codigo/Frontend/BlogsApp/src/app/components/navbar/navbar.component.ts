@@ -38,4 +38,8 @@ export class NavbarComponent {
       }
     });
   }
+
+  toMyArticles() {
+    this.router.navigateByUrl('/user/' + this.authService.getUserId());
+  }
 }

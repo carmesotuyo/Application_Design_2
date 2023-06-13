@@ -11,6 +11,9 @@
   </button>
   <!-- Aquí definimos el menú con dos opciones -->
   <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="toMyArticles()">Mis Artículos</button>
+    <button mat-menu-item routerLink="/add">Crear Artículo</button>
+    <button mat-menu-item routerLink="/importer">Importar Articulo</button>
     <button mat-menu-item routerLink="/editUser">Editar Perfil</button>
     <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
   </mat-menu>

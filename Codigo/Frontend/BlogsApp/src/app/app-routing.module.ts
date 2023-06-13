@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { ArticleViewComponent } from './components/article-view/article-view.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { UserArticlesComponent } from './components/user-articles/user-articles.component';
+import { ImporterComponent } from './components/importer/importer.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'user/:id', component: UserArticlesComponent },
   {path: 'add', component: ArticleFormComponent},
   { path: 'edit/:id', component: ArticleFormComponent },
+  {path: 'importer', component: ImporterComponent},
   { path: 'articles/:id', component: ArticleViewComponent },
   { path: '**', redirectTo: '', }, // this line goes at the end
 ];

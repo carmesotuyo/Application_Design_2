@@ -45,6 +45,7 @@ export class LoginComponent {
           this.authService.setToken(token);
           this.authService.setUsername(this.username);
           this.commentService.setOfflineComments(response.comments);
+          this.authService.setUserId(response.userId);
           // Redirigir al usuario a la pantalla principal (HomeComponent) u otra vista deseada
           this.router.navigateByUrl('/home');
         } else {

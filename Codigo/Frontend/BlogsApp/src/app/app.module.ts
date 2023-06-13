@@ -30,6 +30,7 @@ import { CommentsModalComponent } from './components/comments-modal/comments-mod
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { UserArticlesComponent } from './components/user-articles/user-articles.component';
+import { ImporterComponent } from './components/importer/importer.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UserArticlesComponent } from './components/user-articles/user-articles.
     ArticleViewComponent,
     UserFormComponent,
     CommentsModalComponent,
-    UserArticlesComponent
+    UserArticlesComponent,
+    ImporterComponent
   ],
   imports: [
     BrowserModule,
