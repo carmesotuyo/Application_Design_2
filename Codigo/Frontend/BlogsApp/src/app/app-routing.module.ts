@@ -12,6 +12,7 @@ import { LogsComponent } from './components/logs/logs.component';
 import { RankingComponent } from './components/ranking/ranking.component';
 import { StatsComponent } from './components/stats/stats.component';
 import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuario.component';
+import { EditAllUsersComponent } from './components/edit-all-users/edit-all-users.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path: 'ranking', component: RankingComponent},
   {path: 'stats', component: StatsComponent},
   { path: 'editUser', component: EditarUsuarioComponent},
+  {path: 'editUsers', component: EditAllUsersComponent},
   { path: '**', redirectTo: '' }, // this line goes at the end
 ];
 

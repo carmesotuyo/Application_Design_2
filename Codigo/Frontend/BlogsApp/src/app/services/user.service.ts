@@ -62,7 +62,7 @@ export class UserService {
     return this.http.get<UserComplete>(url);
   }
 
-  public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+  public getUsers(): Observable<UserComplete[]> {
+    return this.http.get<UserComplete[]>(this.apiUrl);
   }
 }

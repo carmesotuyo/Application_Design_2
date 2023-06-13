@@ -40,6 +40,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { RankingComponent } from './components/ranking/ranking.component';
 import { StatsComponent } from './components/stats/stats.component';
 import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuario.component';
+import { EditAllUsersComponent } from './components/edit-all-users/edit-all-users.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,8 @@ import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuar
     LogsComponent,
     RankingComponent,
     StatsComponent,
-    EditarUsuarioComponent
+    EditarUsuarioComponent,
+    EditAllUsersComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +82,8 @@ import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuar
     MatMenuModule,
     MatDatepickerModule,
     MatTableModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSnackBarModule
   ],
   providers: [
     LoginService,
