@@ -149,7 +149,10 @@ namespace BlogsApp.BusinessLogic.Logics
 
         private Func<Article, bool> ArticleById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited) && (!a.Private || a.UserId == loggedUser.Id);
+            return a => a.Id == id && a.DateDeleted == null &&
+                (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited ||
+                (a.State == Domain.Enums.ContentState.InReview && (loggedUser.Moderador || loggedUser.Admin || a.UserId == loggedUser.Id))) &&
+                (!a.Private || a.UserId == loggedUser.Id);
         }
 
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
