@@ -1,5 +1,9 @@
 <mat-toolbar color="primary">
-  <button mat-button [routerLink]="['/home']">BlogsApp</button>
+  <!-- Este es el botón de inicio -->
+  <button mat-icon-button [routerLink]="['/home']">
+    <mat-icon>home</mat-icon>
+  </button>
+  <span>BlogsApp</span>
   <span class="spacer"></span>
   <span>Bienvenido, {{ username }}</span>
   <span class="spacer"></span>
@@ -18,5 +22,6 @@
     <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
   </mat-menu>
 </mat-toolbar>
+
 
 

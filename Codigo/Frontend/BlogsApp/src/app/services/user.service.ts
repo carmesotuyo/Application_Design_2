@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
-import { User, UserRanking } from '../models/user.model';
+import { User, UserRanking, UserComplete } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -57,9 +57,9 @@ export class UserService {
     return this.http.delete<any>(`${url}`);
   }
 
-  public getUserById(userId: number): Observable<User> {
+  public getUserById(userId: number): Observable<UserComplete> {
     const url = `${this.apiUrl}/${userId}`;
-    return this.http.get<User>(url);
+    return this.http.get<UserComplete>(url);
   }
 
   public getUsers(): Observable<User[]> {

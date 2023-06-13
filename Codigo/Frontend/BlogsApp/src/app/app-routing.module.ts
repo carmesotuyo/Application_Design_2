@@ -11,13 +11,13 @@ import { ImporterComponent } from './components/importer/importer.component';
 import { LogsComponent } from './components/logs/logs.component';
 import { RankingComponent } from './components/ranking/ranking.component';
 import { StatsComponent } from './components/stats/stats.component';
+import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuario.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'register', component: UserFormComponent },
-  { path: 'editUser', component: UserFormComponent },
   { path: 'user/:id', component: UserArticlesComponent },
   { path: 'add', component: ArticleFormComponent },
   { path: 'edit/:id', component: ArticleFormComponent },
@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'logs', component: LogsComponent },
   {path: 'ranking', component: RankingComponent},
   {path: 'stats', component: StatsComponent},
+  { path: 'editUser', component: EditarUsuarioComponent},
   { path: '**', redirectTo: '' }, // this line goes at the end
 ];
 

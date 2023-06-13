@@ -39,6 +39,7 @@ import { LogsService } from './services/logs.service';
 import { MatNativeDateModule } from '@angular/material/core';
 import { RankingComponent } from './components/ranking/ranking.component';
 import { StatsComponent } from './components/stats/stats.component';
+import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuario.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { StatsComponent } from './components/stats/stats.component';
     NavBarAdminComponent,
     LogsComponent,
     RankingComponent,
-    StatsComponent
+    StatsComponent,
+    EditarUsuarioComponent
   ],
   imports: [
     BrowserModule,
