@@ -29,7 +29,7 @@ namespace BlogsApp.WebAPI.Controllers
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
 
-            var response = new LoginResponseDTO(token, GetAndConvertCommentsToNotify(user));
+            var response = new LoginResponseDTO(user.Id, token, GetAndConvertCommentsToNotify(user));
 
             return Ok(response);
         }
