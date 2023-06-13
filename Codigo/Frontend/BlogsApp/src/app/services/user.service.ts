@@ -47,9 +47,7 @@ export class UserService {
     return this.http.post<User>(this.apiUrl, user);
   }
 
-  public updateUser(user: User): Observable<User> {
-    //const id = user.id;
-    const id = 0;
+  public updateUser(user: User, id: number): Observable<User> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.patch<User>(url, user);
   }
@@ -57,5 +55,14 @@ export class UserService {
   public deleteUser(userId: number): Observable<any> {
     const url = `${this.apiUrl}/${userId}`;
     return this.http.delete<any>(`${url}`);
+  }
+
+  public getUserById(userId: number): Observable<User> {
+    const url = `${this.apiUrl}/${userId}`;
+    return this.http.get<User>(url);
+  }
+
+  public getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
   }
 }

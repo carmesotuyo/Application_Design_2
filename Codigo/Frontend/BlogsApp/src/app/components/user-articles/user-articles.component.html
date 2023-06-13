@@ -1,13 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container mat-typography">
-    <h1 class="title">Lista de Artículos</h1>
-    <div class="search-container">
-      <mat-form-field class="search-field">
-        <input matInput type="text" [(ngModel)]="searchKeyword" placeholder="Buscar">
-      </mat-form-field>
-      <button mat-raised-button color="primary" class="custom-button" (click)="onSearch()">Buscar</button>
-      <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/add']">Crear Articulo</button>
-    </div>
+    <button mat-raised-button color="accent" class="custom-button" [routerLink]="['/home']">Volver</button>
+    <h1 class="title">Lista de Artículos de {{userName}}:</h1>
 
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     <div *ngIf="!errorMessage">
@@ -17,9 +11,8 @@
             <mat-card-title>{{ article.name }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <!-- <p>Autor: {{ article.username }}</p> -->
+            <p>Autor: {{ article.username }}</p>
             <!-- <a [routerLink]="['/user', article.userId]">{{article.username}}</a> -->
-            <p>Autor: <a [routerLink]="['/user', 1]">{{article.username}}</a></p> 
           </mat-card-content>
           <mat-card-actions>
             <button mat-button [routerLink]="['/articles', article.id]">Ver artículo completo</button>

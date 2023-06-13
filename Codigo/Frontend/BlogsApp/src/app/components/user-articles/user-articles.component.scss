@@ -1,0 +1,39 @@
+.container {
+    padding: 20px;
+  }
+  
+  .title {
+    margin-bottom: 20px;
+  }
+  
+  .search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-field {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
+  
+  .error-message {
+    color: #f44336; // A common color for errors
+    margin-bottom: 20px;
+  }
+  
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+  }
+  
+  .article-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .custom-button {
+    margin: 10px;
+  }

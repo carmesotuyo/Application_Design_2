@@ -29,6 +29,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { CommentsModalComponent } from './components/comments-modal/comments-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
+import { UserArticlesComponent } from './components/user-articles/user-articles.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {MatMenuModule} from '@angular/material/menu';
     ArticleFormComponent,
     ArticleViewComponent,
     UserFormComponent,
-    CommentsModalComponent
+    CommentsModalComponent,
+    UserArticlesComponent
   ],
   imports: [
     BrowserModule,

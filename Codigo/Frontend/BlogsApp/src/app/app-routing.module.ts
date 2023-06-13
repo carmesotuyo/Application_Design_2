@@ -6,6 +6,7 @@ import{ArticleFormComponent} from './components/article-form/article-form.compon
 import { AuthGuard } from './guards/auth.guard';
 import { ArticleViewComponent } from './components/article-view/article-view.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
+import { UserArticlesComponent } from './components/user-articles/user-articles.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent},
@@ -13,6 +14,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard],},
   {path: 'register', component: UserFormComponent},
   {path: 'editUser', component: UserFormComponent},
+  { path: 'user/:id', component: UserArticlesComponent },
   {path: 'add', component: ArticleFormComponent},
   { path: 'edit/:id', component: ArticleFormComponent },
   { path: 'articles/:id', component: ArticleViewComponent },
