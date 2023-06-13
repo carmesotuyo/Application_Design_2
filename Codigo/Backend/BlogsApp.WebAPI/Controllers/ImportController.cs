@@ -37,7 +37,7 @@ namespace BlogsApp.WebAPI.Controllers
         {
             User loggedUser = base.GetLoggedUser(token);
             importerLogic.ImportArticles(importerInformation.ImporterName, importerInformation.Path, loggedUser);
-            return new OkObjectResult("ArticlesImportedSuccesfully");
+            return new OkObjectResult(new { message = "Articulos importados correctamente" });
         }
     }
 }
