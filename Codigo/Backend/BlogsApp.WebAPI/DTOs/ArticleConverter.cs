@@ -24,6 +24,7 @@ namespace BlogsApp.WebAPI.DTOs
                 Private = article.Private,
                 Template = article.Template,
                 Image = article.Image,
+                UserId = article.UserId,
                 State = article.State
             };
             if(dto.State == Domain.Enums.ContentState.InReview && article.OffensiveWords != null)
