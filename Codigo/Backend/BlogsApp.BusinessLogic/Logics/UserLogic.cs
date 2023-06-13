@@ -32,7 +32,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public IEnumerable<User> GetUsers(User loggedUser)
         {
-            if ((loggedUser != null) && (isAdmin(loggedUser)))
+            if ((loggedUser != null) && (IsAdmin(loggedUser)))
             {
                 return _userRepository.GetAll(m => m.DateDeleted == null)
                                  .OrderByDescending(m => m.Name);
