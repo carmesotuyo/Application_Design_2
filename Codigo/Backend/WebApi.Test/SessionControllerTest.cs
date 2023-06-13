@@ -21,6 +21,7 @@ namespace WebApi.Test
         private Session session;
         private string username;
         private string password;
+        private int id;
         private LoginRequestDTO credentials;
         private Guid token;
         private User user;
@@ -42,6 +43,7 @@ namespace WebApi.Test
             
 
             session = new Session() { Id = 1 };
+            id = 1;
             username = "username";
             password = "password";
             credentials = new LoginRequestDTO(username, password);
@@ -53,7 +55,7 @@ namespace WebApi.Test
             comments = new List<Comment>() { comment };
             notifiedComment = CommentConverter.toNotificationDto(comment);
             notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
-            responseDTO = new LoginResponseDTO(token, notifiedComments);
+            responseDTO = new LoginResponseDTO(id,token, notifiedComments);
         }
 
         [TestMethod]
