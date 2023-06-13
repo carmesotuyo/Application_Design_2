@@ -15,5 +15,28 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void UnflagReviewContentForUser(User loggedUser, User userToUnflag);
     }
 
+    public abstract class OffensiveWordsValidatorUtils
+    {
+        public static ICollection<OffensiveWord> mapToOffensiveWordsType(ICollection<string> offensiveWords)
+        {
+            ICollection<OffensiveWord> result = new List<OffensiveWord>();
+            foreach (string word in offensiveWords)
+            {
+                result.Add(new OffensiveWord() { Word = word });
+            }
+            return result;
+        }
+
+        public static ICollection<string> mapToStrings(ICollection<OffensiveWord> offensiveWords)
+        {
+            ICollection<string> result = new List<string>();
+            foreach (OffensiveWord word in offensiveWords)
+            {
+                result.Add(word.Word);
+            }
+            return result;
+        }
+    }
+
 }
 
