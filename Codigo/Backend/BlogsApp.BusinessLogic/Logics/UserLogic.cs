@@ -33,6 +33,19 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
+        public IEnumerable<User> GetUsers(User loggedUser)
+        {
+            if ((loggedUser != null) && (isAdmin(loggedUser)))
+            {
+                return _userRepository.GetAll(m => m.DateDeleted == null)
+                                 .OrderByDescending(m => m.Name);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
+            }
+        }
+
         public bool IsAdmin(User loggedUser)
         {
             return loggedUser.Admin;

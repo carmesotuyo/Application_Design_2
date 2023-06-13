@@ -30,9 +30,9 @@ namespace BlogsApp.DataAccess
                  .AddJsonFile("appsettings.json")
                  .Build();
 
-                var connectionString = configuration.GetConnectionString(@"BlogsAppDBCarme");
+                //var connectionString = configuration.GetConnectionString(@"BlogsAppDBCarme");
                 //var connectionString = configuration.GetConnectionString(@"BlogsAppDBFer");
-                //var connectionString = configuration.GetConnectionString(@"BlogsAppDBGime");
+                var connectionString = configuration.GetConnectionString(@"BlogsAppDBGime");
 
                 optionsBuilder.UseSqlServer(connectionString!);
             }
