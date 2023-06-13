@@ -20,7 +20,7 @@ namespace BlogsApp.WebAPI.DTOs
 		public typesOfContent type { get; set; }
 		public string body { get; set; }
 		public string? articleName { get; set; }
-        public ICollection<OffensiveWordDTO> OffensiveWords { get; set; }
+        public ICollection<string> OffensiveWords { get; set; }
 	}
 
 	public class ContentConverter
@@ -33,7 +33,7 @@ namespace BlogsApp.WebAPI.DTOs
                 type = typesOfContent.Article,
                 articleName = article.Name,
                 body = article.Body,
-                OffensiveWords = ToOffensiveWordDTOList(article.OffensiveWords)
+                OffensiveWords = ToStringsList(article.OffensiveWords)
             };
         }
 
@@ -54,7 +54,7 @@ namespace BlogsApp.WebAPI.DTOs
                 id = comment.Id,
                 type = typesOfContent.Comment,
                 body = comment.Body,
-                OffensiveWords = ToOffensiveWordDTOList(comment.OffensiveWords)
+                OffensiveWords = ToStringsList(comment.OffensiveWords)
             };
         }
 
@@ -68,17 +68,12 @@ namespace BlogsApp.WebAPI.DTOs
             return content;
         }
 
-        public static OffensiveWordDTO ToOffensiveWordDTO(OffensiveWord word)
+        public static ICollection<string> ToStringsList(ICollection<OffensiveWord> words)
         {
-            return new OffensiveWordDTO() { word = word.Word };
-        }
-
-        public static ICollection<OffensiveWordDTO> ToOffensiveWordDTOList(ICollection<OffensiveWord> words)
-        {
-            ICollection<OffensiveWordDTO> result = new List<OffensiveWordDTO>();
-            foreach(OffensiveWord word in words)
+            ICollection<string> result = new List<string>();
+            foreach (OffensiveWord word in words)
             {
-                result.Add(ToOffensiveWordDTO(word));
+                result.Add(word.Word);
             }
             return result;
         }

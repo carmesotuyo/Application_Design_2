@@ -36,7 +36,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
         {
-            ICollection<Comment> comments = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            ICollection<Comment> comments = Context.Set<Comment>().Include(c => c.User).Include(c => c.Article).Include(c => c.OffensiveWords).Where(a => a.DateDeleted == null).Where(func).ToArray();
             
             return comments;
         }
