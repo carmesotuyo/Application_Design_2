@@ -12,6 +12,7 @@ namespace BlogsApp.Domain.Entities
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
         public ContentState State { get; set; }
+        public ICollection<OffensiveWord> OffensiveWords { get; set; }
 
         public Comment(User user, string body, Article article)
         {
@@ -21,6 +22,7 @@ namespace BlogsApp.Domain.Entities
             DateCreated = DateTime.Now;
             DateModified = DateTime.Now;
             SubComments = new List<Comment>();
+            OffensiveWords = new List<OffensiveWord>();
         }
 
         public Comment() { SubComments = new List<Comment>(); }
