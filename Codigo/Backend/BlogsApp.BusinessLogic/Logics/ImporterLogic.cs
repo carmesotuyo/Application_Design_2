@@ -23,7 +23,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public List<Article> ImportArticles(string importerName, string path, User loggedUser)
         {
-            if ((!_userLogic.IsAdmin(loggedUser)) && (!_userLogic.IsModerator(loggedUser)))
+            if (_userLogic.IsBlogger(loggedUser))
             {
                 List<IImporterInterface> importers = GetImporterImplementations();
                 IImporterInterface? desiredImplementation = null;

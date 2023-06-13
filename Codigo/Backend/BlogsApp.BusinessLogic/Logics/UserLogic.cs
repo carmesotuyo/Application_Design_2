@@ -56,6 +56,11 @@ namespace BlogsApp.BusinessLogic.Logics
             return loggedUser.Moderador;
         }
 
+        public bool IsBlogger(User loggedUser)
+        {
+            return loggedUser.Blogger;
+        }
+
         public User DeleteUser(User loggedUser, int UserId)
         {
             validateAuthorizedUser(loggedUser, UserId);

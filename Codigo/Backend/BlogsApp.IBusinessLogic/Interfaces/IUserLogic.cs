@@ -13,6 +13,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         User? UpdateUser(User loggedUser, User user);
         bool IsAdmin(User loggedUser);
         bool IsModerator(User loggedUser);
+        bool IsBlogger(User loggedUser);
 
     }
 }
