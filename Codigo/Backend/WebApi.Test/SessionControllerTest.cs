@@ -26,8 +26,12 @@ namespace WebApi.Test
         private User user;
         private Comment comment;
         private List<Comment> comments;
+        private NotificationCommentDto notifiedComment;
+        private List<NotificationCommentDto> notifiedComments;
         private LoginResponseDTO responseDTO;
         private Mock<ILoggerService> loggerLogicMock;
+        private Article article;
+        private User authorUser;
 
         [TestInitialize]
         public void InitTest()
@@ -43,9 +47,13 @@ namespace WebApi.Test
             credentials = new LoginRequestDTO(username, password);
             token = Guid.NewGuid();
             user = new User();
-            comment = new Comment();
+            article = new Article() { Name = "article name", Id = 1 };
+            authorUser = new User() { Username = "username" };
+            comment = new Comment() { Id = 1, Body = "body", Article = article, User = authorUser };
             comments = new List<Comment>() { comment };
-            responseDTO = new LoginResponseDTO(token, comments);
+            notifiedComment = CommentConverter.toNotificationDto(comment);
+            notifiedComments = new List<NotificationCommentDto>() { notifiedComment };
+            responseDTO = new LoginResponseDTO(token, notifiedComments);
         }
 
         [TestMethod]
@@ -65,7 +73,8 @@ namespace WebApi.Test
             loggerLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(receivedDTO.Token, token);
-            Assert.AreEqual(receivedDTO.Comments, comments);
+            Assert.AreEqual(receivedDTO.Comments.Count(), notifiedComments.Count());
+            Assert.AreEqual(receivedDTO.Comments.First().CommentId, notifiedComments.First().CommentId);
         }
 
         [TestMethod]

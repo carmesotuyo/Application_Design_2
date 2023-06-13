@@ -22,6 +22,9 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             IsUserValid(user);
             _userRepository.Add(user!);
+            if (user.Admin || user.Moderador)
+                // ACA VA EL SUBSCRIBE
+                throw new NotImplementedException();
             return user;
         }
 
@@ -32,28 +35,17 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public User DeleteUser(User loggedUser, int UserId)
         {
-            if (authorizedUser(loggedUser, UserId))
+            validateAuthorizedUser(loggedUser, UserId);
+            validateUserExists(UserId);
+
+            User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
+            user.DateDeleted = DateTime.Now;
+            foreach (Article article in user.Articles)
             {
-                if (_userRepository.Exists(m => m.Id == UserId))
-                {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
-                    user.DateDeleted = DateTime.Now;
-                    foreach (Article article in user.Articles)
-                    {
-                        _articleLogic.DeleteArticle(article.Id, user);
-                    }
-                    _userRepository.Update(user);
-                    return user;
-                }
-                else
-                {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
-                }
+                _articleLogic.DeleteArticle(article.Id, user);
             }
-            else 
-            {
-                throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-            }
+            _userRepository.Update(user);
+            return user;
         }
 
         public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
@@ -88,38 +80,52 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-        public User? UpdateUser(User loggedUser, User anUser)
+        public User? UpdateUser(User loggedUser, User userWithDataToUpdate)
         {
-            if (authorizedUser(loggedUser, anUser.Id))
+            validateAuthorizedUser(loggedUser, userWithDataToUpdate.Id);
+            validateUserExists(userWithDataToUpdate.Id);
+
+            User userFromDB = _userRepository.Get(m => m.DateDeleted == null && m.Id == userWithDataToUpdate.Id);
+            bool cambioAdmin = userFromDB.Admin != userWithDataToUpdate.Admin;
+            bool cambioModerador = userFromDB.Moderador != userWithDataToUpdate.Moderador;
+            bool esAdmin = loggedUser.Admin;
+
+            //si es admin permite todos los cambios para actualizar
+            if (esAdmin)
             {
-                if (_userRepository.Exists(m => m.Id == anUser.Id))
+                _userRepository.Update(userWithDataToUpdate);
+                if(userWithDataToUpdate.Admin || userWithDataToUpdate.Moderador)
                 {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == anUser.Id);
-                    user = anUser;
-                    _userRepository.Update(user);
-                    return user;
-                }
-                else
+                    //subscribe
+                } else if (!userWithDataToUpdate.Admin && !userWithDataToUpdate.Moderador)
                 {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
+                    //unsubscribe
                 }
+                return userWithDataToUpdate;
             }
+            //si no es admin y hay cambios en los roles no permite la accion
+            else if (cambioModerador || cambioAdmin)
+            {
+                throw new UnauthorizedAccessException("No está autorizado para realizar cambios en los roles");
+            }
+            // si no es admin y no hay cambios en los roles le concede la actualizacion de usuario
             else
             {
+                _userRepository.Update(userWithDataToUpdate);
+                return userWithDataToUpdate;
+            }
+        }
+
+        private void validateAuthorizedUser(User loggedUser, int userWithDataToUpdateID)
+        {
+            if (loggedUser == null || (!loggedUser.Admin && loggedUser.Id != userWithDataToUpdateID))
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-            }
         }
 
-        private bool authorizedUser(User loggedUser, int userId) 
-        { 
-            if (loggedUser != null && (loggedUser.Admin || loggedUser.Id == userId))
-            {
-                return true;
-            } else
-            {
-               return false;
-            }
+        private void validateUserExists(int userId)
+        {
+            if (!_userRepository.Exists(m => m.Id == userId))
+                throw new NotFoundDbException("No existe un usuario con ese id.");
         }
-
     }
 }

@@ -53,6 +53,9 @@ namespace BlogsApp.DataAccess.Migrations
                     b.Property<bool>("Private")
                         .HasColumnType("bit");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<int>("Template")
                         .HasColumnType("int");
 
@@ -93,6 +96,9 @@ namespace BlogsApp.DataAccess.Migrations
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -105,6 +111,23 @@ namespace BlogsApp.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("BlogsApp.Domain.Entities.OffensiveWord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OffensiveWords");
                 });
 
             modelBuilder.Entity("BlogsApp.Domain.Entities.Session", b =>
@@ -155,9 +178,15 @@ namespace BlogsApp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HasContentToReview")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Moderador")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

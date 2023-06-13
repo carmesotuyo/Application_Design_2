@@ -1,4 +1,5 @@
-﻿namespace BlogsApp.Domain.Entities
+﻿using BlogsApp.Domain.Enums;
+namespace BlogsApp.Domain.Entities
 {
     public class Comment
     {
@@ -10,6 +11,7 @@
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public ContentState State { get; set; }
 
         public Comment(User user, string body, Article article)
         {
