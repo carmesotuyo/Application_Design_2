@@ -49,6 +49,23 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
+        private OffensiveWord GetOffensiveWord(string word)
+        {
+            return _offensiveWordRepository.Get(w => w.Word == word);
+        }
+
+
+        public ICollection<OffensiveWord> mapToOffensiveWordsType(ICollection<string> offensiveWords)
+        {
+            ICollection<OffensiveWord> result = new List<OffensiveWord>();
+            foreach (string word in offensiveWords)
+            {
+                result.Add(GetOffensiveWord(word));
+            }
+            return result;
+        }
+
+
         public void AddOffensiveWord(User loggedUser, string word)
         {
             if (!loggedUser.Admin && !loggedUser.Moderador)

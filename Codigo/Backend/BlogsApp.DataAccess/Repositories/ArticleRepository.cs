@@ -33,6 +33,7 @@ namespace BlogsApp.DataAccess.Repositories
         public Article Get(Func<Article, bool> func)
         {
             Article article = Context.Set<Article>()
+                .Include(a => a.OffensiveWords)
                 .Include(a => a.User)
                 .Include(a => a.Comments)
                     .ThenInclude(c => c.User)

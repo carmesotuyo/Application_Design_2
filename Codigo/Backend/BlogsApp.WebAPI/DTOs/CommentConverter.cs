@@ -40,7 +40,6 @@ namespace BlogsApp.WebAPI.DTOs
             {
                 dto.Message = "Tu Comentario contiene palabras ofensivas, no se mostrará hasta que salga de revisión por un Moderador";
                 dto.OffensiveWords = OffensiveWordsValidatorUtils.mapToStrings(comment.OffensiveWords);
-                //dto.OffensiveWords = comment.OffensiveWords;
             }
             return dto;
         }
