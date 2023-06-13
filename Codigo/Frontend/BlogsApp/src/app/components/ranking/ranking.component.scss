@@ -1,0 +1,21 @@
+.user-ranking-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    
+    mat-form-field {
+      width: 300px;
+    }
+  
+    button {
+      margin: 10px;
+    }
+  
+    table {
+      width: 100%;
+      overflow: auto;
+      max-width: 1000px;
+    }
+  }

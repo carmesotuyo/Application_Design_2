@@ -9,6 +9,7 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 import { UserArticlesComponent } from './components/user-articles/user-articles.component';
 import { ImporterComponent } from './components/importer/importer.component';
 import { LogsComponent } from './components/logs/logs.component';
+import { RankingComponent } from './components/ranking/ranking.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'importer', component: ImporterComponent },
   { path: 'articles/:id', component: ArticleViewComponent },
   { path: 'logs', component: LogsComponent },
+  {path: 'ranking', component: RankingComponent},
   { path: '**', redirectTo: '' }, // this line goes at the end
 ];
 

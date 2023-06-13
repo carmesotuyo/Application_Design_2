@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
-import { User } from '../models/user.model';
+import { User, UserRanking } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,14 +33,14 @@ export class UserService {
     );
   }
 
-  public getRanking(dateFrom: string, dateTo: string, top: number): Observable<User[]> {
+  public getRanking(dateFrom: string, dateTo: string, top: number): Observable<UserRanking[]> {
     const url = `${this.apiUrl}/ranking`;
     const params = new HttpParams()
       .set('dateFrom', dateFrom)
       .set('dateTo', dateTo)
       .set('top', top.toString());
 
-    return this.http.get<User[]>(url, { params });
+    return this.http.get<UserRanking[]>(url, { params });
   }
 
   public postUser(user: User): Observable<User> {

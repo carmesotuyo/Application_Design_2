@@ -37,6 +37,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatTableModule} from '@angular/material/table';
 import { LogsService } from './services/logs.service';
 import { MatNativeDateModule } from '@angular/material/core';
+import { RankingComponent } from './components/ranking/ranking.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     UserArticlesComponent,
     ImporterComponent,
     NavBarAdminComponent,
-    LogsComponent
+    LogsComponent,
+    RankingComponent
   ],
   imports: [
     BrowserModule,

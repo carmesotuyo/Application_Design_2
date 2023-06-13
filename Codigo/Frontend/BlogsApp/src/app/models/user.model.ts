@@ -17,3 +17,14 @@ export class User {
         this.admin = false;
     }
 }
+
+export class UserRanking {
+    id: number;
+    username: string;
+    
+
+    constructor(id: number, username: string) {
+        this.id = id;
+        this.username = username;
+    }
+}
