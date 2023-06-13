@@ -25,7 +25,7 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet("importers")]
-        public IActionResult GetImporters()
+        public IActionResult GetImporters([FromHeader] string token)
         {
            List<string> retrievedImporters = importerLogic.GetAllImporters();
            Console.WriteLine(retrievedImporters);
