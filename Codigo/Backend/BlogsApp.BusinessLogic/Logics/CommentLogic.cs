@@ -38,6 +38,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 {
                     comment.State = Domain.Enums.ContentState.InReview;
                     comment.OffensiveWords = OffensiveWordsValidatorUtils.mapToOffensiveWordsType(offensiveWordsFound);
+                    //comment.OffensiveWords = offensiveWordsFound;
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 

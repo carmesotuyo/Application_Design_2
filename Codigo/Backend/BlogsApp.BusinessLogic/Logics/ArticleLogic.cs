@@ -32,6 +32,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 {
                     article.State = Domain.Enums.ContentState.InReview;
                     article.OffensiveWords = OffensiveWordsValidatorUtils.mapToOffensiveWordsType(offensiveWordsFound);
+                    //article.OffensiveWords = offensiveWordsFound;
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 
@@ -139,6 +140,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 article.Image = anArticle.Image;
                 // si no se encontraron palabras ofensivas la lista se guarda vacia, de lo contrario se actualizan las encontradas:
                 article.OffensiveWords = OffensiveWordsValidatorUtils.mapToOffensiveWordsType(offensiveWordsFound);
+                //article.OffensiveWords = offensiveWordsFound;
                 this._articleRepository.Update(article);
                 return article;
             } else
