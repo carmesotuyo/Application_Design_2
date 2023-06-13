@@ -2,7 +2,6 @@
 using BlogsApp.IBusinessLogic.Interfaces;
 using System.Reflection;
 using BlogsApp.IImporter;
-using BlogsApp.IDataAccess.Interfaces;
 
 namespace BlogsApp.BusinessLogic.Logics
 {
@@ -39,9 +38,7 @@ namespace BlogsApp.BusinessLogic.Logics
            
             List<Article> importedArticles = desiredImplementation.ImportArticles(path, loggedUser);
             Console.WriteLine(importedArticles);
-            //Pasar por validador de palabras ofensivas
 
-            //Acá da de alta en bd cada artículo de la lista
             CreateArticles(importedArticles, loggedUser);
             return importedArticles;
         }
@@ -58,7 +55,7 @@ namespace BlogsApp.BusinessLogic.Logics
         private List<IImporterInterface> GetImporterImplementations()
         {
             List<IImporterInterface> availableImporters = new List<IImporterInterface>();
-            // Va a estar adentro de WebApi, ya que mira relativo de donde se ejecuta el programa
+
             string importersPath = "./Importers";
             string[] filePaths = Directory.GetFiles(importersPath);
 
