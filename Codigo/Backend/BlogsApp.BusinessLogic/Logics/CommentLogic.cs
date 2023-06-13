@@ -37,6 +37,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     comment.State = Domain.Enums.ContentState.InReview;
+                    comment.OffensiveWords = mapToOffensiveWordsType(offensiveWordsFound);
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 
@@ -46,6 +47,17 @@ namespace BlogsApp.BusinessLogic.Logics
 
             throw new UnauthorizedAccessException("Sólo Bloggers pueden hacer comentarios");
         }
+
+        private List<OffensiveWord> mapToOffensiveWordsType(List<string> offensiveWords)
+        {
+            List<OffensiveWord> result = new List<OffensiveWord>();
+            foreach (string word in offensiveWords)
+            {
+                result.Add(new OffensiveWord() { Word = word });
+            }
+            return result;
+        }
+
 
         public void DeleteComment(int commentId, User loggedUser)
         {

@@ -31,6 +31,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     article.State = Domain.Enums.ContentState.InReview;
+                    article.OffensiveWords = mapToOffensiveWordsType(offensiveWordsFound);
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 
@@ -136,12 +137,24 @@ namespace BlogsApp.BusinessLogic.Logics
                 article.DateModified = DateTime.Now;
                 article.Template = anArticle.Template;
                 article.Image = anArticle.Image;
+                // si no se encontraron palabras ofensivas la lista se guarda vacia, de lo contrario se actualizan las encontradas:
+                article.OffensiveWords = mapToOffensiveWordsType(offensiveWordsFound);
                 this._articleRepository.Update(article);
                 return article;
             } else
             {
                 throw new UnauthorizedAccessException("Sólo el creador del artículo o un moderador pueden modificarlo");
             };
+        }
+
+        private List<OffensiveWord> mapToOffensiveWordsType(List<string> offensiveWords)
+        {
+            List<OffensiveWord> result = new List<OffensiveWord>();
+            foreach(string word in offensiveWords)
+            {
+                result.Add(new OffensiveWord() { Word = word });
+            }
+            return result;
         }
 
         private Func<Article, bool> ArticleById(int id, User loggedUser)
