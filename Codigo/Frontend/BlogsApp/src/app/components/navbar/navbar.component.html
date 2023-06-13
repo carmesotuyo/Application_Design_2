@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <span>BlogsApp</span>
+  <button mat-button [routerLink]="['/home']">BlogsApp</button>
   <span class="spacer"></span>
   <span>Bienvenido, {{ username }}</span>
   <span class="spacer"></span>
@@ -18,3 +18,5 @@
     <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
   </mat-menu>
 </mat-toolbar>
+
+

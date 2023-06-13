@@ -10,6 +10,7 @@ import { UserArticlesComponent } from './components/user-articles/user-articles.
 import { ImporterComponent } from './components/importer/importer.component';
 import { LogsComponent } from './components/logs/logs.component';
 import { RankingComponent } from './components/ranking/ranking.component';
+import { StatsComponent } from './components/stats/stats.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'articles/:id', component: ArticleViewComponent },
   { path: 'logs', component: LogsComponent },
   {path: 'ranking', component: RankingComponent},
+  {path: 'stats', component: StatsComponent},
   { path: '**', redirectTo: '' }, // this line goes at the end
 ];
 

@@ -60,5 +60,9 @@ export class ArticleService {
     return this.http.delete(url);
   }
 
+  getStats(year: number): Observable<any> {
+    const params = new HttpParams().set('year', year.toString());
+    const url = `${this.apiUrl}/stats`;
+    return this.http.get<any>(url, { params });
+  }
 }
-
