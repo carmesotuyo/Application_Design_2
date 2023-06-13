@@ -4,8 +4,14 @@
   <span>Bienvenido, {{ username }}</span>
   <span class="spacer"></span>
   <button mat-button>Panel Administrador</button>
-  <button mat-button (click)="logout()">Cerrar sesión</button>
-  <button mat-icon-button>
+
+  <!-- Este es el botón que abrirá el menú -->
+  <button mat-icon-button [matMenuTriggerFor]="userMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
+  <!-- Aquí definimos el menú con dos opciones -->
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item routerLink="/editUser">Editar Perfil</button>
+    <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
+  </mat-menu>
 </mat-toolbar>
