@@ -10,5 +10,8 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top);
         User GetUserById(int userId);
         User? UpdateUser(User loggedUser, User user);
+        bool IsAdmin(User loggedUser);
+        bool IsModerator(User loggedUser);
+
     }
 }

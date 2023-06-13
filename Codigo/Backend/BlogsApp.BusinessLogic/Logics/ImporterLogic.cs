@@ -8,10 +8,12 @@ namespace BlogsApp.BusinessLogic.Logics
     public class ImporterLogic : IImporterLogic
     {
         private readonly IArticleLogic _articleLogic;
+        private readonly IUserLogic _userLogic;
 
-        public ImporterLogic(IArticleLogic articleLogic)
+        public ImporterLogic(IArticleLogic articleLogic, IUserLogic UserLogic)
         {
             _articleLogic = articleLogic;
+            _userLogic = UserLogic;
         }
 
         public List<string> GetAllImporters()
@@ -21,26 +23,34 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public List<Article> ImportArticles(string importerName, string path, User loggedUser)
         {
-            List<IImporterInterface> importers = GetImporterImplementations();
-            IImporterInterface? desiredImplementation = null;
+            if ((!_userLogic.IsAdmin(loggedUser)) && (!_userLogic.IsModerator(loggedUser)))
+            {
+                List<IImporterInterface> importers = GetImporterImplementations();
+                IImporterInterface? desiredImplementation = null;
 
-            foreach (IImporterInterface importer in importers)
-            { 
-                if (importer.GetName() == importerName)
+                foreach (IImporterInterface importer in importers)
                 {
-                    desiredImplementation = importer;
-                    break;
+                    if (importer.GetName() == importerName)
+                    {
+                        desiredImplementation = importer;
+                        break;
+                    }
                 }
+
+                if (desiredImplementation == null)
+                    throw new Exception("No se pudo encontrar el importador solicitado");
+
+                List<Article> importedArticles = desiredImplementation.ImportArticles(path, loggedUser);
+                Console.WriteLine(importedArticles);
+
+                CreateArticles(importedArticles, loggedUser);
+                return importedArticles;
             }
-
-            if (desiredImplementation == null)
-                throw new Exception("No se pudo encontrar el importador solicitado");
-           
-            List<Article> importedArticles = desiredImplementation.ImportArticles(path, loggedUser);
-            Console.WriteLine(importedArticles);
-
-            CreateArticles(importedArticles, loggedUser);
-            return importedArticles;
+            else
+            {
+                throw new Exception("Debes tener el rol de Blogger para poder importar artículos");
+            }
+            
         }
 
         private void CreateArticles(List<Article> importedArticles, User loggedUser)
