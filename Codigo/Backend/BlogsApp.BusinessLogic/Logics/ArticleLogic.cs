@@ -31,7 +31,8 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     article.State = Domain.Enums.ContentState.InReview;
-                    _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
+                    article.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
+                    _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
 
                 this._articleRepository.Add(article);
@@ -120,11 +121,11 @@ namespace BlogsApp.BusinessLogic.Logics
             if (offensiveWordsFound.Count() > 0)
             {
                 article.State = Domain.Enums.ContentState.InReview;
-                _offensiveWordsValidator.NotifyAdminsAndModerators(article.Name + article.Body, offensiveWordsFound);
+                _offensiveWordsValidator.NotifyAdminsAndModerators();
             }
-            else if (article.State == Domain.Enums.ContentState.InReview)
+            else if (article.State == Domain.Enums.ContentState.InReview || article.State == Domain.Enums.ContentState.Visible)
             {
-                // si un contenido entra acá es porque estaba en revisión y fue editado, se le quitaron las palabras ofensivas
+                // si un contenido entra acá es porque o estaba en revisión y fue editado (se le quitaron las palabras ofensivas en la edición), o estaba publicado normal y fue editado y la edición no cuenta con palabras ofensivas
                 article.State = Domain.Enums.ContentState.Edited;
             }
 
@@ -136,6 +137,8 @@ namespace BlogsApp.BusinessLogic.Logics
                 article.DateModified = DateTime.Now;
                 article.Template = anArticle.Template;
                 article.Image = anArticle.Image;
+                // si no se encontraron palabras ofensivas la lista se guarda vacia, de lo contrario se actualizan las encontradas:
+                article.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
                 this._articleRepository.Update(article);
                 return article;
             } else
@@ -146,7 +149,10 @@ namespace BlogsApp.BusinessLogic.Logics
 
         private Func<Article, bool> ArticleById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited) && (!a.Private || a.UserId == loggedUser.Id);
+            return a => a.Id == id && a.DateDeleted == null &&
+                (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited ||
+                (a.State == Domain.Enums.ContentState.InReview && (loggedUser.Moderador || loggedUser.Admin || a.UserId == loggedUser.Id))) &&
+                (!a.Private || a.UserId == loggedUser.Id);
         }
 
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)

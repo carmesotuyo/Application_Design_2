@@ -1,4 +1,6 @@
-﻿namespace BlogsApp.WebAPI.DTOs
+﻿using BlogsApp.Domain.Enums;
+
+namespace BlogsApp.WebAPI.DTOs
 {
     public class CommentDTO
     {
@@ -9,6 +11,7 @@
         public DateTime? DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
         public ICollection<CommentDTO> SubComments { get; set; }
+        public ContentState State { get; set; }
 
     }
 
@@ -16,6 +19,9 @@
     {
         public string Body { get; set; }
         public int ArticleId { get; set; }
+        public ContentState State { get; set; }
+        public string? Message { get; set; }
+        public ICollection<string>? OffensiveWords { get; set; }
     }
 
     public class NotificationCommentDto
