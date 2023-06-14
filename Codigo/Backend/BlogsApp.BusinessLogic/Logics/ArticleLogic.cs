@@ -31,6 +31,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     article.State = Domain.Enums.ContentState.InReview;
+                    article.HadOffensiveWords = true;
                     article.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
@@ -124,6 +125,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (offensiveWordsFound.Count() > 0)
             {
                 article.State = Domain.Enums.ContentState.InReview;
+                article.HadOffensiveWords = true;
                 _offensiveWordsValidator.NotifyAdminsAndModerators();
             }
             else if (article.State == Domain.Enums.ContentState.InReview || article.State == Domain.Enums.ContentState.Visible)
