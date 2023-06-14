@@ -53,7 +53,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(offensiveWordsValidator.GetOffensiveWords(base.GetLoggedUser(token)));
         }
 
-        [HttpPut]
+        [HttpPut("notification-dismisser")]
         public IActionResult DismissNotifications([FromHeader] string token)
         {
             User loggedUser = base.GetLoggedUser(token);
@@ -61,7 +61,7 @@ namespace BlogsApp.WebAPI.Controllers
             return new OkObjectResult(new { message = "Articulos importados correctamente" });
         }
 
-        [HttpGet]
+        [HttpGet("notification-viewer")]
         public IActionResult CheckUserHasContentToReview([FromHeader] string token)
         {
             return new OkObjectResult(offensiveWordsValidator.checkUserHasContentToReview(base.GetLoggedUser(token)));

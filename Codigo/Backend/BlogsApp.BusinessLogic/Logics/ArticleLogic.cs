@@ -48,7 +48,7 @@ namespace BlogsApp.BusinessLogic.Logics
         public void DeleteArticle(int articleId, User loggedUser)
         {
             Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
-            if(loggedUser.Id == article.UserId)
+            if(loggedUser.Id == article.UserId || loggedUser.Admin || loggedUser.Moderador)
             {
                 if (article.Comments != null)
                 {
@@ -193,8 +193,18 @@ namespace BlogsApp.BusinessLogic.Logics
             return true;
         }
 
-
-
+        public Article ApproveArticle(int id, User loggedUser)
+        {
+            if(loggedUser.Admin || loggedUser.Moderador)
+            {
+                Article foundArticle = GetArticleById(id, loggedUser);
+                foundArticle.State = Domain.Enums.ContentState.Visible;
+                return UpdateArticle(id, foundArticle, loggedUser);
+            } else
+            {
+                throw new UnauthorizedAccessException("Sólo administradores o moderadores pueden aprobar contenido");
+            }
+        }
     }
 }
 
