@@ -35,5 +35,17 @@ namespace BlogsApp.WebAPI.Controllers
             offensiveWordsValidator.RemoveOffensiveWord(base.GetLoggedUser(token), wordRequest.word);
             return new OkObjectResult("Palabra '" + wordRequest.word + "' eliminada de la lista de palabras ofensivas");
         }
+
+        [HttpGet]
+        public IActionResult GetContentToReview([FromHeader] string token)
+        {
+            User loggedUser = base.GetLoggedUser(token);
+
+            ICollection<ContentDTO> articlesToReview = ContentConverter.ArticlesToContentList(offensiveWordsValidator.GetArticlesToReview(loggedUser));
+            ICollection<ContentDTO> commentsToReview = ContentConverter.CommentsToContentList(offensiveWordsValidator.GetCommentsToReview(loggedUser));
+            offensiveWordsValidator.UnflagReviewContentForUser(loggedUser, loggedUser);
+
+            return new OkObjectResult(articlesToReview.Concat(commentsToReview));
+        }
     }
 }
