@@ -36,11 +36,20 @@ namespace BlogsApp.WebAPI.Controllers
             User loggedUser = base.GetLoggedUser(token);
 
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
-            Comment parentComment = commentLogic.GetCommentById(parentCommentId);
+            Comment parentComment = commentLogic.GetCommentById(parentCommentId, loggedUser);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
             newComment.isSubComment = true;
             Comment createdComment = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
             return new OkObjectResult(CommentConverter.toBasicDto(createdComment));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateComment([FromRoute] int id, [FromBody] UpdateCommentRequestDTO commentRequestDTO, [FromHeader] string token)
+        {
+            User loggedUser = base.GetLoggedUser(token);
+            Comment updatedComment = commentRequestDTO.ApplyChangesToComment(commentLogic.GetCommentById(id, loggedUser));
+            Comment newComment = commentLogic.UpdateComment(id, updatedComment, loggedUser);
+            return new OkObjectResult(CommentConverter.toBasicDto(newComment));
         }
     }
 }
