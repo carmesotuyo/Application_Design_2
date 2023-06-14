@@ -143,15 +143,19 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 ICollection<Article> articles = _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
                 contentCount += articles.Count();
+
+            }
+            catch (NotFoundDbException ex) { }
+
+            try
+            {
                 ICollection<Comment> comments = _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
                 contentCount += comments.Count();
 
             }
-            catch (NotFoundDbException ex)
-            {
-                UnnotifyAdminsAndModerators();
-                return contentCount;
-            }
+            catch (NotFoundDbException ex) { }
+
+            if (contentCount == 0) UnnotifyAdminsAndModerators();
             return contentCount;
         }
 
