@@ -50,9 +50,11 @@ namespace BlogsApp.WebAPI.Controllers
         }
 
         [HttpGet("ranking")]
-        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromHeader] string token)
+        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromQuery] bool? withOffensiveWords, [FromHeader] string token)
         {
-            return new OkObjectResult(userLogic.GetUsersRanking(base.GetLoggedUser(token), dateFrom, dateTo, top));
+            ICollection<User> ranking = userLogic.GetUsersRanking(base.GetLoggedUser(token), dateFrom, dateTo, top, withOffensiveWords);
+            ICollection<UserRankingDto> rankingResponse = UserRankingConverter.ToRankingList(ranking);
+            return new OkObjectResult(rankingResponse);
 
         }
 

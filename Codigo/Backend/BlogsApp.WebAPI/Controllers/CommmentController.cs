@@ -38,6 +38,7 @@ namespace BlogsApp.WebAPI.Controllers
             Article article = articleLogic.GetArticleById(comment.ArticleId, loggedUser);
             Comment parentComment = commentLogic.GetCommentById(parentCommentId);
             Comment newComment = CommentConverter.FromDto(comment, loggedUser, article);
+            newComment.isSubComment = true;
             Comment createdComment = commentLogic.ReplyToComment(parentComment, newComment, loggedUser);
             return new OkObjectResult(CommentConverter.toBasicDto(createdComment));
         }

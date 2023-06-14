@@ -73,24 +73,27 @@ namespace BlogsApp.BusinessLogic.Logics
             return user;
         }
 
-        public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
+        public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top, bool? offensiveContent = false)
         {
             if(loggedUser != null && loggedUser.Admin)
             {
-                return _userRepository.GetAll(m => m.DateDeleted == null)
-                                                .Select(m => new
-                                                {
-                                                    User = m,
-                                                    Points = m.Articles.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
-                                                              + m.Comments.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
-                                                })
-                                                .Where(m => m.Points > 0)
-                                                .OrderByDescending(m => m.Points)
-                                                .ThenBy(m => m.User.Id)
-                                                .Take(top ?? 10)
-                                                .Select(m => m.User)
-                                                .ToList();
-            } else
+                Func<Content, bool> filterContent = c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo && c.State != Domain.Enums.ContentState.InReview;
+                if (offensiveContent != null && offensiveContent == true) filterContent = c => c.HadOffensiveWords && c.DateCreated >= dateFrom && c.DateCreated <= dateTo && c.State != Domain.Enums.ContentState.InReview;
+
+                return _userRepository.GetAll(u => u.DateDeleted == null)
+                                            .Select(u => new 
+                                            {
+                                                User = u,
+                                                Points = _userRepository.GetUserContentCount((m => m.DateDeleted == null && m.Id == u.Id), filterContent)
+                                            })
+                                            .Where(m => m.Points > 0)
+                                            .OrderByDescending(m => m.Points)
+                                            .ThenBy(m => m.User.Id)
+                                            .Take(top ?? 10)
+                                            .Select(m => m.User)
+                                            .ToList();
+            }
+            else
             {
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
