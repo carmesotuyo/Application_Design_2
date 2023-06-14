@@ -163,7 +163,7 @@ namespace BlogsApp.BusinessLogic.Logics
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
         {
             return article => article.DateDeleted == null &&
-                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited || (m.State == Domain.Enums.ContentState.InReview && m.UserId == loggedUser.Id)) &&
+                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited || (article.State == Domain.Enums.ContentState.InReview && article.UserId == loggedUser.Id)) &&
                               (article.Name.Contains(text) || article.Body.Contains(text)) &&
                               (article.Private == false || article.UserId == loggedUser.Id);
         }
