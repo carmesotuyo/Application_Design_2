@@ -199,7 +199,8 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 Article foundArticle = GetArticleById(id, loggedUser);
                 foundArticle.State = Domain.Enums.ContentState.Visible;
-                return UpdateArticle(id, foundArticle, loggedUser);
+                this._articleRepository.Update(foundArticle);
+                return foundArticle;
             } else
             {
                 throw new UnauthorizedAccessException("Sólo administradores o moderadores pueden aprobar contenido");

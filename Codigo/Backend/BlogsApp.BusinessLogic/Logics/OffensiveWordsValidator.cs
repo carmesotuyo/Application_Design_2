@@ -126,6 +126,20 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
+        public ICollection<Content> GetContentToReview(User loggedUser)
+        {
+            validateAuthorizedUser(loggedUser);
+            ICollection<Content> content = new List<Content>();
+            try
+            {
+                ICollection<Article> articles = _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+                ICollection<Comment> comments = _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+                content = articles.Cast<Content>().Concat(comments.Cast<Content>()).ToList();
+
+            } catch (NotFoundDbException ex) { }
+            return content;
+        }
+
         private void validateAuthorizedUser(User loggedUser)
         {
             if (!loggedUser.Admin && !loggedUser.Moderador)
@@ -134,7 +148,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public bool checkUserHasContentToReview(User loggedUser)
         {
-            return loggedUser.HasContentToReview;
+            return loggedUser.HasContentToReview && GetContentToReview(loggedUser).Count() > 0;
         }
 
         public void UnflagReviewContentForUser(User loggedUser, User userToUnflag)

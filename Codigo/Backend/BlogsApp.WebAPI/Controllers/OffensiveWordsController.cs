@@ -58,7 +58,7 @@ namespace BlogsApp.WebAPI.Controllers
         {
             User loggedUser = base.GetLoggedUser(token);
             offensiveWordsValidator.UnflagReviewContentForUser(loggedUser, loggedUser);
-            return new OkObjectResult(new { message = "Articulos importados correctamente" });
+            return new OkObjectResult(new { message = "Notificaciones marcadas como vistas" });
         }
 
         [HttpGet("notification-viewer")]
