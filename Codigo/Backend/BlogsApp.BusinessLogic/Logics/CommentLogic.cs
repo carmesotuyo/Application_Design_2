@@ -51,7 +51,7 @@ namespace BlogsApp.BusinessLogic.Logics
 
         public void DeleteComment(int commentId, User loggedUser)
         {
-            Comment comment = _commentRepository.Get(CommentById(commentId));
+            Comment comment = _commentRepository.Get(CommentById(commentId, loggedUser));
             if (loggedUser.Id == comment.User.Id)
             {
                 comment.DateDeleted = DateTime.Now;
@@ -74,14 +74,49 @@ namespace BlogsApp.BusinessLogic.Logics
             return comments;
         }
 
-        private Func<Comment, bool> CommentById(int id)
+        public Comment GetCommentById(int id, User loggedUser)
         {
-            return a => a.Id == id && a.DateDeleted == null && (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited);
+            return _commentRepository.Get(CommentById(id, loggedUser));
         }
 
-        public Comment GetCommentById(int id)
+        public Comment UpdateComment(int id, Comment commentWithDataToUpdate, User loggedUser)
         {
-            return _commentRepository.Get(CommentById(id));
+            AuthorizedUser(loggedUser);
+
+            Comment comment = _commentRepository.Get(CommentById(id, loggedUser));
+
+            List<string> offensiveWordsFound = _offensiveWordsValidator.reviewComment(commentWithDataToUpdate);
+            if (offensiveWordsFound.Count() > 0)
+            {
+                comment.State = Domain.Enums.ContentState.InReview;
+                comment.HadOffensiveWords = true;
+                _offensiveWordsValidator.NotifyAdminsAndModerators();
+            }
+            else if (comment.State == Domain.Enums.ContentState.InReview || comment.State == Domain.Enums.ContentState.Visible)
+            {
+                // si un contenido entra acá es porque o estaba en revisión y fue editado (se le quitaron las palabras ofensivas en la edición), o estaba publicado normal y fue editado y la edición no cuenta con palabras ofensivas
+                comment.State = Domain.Enums.ContentState.Edited;
+            }
+
+            comment.Body = commentWithDataToUpdate.Body;
+            comment.DateModified = DateTime.Now;
+
+            // si no se encontraron palabras ofensivas la lista se guarda vacia, de lo contrario se actualizan las encontradas:
+            comment.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
+            this._commentRepository.Update(comment);
+            return comment;
+        }
+
+        private Func<Comment, bool> CommentById(int id, User loggedUser)
+        {
+            return a => a.Id == id && a.DateDeleted == null &&
+                (a.State == Domain.Enums.ContentState.Visible || a.State == Domain.Enums.ContentState.Edited ||
+                (a.State == Domain.Enums.ContentState.InReview && (loggedUser.Moderador || loggedUser.Admin || a.User.Id == loggedUser.Id)));
+        }
+
+        private void AuthorizedUser(User loggedUser)
+        {
+            if (!loggedUser.Admin && !loggedUser.Moderador) throw new UnauthorizedAccessException("Sólo un moderador puede modificar el comentario");
         }
     }
 }
