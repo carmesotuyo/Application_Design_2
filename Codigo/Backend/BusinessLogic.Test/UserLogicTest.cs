@@ -79,7 +79,6 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void UpdateName()
         {
-            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
             userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
 
             normalUser.Name = "Jonathan";
@@ -93,7 +92,6 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void UpdateUserName()
         {
-            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
             userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
 
             normalUser.Username = "Jonathan";
@@ -145,7 +143,6 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void AdminUpdatesOtherUser()
         {
-            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
             userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
             userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
 

@@ -80,7 +80,7 @@ namespace WebApi.Test
         public void CreateSubCommentFromParent()
         {
             commentLogicMock.Setup(m => m.ReplyToComment(It.IsAny<Comment>(), It.IsAny<Comment>(), It.IsAny<User>())).Returns(comment);
-            commentLogicMock.Setup(m => m.GetCommentById(It.IsAny<int>())).Returns(parentComment);
+            commentLogicMock.Setup(m => m.GetCommentById(It.IsAny<int>(), It.IsAny<User>())).Returns(parentComment);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(user);
             articleLogicMock!.Setup(m => m.GetArticleById(It.IsAny<int>(), It.IsAny<User>())).Returns(article);
 

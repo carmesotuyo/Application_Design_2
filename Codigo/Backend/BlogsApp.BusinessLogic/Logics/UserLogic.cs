@@ -113,7 +113,6 @@ namespace BlogsApp.BusinessLogic.Logics
         public User? UpdateUser(User loggedUser, User userWithDataToUpdate)
         {
             User userFromDB = GetUserById(userWithDataToUpdate.Id);
-            Console.WriteLine(userWithDataToUpdate.Id);
             if ((!IsAdmin(loggedUser)) && (loggedUser.Id == userWithDataToUpdate.Id))
             {
                 if ((userFromDB.Admin != userWithDataToUpdate.Admin) || (userFromDB.Moderador != userWithDataToUpdate.Moderador))
