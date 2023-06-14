@@ -36,6 +36,7 @@ namespace BlogsApp.BusinessLogic.Logics
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
                 article.DateCreated = DateTime.Now;
+                article.DateModified = DateTime.Now;
                 this._articleRepository.Add(article);
                 
                 return article;
