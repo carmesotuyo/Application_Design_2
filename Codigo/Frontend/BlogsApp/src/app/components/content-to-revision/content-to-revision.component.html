@@ -1,30 +1,37 @@
 <app-navbar></app-navbar>
 <app-nav-bar-admin></app-nav-bar-admin>
+<div>
+  <h2 class="title" *ngIf="contents.length === 0">No hay contenido para revisión en este momento</h2>
+</div>
 <mat-card class="content-card" *ngFor="let content of contents; let i = index">
-    <mat-card-header>
-      <mat-card-title>{{content.articleName === null ? 'Comentario' : content.articleName}}</mat-card-title>
-      <mat-card-subtitle>{{ content.type === 0 ? 'Artículo' : 'Comentario' }}</mat-card-subtitle>
-      <mat-card-subtitle>Id: {{ content.id }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="form">
-        <mat-form-field *ngIf="content.type === 0 && editMode[i] && editingContentId === content.id" class="content-field">
-          <input matInput placeholder="Título" formControlName="title">
-        </mat-form-field>
-        <mat-form-field *ngIf="editMode[i] && editingContentId === content.id" class="content-field">
-          <textarea matInput placeholder="Cuerpo" formControlName="body" [readonly]="!editMode[i]">{{ content.body }}</textarea>
-        </mat-form-field>
-      </form>
-      <div>
-        Palabras ofensivas: <mat-chip style="background-color: rgb(255, 208, 208); ;" *ngFor="let word of content.offensiveWords">{{ word }}</mat-chip>
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-raised-button class="custom-button" style="color: rgb(20, 119, 161);" (click)="editContent(i, content.id)" *ngIf="!(editingContentId === content.id)">Editar</button>
-      <button mat-raised-button class="custom-button" color="accent" (click)="saveContent(i)" *ngIf="editMode[i] && editingContentId === content.id">Guardar cambios</button>
-      <button mat-raised-button class="custom-button" style="color: rgb(24, 198, 24);" (click)="approveContent(i)">Aprobar</button>
-      <button mat-raised-button class="custom-button" color="warn" (click)="deleteContent(i)">Eliminar</button>
-    </mat-card-actions>
-  </mat-card>
-  
-  
+  <mat-card-header>
+    <mat-card-title>{{content.articleName === null ? 'Comentario' : content.articleName}}</mat-card-title>
+    <mat-card-subtitle>{{ content.type === 0 ? 'Artículo' : 'Comentario' }}</mat-card-subtitle>
+    <mat-card-subtitle>Id: {{ content.id }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field *ngIf="content.type === 0 && editMode[i] && editingContentId === content.id"
+        class="content-field">
+        <input matInput placeholder="Título" formControlName="title">
+      </mat-form-field>
+      <mat-form-field *ngIf="editMode[i] && editingContentId === content.id" class="content-field">
+        <textarea matInput placeholder="Cuerpo" formControlName="body"
+          [readonly]="!editMode[i]">{{ content.body }}</textarea>
+      </mat-form-field>
+    </form>
+    <div>
+      Palabras ofensivas: <mat-chip style="background-color: rgb(255, 208, 208); ;"
+        *ngFor="let word of content.offensiveWords">{{ word }}</mat-chip>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button class="custom-button" style="color: rgb(20, 119, 161);"
+      (click)="editContent(i, content.id)" *ngIf="!(editingContentId === content.id)">Editar</button>
+    <button mat-raised-button class="custom-button" color="accent" (click)="saveContent(i)"
+      *ngIf="editMode[i] && editingContentId === content.id">Guardar cambios</button>
+    <button mat-raised-button class="custom-button" style="color: rgb(24, 198, 24);"
+      (click)="approveContent(i)">Aprobar</button>
+    <button mat-raised-button class="custom-button" color="warn" (click)="deleteContent(i)">Eliminar</button>
+  </mat-card-actions>
+</mat-card>
