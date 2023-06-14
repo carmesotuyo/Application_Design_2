@@ -35,7 +35,7 @@ namespace BlogsApp.BusinessLogic.Logics
                     article.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
-
+                article.DateCreated = DateTime.Now;
                 this._articleRepository.Add(article);
                 
                 return article;
@@ -76,7 +76,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (searchText == null)
             {
                 return _articleRepository.GetAll(m => m.DateDeleted == null
-                                    && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                    && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited || (m.State == Domain.Enums.ContentState.InReview && m.UserId == loggedUser.Id))
                                     && (m.Private == false || m.UserId == loggedUser.Id))
                                  .OrderByDescending(m => m.DateModified)
                                  .Take(10);
@@ -90,7 +90,7 @@ namespace BlogsApp.BusinessLogic.Logics
         public IEnumerable<Article> GetArticlesByUser(int userId, User loggedUser)
         {
             return _articleRepository.GetAll(m => m.DateDeleted == null && m.UserId == userId
-                                            && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited)
+                                            && (m.State == Domain.Enums.ContentState.Visible || m.State == Domain.Enums.ContentState.Edited || (m.State == Domain.Enums.ContentState.InReview && m.UserId == loggedUser.Id))
                                             && (!m.Private || m.UserId == loggedUser.Id));
         }
 
@@ -163,7 +163,7 @@ namespace BlogsApp.BusinessLogic.Logics
         private Func<Article, bool> ArticleByTextSearch(string text, User loggedUser)
         {
             return article => article.DateDeleted == null &&
-                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited) &&
+                              (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited || (m.State == Domain.Enums.ContentState.InReview && m.UserId == loggedUser.Id)) &&
                               (article.Name.Contains(text) || article.Body.Contains(text)) &&
                               (article.Private == false || article.UserId == loggedUser.Id);
         }
