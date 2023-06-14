@@ -136,7 +136,7 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
-        public int CountContentToReview()
+        private int CountContentToReview()
         {
             int contentCount = 0;
             try
