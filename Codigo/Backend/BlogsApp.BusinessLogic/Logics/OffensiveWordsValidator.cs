@@ -49,6 +49,16 @@ namespace BlogsApp.BusinessLogic.Logics
             }
         }
 
+        private void UnnotifyAdminsAndModerators()
+        {
+            ICollection<User> adminsAndModerators = _userRepository.GetAll(u => u.DateDeleted == null && (u.Admin || u.Moderador));
+            foreach (User user in adminsAndModerators)
+            {
+                user.HasContentToReview = false;
+                _userRepository.Update(user);
+            }
+        }
+
         private OffensiveWord GetOffensiveWord(string word)
         {
             return _offensiveWordRepository.Get(w => w.Word == word);
@@ -136,7 +146,10 @@ namespace BlogsApp.BusinessLogic.Logics
                 ICollection<Comment> comments = _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
                 content = articles.Cast<Content>().Concat(comments.Cast<Content>()).ToList();
 
-            } catch (NotFoundDbException ex) { }
+            } catch (NotFoundDbException ex)
+            {
+                UnnotifyAdminsAndModerators();
+            }
             return content;
         }
 
