@@ -103,13 +103,27 @@ namespace BlogsApp.BusinessLogic.Logics
         public ICollection<Article> GetArticlesToReview(User loggedUser)
         {
             validateAuthorizedUser(loggedUser);
-            return _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+            ICollection<Article> articles = new List<Article>();
+            try
+            {
+                articles = _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+            }
+            catch (NotFoundDbException ex) { }
+            return articles;
         }
 
         public ICollection<Comment> GetCommentsToReview(User loggedUser)
         {
             validateAuthorizedUser(loggedUser);
-            return _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+            ICollection<Comment> comments = new List<Comment>();
+            try
+            {
+                return _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
+            }
+            catch (NotFoundDbException ex)
+            {
+                throw new NotFoundDbException("No se encontró contenido para revisar");
+            }
         }
 
         private void validateAuthorizedUser(User loggedUser)
