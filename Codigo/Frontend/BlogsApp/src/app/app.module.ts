@@ -43,6 +43,8 @@ import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuar
 import { EditAllUsersComponent } from './components/edit-all-users/edit-all-users.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OffensiveWordsComponent } from './components/offensive-words/offensive-words.component';
+import { ContentToRevisionComponent } from './components/content-to-revision/content-to-revision.component';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,8 @@ import { OffensiveWordsComponent } from './components/offensive-words/offensive-
     StatsComponent,
     EditarUsuarioComponent,
     EditAllUsersComponent,
-    OffensiveWordsComponent
+    OffensiveWordsComponent,
+    ContentToRevisionComponent
   ],
   imports: [
     BrowserModule,
@@ -85,7 +88,8 @@ import { OffensiveWordsComponent } from './components/offensive-words/offensive-
     MatDatepickerModule,
     MatTableModule,
     MatNativeDateModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatChipsModule
   ],
   providers: [
     LoginService,

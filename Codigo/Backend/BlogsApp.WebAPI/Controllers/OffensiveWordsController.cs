@@ -26,14 +26,14 @@ namespace BlogsApp.WebAPI.Controllers
         public IActionResult AddOffensiveWord([FromBody] OffensiveWordDTO wordRequest, [FromHeader] string token)
         {
             offensiveWordsValidator.AddOffensiveWord(base.GetLoggedUser(token), wordRequest.word);
-            return new OkObjectResult("Palabra '" + wordRequest.word + "' agregada a la lista de palabras ofensivas");
+            return new OkObjectResult(new { message = "Palabra '" + wordRequest.word + "' agregada a la lista de palabras ofensivas" });
         }
 
         [HttpDelete]
         public IActionResult RemoveOffensiveWord([FromBody] OffensiveWordDTO wordRequest, [FromHeader] string token)
         {
             offensiveWordsValidator.RemoveOffensiveWord(base.GetLoggedUser(token), wordRequest.word);
-            return new OkObjectResult("Palabra '" + wordRequest.word + "' eliminada de la lista de palabras ofensivas");
+            return new OkObjectResult(new { message = "Palabra '" + wordRequest.word + "' eliminada de la lista de palabras ofensivas" });
         }
 
         [HttpGet("content")]

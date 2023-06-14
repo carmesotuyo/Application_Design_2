@@ -19,6 +19,8 @@ export class ArticleViewComponent implements OnInit {
   isOwner = false;
   userName = '';
   newComments: { [key: string]: string } = {};
+  estado = 'Publico'
+  estados = ['Publico', 'En revisión', 'Editado', 'Eliminado']
   
   constructor(
     private route: ActivatedRoute,
@@ -38,6 +40,7 @@ export class ArticleViewComponent implements OnInit {
     this.articleService.getArticle(articleId).subscribe((article) => {
       this.article = article;
       this.comments = article.commentsDtos! ? article.commentsDtos : [];
+      this.estado = this.estados[article.state];
       this.checkOwnership();
     });
   }

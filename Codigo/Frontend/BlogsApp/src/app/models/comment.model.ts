@@ -9,11 +9,16 @@ export interface CommentDto {
     dateCreated: string;
     dateDeleted: string | null;
     subComments: CommentDto[];
+    state: number;
   }
 
   export interface CommentBasic {
     body: string;
     articleId: number;
+  }
+
+  export interface CommentContent {
+    body: string;
   }
 
   export interface CommentNotify {

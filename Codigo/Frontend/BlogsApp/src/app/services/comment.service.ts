@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommentBasic, CommentDto, CommentNotify } from '../models/comment.model';
+import { CommentBasic, CommentDto, CommentNotify, CommentContent } from '../models/comment.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -32,5 +32,10 @@ export class CommentService {
   postReply(comment: CommentBasic, idParent: number): Observable<CommentDto> {
     const url = `${this.apiUrl}/${idParent}`;
     return this.http.post<CommentDto>(url, comment);
+  }
+
+  updateComment(comment: CommentContent, id: number): Observable<CommentBasic> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<CommentBasic>(url, comment);
   }
 }

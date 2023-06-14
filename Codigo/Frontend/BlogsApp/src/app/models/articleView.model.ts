@@ -9,4 +9,5 @@ export interface ArticleView {
   private: boolean;
   template: number;
   image: string;
+  state: number;
 }
