@@ -1,4 +1,5 @@
 ﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 
 namespace BlogsApp.WebAPI.DTOs
 {
@@ -14,7 +15,7 @@ namespace BlogsApp.WebAPI.DTOs
         }
         public static BasicArticleDto ToDto(Article article)
         {
-            return new BasicArticleDto
+            BasicArticleDto dto = new BasicArticleDto()
             {
                 Id = article.Id,
                 Name = article.Name,
@@ -22,8 +23,16 @@ namespace BlogsApp.WebAPI.DTOs
                 Body = article.Body,
                 Private = article.Private,
                 Template = article.Template,
-                Image = article.Image
+                Image = article.Image,
+                UserId = article.UserId,
+                State = article.State
             };
+            if(dto.State == Domain.Enums.ContentState.InReview && article.OffensiveWords != null)
+            {
+                dto.Message = "Tu Articulo contiene palabras ofensivas, no se mostrará hasta que salga de revisión por un Moderador";
+                dto.OffensiveWords = OffensiveWordsValidatorUtils.mapToStrings(article.OffensiveWords);
+            }
+            return dto;
         }
 
         public static IEnumerable<BasicArticleDto> ToDtoList(IEnumerable<Article> articles)
@@ -46,7 +55,8 @@ namespace BlogsApp.WebAPI.DTOs
                 Body = article.Body,
                 Private = article.Private,
                 Template = article.Template,
-                Image = article.Image
+                Image = article.Image,
+                State = article.State
             };
 
             if (article.Comments!= null && article.Comments.Count > 0)

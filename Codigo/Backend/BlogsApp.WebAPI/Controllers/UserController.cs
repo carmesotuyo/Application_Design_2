@@ -31,16 +31,17 @@ namespace BlogsApp.WebAPI.Controllers
 
 
         [HttpPatch("{id}")]
-        public IActionResult PatchUser([FromRoute] int id, [FromBody] UpdateUserRequestDTO userDTO, [FromHeader] string token)
+        public IActionResult PatchUser([FromRoute] int id, [FromBody] UserDto userDTO, [FromHeader] string token)
         {
             var user = userLogic.GetUserById(id);
             if (user == null)
             {
                 return NotFound();
             }
-            user = userDTO.ApplyChangesToUser(user);
-
-            return new OkObjectResult(userLogic.UpdateUser(base.GetLoggedUser(token), user));
+            User updateUser = UserConverter.ToUser(userDTO, id, user);
+            User userlogged = (base.GetLoggedUser(token));
+            User updatedUser = userLogic.UpdateUser(userlogged, updateUser);
+            return new OkObjectResult(updatedUser);
         }
 
         [HttpDelete("{id}")]

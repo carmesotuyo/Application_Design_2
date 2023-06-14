@@ -1,4 +1,6 @@
-﻿namespace BlogsApp.WebAPI.DTOs
+﻿using BlogsApp.Domain.Enums;
+
+namespace BlogsApp.WebAPI.DTOs
 {
     public class CompleteArticleDTO
     {
@@ -10,5 +12,6 @@
         public bool Private { get; set; }
         public int Template { get; set; }
         public string? Image { get; set; }
+        public ContentState State { get; set; }
     }
 }
