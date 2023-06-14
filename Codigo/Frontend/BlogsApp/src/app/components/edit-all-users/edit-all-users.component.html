@@ -1,70 +1,75 @@
 <app-navbar></app-navbar>
 <app-nav-bar-admin></app-nav-bar-admin>
+
 <div class="users-container">
-    <h1>Usuarios</h1>
-    <button mat-raised-button color="primary" (click)="isCreatingUser = true">Crear</button>
+    <button mat-raised-button color="primary" (click)="isCreatingUser = true">Crear Usuario</button>
     <div *ngIf="isCreatingUser" class="create-user-container">
-      <h2>Crear Usuario</h2>
-      <mat-form-field>
-        <mat-label>Username</mat-label>
-        <input matInput [(ngModel)]="newUser.username">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input matInput [(ngModel)]="newUser.password" type="password">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput [(ngModel)]="newUser.email">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput [(ngModel)]="newUser.name">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>LastName</mat-label>
-        <input matInput [(ngModel)]="newUser.lastName">
-      </mat-form-field>
-      <mat-checkbox [(ngModel)]="newUser.blogger">Blogger</mat-checkbox>
-      <mat-checkbox [(ngModel)]="newUser.admin">Admin</mat-checkbox>
-      <mat-checkbox [(ngModel)]="newUser.moderador">Moderador</mat-checkbox>
-      <button mat-raised-button color="primary" (click)="addUser()">Crear Usuario</button>
-      <button mat-raised-button color="warn" (click)="isCreatingUser = false">Cancelar</button>
-    </div>
-    <div class="users-list">
-      <h2>Lista de Usuarios</h2>
-      <div *ngFor="let user of users">
-        <h3>Usuario: {{user.username}}</h3>
-        <button mat-raised-button color="primary" (click)="editUser(user.id)">Editar</button>
-        <button mat-raised-button color="warn" (click)="deleteUser(user.id)">Eliminar</button>
-        <div *ngIf="editingUserId === user.id" class="edit-user-container">
-          <h2>Editar Usuario</h2>
-          <mat-form-field>
+        <h2>Crear Usuario</h2>
+        <mat-form-field>
             <mat-label>Username</mat-label>
-            <input matInput [(ngModel)]="editedUser.username">
-          </mat-form-field>
-          <mat-form-field>
+            <input matInput [(ngModel)]="newUser.username">
+        </mat-form-field>
+        <mat-form-field>
             <mat-label>Password</mat-label>
-            <input matInput [(ngModel)]="editedUser.password" type="password">
-          </mat-form-field>
-          <mat-form-field>
+            <input matInput [(ngModel)]="newUser.password" type="password">
+        </mat-form-field>
+        <mat-form-field>
             <mat-label>Email</mat-label>
-            <input matInput [(ngModel)]="editedUser.email">
-          </mat-form-field>
-          <mat-form-field>
+            <input matInput [(ngModel)]="newUser.email">
+        </mat-form-field>
+        <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput [(ngModel)]="editedUser.name">
-          </mat-form-field>
-          <mat-form-field>
+            <input matInput [(ngModel)]="newUser.name">
+        </mat-form-field>
+        <mat-form-field>
             <mat-label>LastName</mat-label>
-            <input matInput [(ngModel)]="editedUser.lastName">
-          </mat-form-field>
-          <mat-checkbox [(ngModel)]="editedUser.blogger">Blogger</mat-checkbox>
-          <mat-checkbox [(ngModel)]="editedUser.admin">Admin</mat-checkbox>
-          <mat-checkbox [(ngModel)]="editedUser.moderador">Moderador</mat-checkbox>
-          <button mat-raised-button color="primary" (click)="saveUserChanges()">Guardar Cambios</button>
-        </div>
-      </div>
+            <input matInput [(ngModel)]="newUser.lastName">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addUser()" class="botonCrear">Crear Usuario</button>
+        <button mat-raised-button color="warn" (click)="isCreatingUser = false" class="botonCrear">Cancelar</button>
     </div>
-  </div>
-  
+
+    <div class="users-list">
+        <h2>Lista de Usuarios</h2>
+        <div class="user-item" *ngFor="let user of users">
+            <mat-card class="user-card">
+                <h2>{{user.username}}</h2>
+                <h3>{{user.email}}</h3>
+                <br>
+                <div>   
+                    <button mat-raised-button color="primary" (click)="editUser(user.id)">Editar</button>
+                    <button mat-raised-button color="warn" (click)="deleteUser(user.id)">Eliminar</button>
+                </div>
+                
+            </mat-card>
+            <div *ngIf="editingUserId === user.id && isEditingUser" class="edit-user-container">
+                <h2>Editar Usuario</h2>
+                <mat-form-field>
+                    <mat-label>Username</mat-label>
+                    <input matInput [(ngModel)]="editedUser.username">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Password</mat-label>
+                    <input matInput [(ngModel)]="editedUser.password" type="password">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Email</mat-label>
+                    <input matInput [(ngModel)]="editedUser.email">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="editedUser.name">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>LastName</mat-label>
+                    <input matInput [(ngModel)]="editedUser.lastName">
+                </mat-form-field>
+                <mat-checkbox [(ngModel)]="editedUser.blogger">Blogger</mat-checkbox>
+                <mat-checkbox [(ngModel)]="editedUser.admin">Admin</mat-checkbox>
+                <mat-checkbox [(ngModel)]="editedUser.moderador">Moderador</mat-checkbox>
+                <button mat-raised-button color="primary" (click)="saveUserChanges()">Guardar Cambios</button>
+                <button mat-raised-button color="warn" (click)="isEditingUser = false" class="botonCrear">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

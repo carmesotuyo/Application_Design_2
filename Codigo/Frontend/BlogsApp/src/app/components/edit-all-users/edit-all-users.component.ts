@@ -14,6 +14,7 @@ export class EditAllUsersComponent implements OnInit {
   editedUser: User = new User('', '', '', '', '');
   editingUserId: number = 0;
   isCreatingUser: boolean = false;
+  isEditingUser: boolean = false;
 
   constructor(private userService: UserService, private snackBar: MatSnackBar) { }
 
@@ -30,7 +31,6 @@ export class EditAllUsersComponent implements OnInit {
   addUser(): void {
     this.userService.postUser(this.newUser).subscribe((user: User) => {
       this.getUsers();
-      //this.users.push(user);
       this.newUser = new User('', '', '', '', '');
       this.snackBar.open('Usuario añadido con éxito', 'Cerrar', { duration: 2000 });
     });
@@ -38,6 +38,7 @@ export class EditAllUsersComponent implements OnInit {
 
   editUser(userId: number): void {
     this.userService.getUserById(userId).subscribe((user: User) => {
+      this.isEditingUser = true;
       this.editedUser = user;
       this.editingUserId = userId;
     });
