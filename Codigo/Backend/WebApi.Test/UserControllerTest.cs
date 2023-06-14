@@ -23,7 +23,7 @@ namespace WebApi.Test
         User aValidBlogger;
         User aBloggerToUpdate;
         CreateUserRequestDTO aValidBloggerDTO;
-        UpdateUserRequestDTO updateBloggerRequestDto;
+        UserDto updateBloggerRequestDto;
         ICollection<User> usersRanking;
         ICollection<Article> userArticles;
         Article article;
@@ -61,8 +61,8 @@ namespace WebApi.Test
                 Admin = aValidBlogger.Admin,
             };
 
-            aBloggerToUpdate = new User() { Id = 2, Username = "username" };
-            updateBloggerRequestDto = new UpdateUserRequestDTO();
+            aBloggerToUpdate = new User() { Id = 2, Username = "username", Email = "email@e.com" };
+            updateBloggerRequestDto = new UserDto();
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
             article = new Article()
             {

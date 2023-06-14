@@ -10,5 +10,6 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser);
         Comment GetCommentById(int id, User loggedUser);
         Comment UpdateComment(int id, Comment commentWithDataToUpdate, User loggedUser);
+        Comment ApproveComment(int id, User loggedUser);
     }
 }

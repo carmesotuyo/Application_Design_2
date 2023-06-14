@@ -69,5 +69,12 @@ namespace BlogsApp.WebAPI.Controllers
             Article newArticle = articleLogic.UpdateArticle(id, updatedArticle, loggedUser);
             return new OkObjectResult(ArticleConverter.ToDto(newArticle));
         }
+
+        [HttpPut("{id}/approval")]
+        public IActionResult ApproveArticle([FromRoute] int id,[FromHeader] string token)
+        {
+            Article articleApproved = articleLogic.ApproveArticle(id, base.GetLoggedUser(token));
+            return new OkObjectResult(ArticleConverter.ToDto(articleApproved));
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         ICollection<Comment> GetCommentsToReview(User loggedUser);
         void UnflagReviewContentForUser(User loggedUser, User userToUnflag);
         ICollection<OffensiveWord> mapToOffensiveWordsType(ICollection<string> offensiveWords);
+        bool checkUserHasContentToReview(User loggedUser);
     }
 
     public abstract class OffensiveWordsValidatorUtils

@@ -41,7 +41,6 @@ namespace BlogsApp.BusinessLogic.Logics
                     throw new Exception("No se pudo encontrar el importador solicitado");
 
                 List<Article> importedArticles = desiredImplementation.ImportArticles(path, loggedUser);
-                Console.WriteLine(importedArticles);
 
                 CreateArticles(importedArticles, loggedUser);
                 return importedArticles;
