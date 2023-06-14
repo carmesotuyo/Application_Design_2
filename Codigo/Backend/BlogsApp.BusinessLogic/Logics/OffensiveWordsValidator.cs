@@ -134,6 +134,11 @@ namespace BlogsApp.BusinessLogic.Logics
             userToUnflag.HasContentToReview = false;
             _userRepository.Update(userToUnflag);
         }
+
+        public ICollection<string> GetOffensiveWords(User loggedUser)
+        {
+            return offensiveWords;
+        }
     }
 
 }

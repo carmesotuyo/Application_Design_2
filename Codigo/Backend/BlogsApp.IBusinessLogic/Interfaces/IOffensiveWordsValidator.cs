@@ -5,6 +5,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
 {
     public interface IOffensiveWordsValidator
     {
+        ICollection<string> GetOffensiveWords(User loggedUser);
         List<string> reviewArticle(Article article);
         List<string> reviewComment(Comment comment);
         void NotifyAdminsAndModerators();
