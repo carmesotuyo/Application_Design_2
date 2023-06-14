@@ -165,7 +165,7 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             return article => article.DateDeleted == null &&
                               (article.State == Domain.Enums.ContentState.Visible || article.State == Domain.Enums.ContentState.Edited || (article.State == Domain.Enums.ContentState.InReview && article.UserId == loggedUser.Id)) &&
-                              (article.Name.Contains(text) || article.Body.Contains(text)) &&
+                              (article.Name.ToLower().Contains(text.ToLower()) || article.Body.ToLower().Contains(text.ToLower())) &&
                               (article.Private == false || article.UserId == loggedUser.Id);
         }
 
