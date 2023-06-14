@@ -6,11 +6,10 @@ import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/models/article.model';
 import { Content } from 'src/app/models/content.model';
 
-
 @Component({
   selector: 'app-content-to-revision',
   templateUrl: './content-to-revision.component.html',
-  styleUrls: ['./content-to-revision.component.scss']
+  styleUrls: ['./content-to-revision.component.scss'],
 })
 export class ContentToRevisionComponent implements OnInit {
   contents: Content[] = [];
@@ -23,7 +22,7 @@ export class ContentToRevisionComponent implements OnInit {
     private offensivewordsService: OffensivewordsService,
     private commentService: CommentService,
     private articleService: ArticleService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getContents();
@@ -34,7 +33,7 @@ export class ContentToRevisionComponent implements OnInit {
   }
 
   getContents() {
-    this.offensivewordsService.getContentToRevision().subscribe(contents => {
+    this.offensivewordsService.getContentToRevision().subscribe((contents) => {
       this.contents = contents;
       this.editMode = new Array(this.contents.length).fill(false);
     });
@@ -44,9 +43,13 @@ export class ContentToRevisionComponent implements OnInit {
     this.editMode[index] = true;
     this.editingContentId = contentId;
     if (this.contents[index].type === 0) {
-      (this.form.controls['title'] as FormControl).setValue(this.contents[index].articleName);
+      (this.form.controls['title'] as FormControl).setValue(
+        this.contents[index].articleName
+      );
     }
-    (this.form.controls['body'] as FormControl).setValue(this.contents[index].body);
+    (this.form.controls['body'] as FormControl).setValue(
+      this.contents[index].body
+    );
   }
 
   saveContent(index: number) {
@@ -54,53 +57,62 @@ export class ContentToRevisionComponent implements OnInit {
       const updatedContent = {
         id: this.contents[index].id,
         body: this.form.value.body,
-        articleName: this.contents[index].type === 0 ? this.form.value.title : null
+        articleName:
+          this.contents[index].type === 0 ? this.form.value.title : null,
       };
       if (this.contents[index].type === 0) {
-        
-
-        this.articleService.getArticle(this.contents[index].id).subscribe(article => {
-          this.articleToEdit = article;
-          this.articleToEdit.body = this.form.value.body;
-          this.articleToEdit.name = this.form.value.title;
-          this.articleService.putArticle(this.articleToEdit).subscribe(() => {
+        this.articleService
+          .getArticle(this.contents[index].id)
+          .subscribe((article) => {
+            this.articleToEdit = article;
+            this.articleToEdit.body = this.form.value.body;
+            this.articleToEdit.name = this.form.value.title;
+            this.articleService.putArticle(this.articleToEdit).subscribe(() => {
+              this.editMode[index] = false;
+              this.getContents();
+            });
+          });
+      } else {
+        this.commentService
+          .updateComment(updatedContent.body, updatedContent.id)
+          .subscribe(() => {
             this.editMode[index] = false;
             this.getContents();
           });
-        });
-        
-      } else {
-        this.commentService.updateComment(updatedContent.body, updatedContent.id).subscribe(() => {
-          this.editMode[index] = false;
-          this.getContents();
-        });
       }
     }
   }
 
-  
-
   deleteContent(index: number) {
     if (this.contents[index].type === 0) {
-      this.articleService.deleteArticle(this.contents[index].id).subscribe(() => {
-        this.getContents();
-      });
+      this.articleService
+        .deleteArticle(this.contents[index].id)
+        .subscribe(() => {
+          this.getContents();
+        });
     } else {
-      // this.commentService.deleteComment(this.contents[index].id).subscribe(() => {
-      //   this.getContents();
-      // });
+      this.commentService
+        .deleteComment(this.contents[index].id)
+        .subscribe(() => {
+          this.getContents();
+        });
     }
   }
 
   approveContent(index: number) {
     if (this.contents[index].type === 0) {
-      // this.articleService.approveArticle(this.contents[index].id).subscribe(() => {
-      //   this.getContents();
-      // });
+      this.articleService
+        .aproveArticle(this.contents[index].id)
+        .subscribe(() => {
+          this.getContents();
+          console.log('aproveArticle');
+        });
     } else {
-      // this.commentService.approveComment(this.contents[index].id).subscribe(() => {
-      //   this.getContents();
-      // });
+      this.commentService
+        .aproveComment(this.contents[index].id)
+        .subscribe(() => {
+          this.getContents();
+        });
     }
   }
 }
