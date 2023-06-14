@@ -51,6 +51,13 @@ namespace BlogsApp.WebAPI.Controllers
             Comment newComment = commentLogic.UpdateComment(id, updatedComment, loggedUser);
             return new OkObjectResult(CommentConverter.toBasicDto(newComment));
         }
+
+        [HttpPut("{id}/approval")]
+        public IActionResult ApproveComment([FromRoute] int id, [FromHeader] string token)
+        {
+            Comment commentApproved = commentLogic.ApproveComment(id, base.GetLoggedUser(token));
+            return new OkObjectResult(CommentConverter.toBasicDto(commentApproved));
+        }
     }
 }
 

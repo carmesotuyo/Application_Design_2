@@ -43,7 +43,6 @@ namespace BlogsApp.WebAPI.Controllers
 
             ICollection<ContentDTO> articlesToReview = ContentConverter.ArticlesToContentList(offensiveWordsValidator.GetArticlesToReview(loggedUser));
             ICollection<ContentDTO> commentsToReview = ContentConverter.CommentsToContentList(offensiveWordsValidator.GetCommentsToReview(loggedUser));
-            offensiveWordsValidator.UnflagReviewContentForUser(loggedUser, loggedUser);
 
             return new OkObjectResult(articlesToReview.Concat(commentsToReview));
         }
@@ -52,6 +51,20 @@ namespace BlogsApp.WebAPI.Controllers
         public IActionResult GetOffensiveWords([FromHeader] string token)
         {
             return new OkObjectResult(offensiveWordsValidator.GetOffensiveWords(base.GetLoggedUser(token)));
+        }
+
+        [HttpPut("notification-dismisser")]
+        public IActionResult DismissNotifications([FromHeader] string token)
+        {
+            User loggedUser = base.GetLoggedUser(token);
+            offensiveWordsValidator.UnflagReviewContentForUser(loggedUser, loggedUser);
+            return new OkObjectResult(new { message = "Articulos importados correctamente" });
+        }
+
+        [HttpGet("notification-viewer")]
+        public IActionResult CheckUserHasContentToReview([FromHeader] string token)
+        {
+            return new OkObjectResult(offensiveWordsValidator.checkUserHasContentToReview(base.GetLoggedUser(token)));
         }
     }
 }

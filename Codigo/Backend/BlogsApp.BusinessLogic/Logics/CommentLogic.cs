@@ -52,7 +52,7 @@ namespace BlogsApp.BusinessLogic.Logics
         public void DeleteComment(int commentId, User loggedUser)
         {
             Comment comment = _commentRepository.Get(CommentById(commentId, loggedUser));
-            if (loggedUser.Id == comment.User.Id)
+            if (loggedUser.Id == comment.User.Id || loggedUser.Admin || loggedUser.Moderador)
             {
                 comment.DateDeleted = DateTime.Now;
                 comment.State = Domain.Enums.ContentState.Deleted;
@@ -117,6 +117,20 @@ namespace BlogsApp.BusinessLogic.Logics
         private void AuthorizedUser(User loggedUser)
         {
             if (!loggedUser.Admin && !loggedUser.Moderador) throw new UnauthorizedAccessException("Sólo un moderador puede modificar el comentario");
+        }
+
+        public Comment ApproveComment(int id, User loggedUser)
+        {
+            if (loggedUser.Admin || loggedUser.Moderador)
+            {
+                Comment foundComment = GetCommentById(id, loggedUser);
+                foundComment.State = Domain.Enums.ContentState.Visible;
+                return UpdateComment(id, foundComment, loggedUser);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Sólo administradores o moderadores pueden aprobar contenido");
+            }
         }
     }
 }

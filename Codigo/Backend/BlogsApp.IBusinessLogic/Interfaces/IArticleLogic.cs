@@ -10,6 +10,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void DeleteArticle(int articleId, User loggedUser);
         Article CreateArticle(Article article, User loggedUser);
         Article UpdateArticle(int articleId, Article article, User loggedUser);
+        Article ApproveArticle(int id, User loggedUser);
     }
 }
 
