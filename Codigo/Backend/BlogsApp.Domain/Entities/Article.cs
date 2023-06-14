@@ -3,16 +3,10 @@ using BlogsApp.Domain.Enums;
 
 namespace BlogsApp.Domain.Entities
 {
-    public class Article
+    public class Article : Content
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Body { get; set; }
         public bool Private { get; set; }
-        public ContentState State { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateModified { get; set; }
-        public DateTime? DateDeleted { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
         public ICollection<Comment> Comments { get; set; }

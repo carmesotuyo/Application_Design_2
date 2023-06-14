@@ -56,6 +56,19 @@ namespace BlogsApp.DataAccess.Repositories
             return users;
         }
 
+
+        public int GetUserContentCount(Func<User, bool> userFunc, Func<Content, bool> contentFunc)
+        {
+            User user = Context.Set<User>().Where(userFunc).FirstOrDefault();
+            if (user == null)
+                throw new NotFoundDbException("No se encontró el usuario");
+
+            int articlesCount = Context.Entry(user).Collection(u => u.Articles).Query().Where(contentFunc).Count();
+            int commentsCount = Context.Entry(user).Collection(u => u.Comments).Query().Where(contentFunc).Count();
+            return articlesCount + commentsCount;
+        }
+
+
         public bool Exists(Func<User, bool> func)
         {
             return Context.Set<User>().Where(func).Any();

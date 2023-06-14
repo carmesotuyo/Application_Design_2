@@ -1,4 +1,5 @@
-﻿using BlogsApp.BusinessLogic.Logics;
+﻿using System.Buffers.Text;
+using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 using BlogsApp.DataAccess.Repositories;
 using BlogsApp.Domain.Entities;
@@ -231,7 +232,19 @@ namespace BusinessLogic.Test
             userRepositoryMock.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>()))
                    .Returns<Func<User, bool>>(filter => users.Where(filter).ToList());
 
-            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null);
+            userRepositoryMock.Setup(x => x.GetUserContentCount(It.IsAny<Func<User, bool>>(), It.IsAny<Func<Content, bool>>()))
+                    .Returns((Func<User, bool> userFunc, Func<Content, bool> contentFunc) =>
+                     {
+                         User user = users.FirstOrDefault(userFunc);
+                         if(user == null) throw new NotFoundDbException("No se encontró el usuario");
+
+                         int articlesCount = user.Articles.Count(contentFunc);
+                         int commentsCount = user.Comments.Count(contentFunc);
+
+                         return articlesCount + commentsCount;
+                     });
+
+            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null, false);
 
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(1, result.First().Id);
@@ -244,7 +257,7 @@ namespace BusinessLogic.Test
             var dateFrom = new DateTime(2023, 1, 1);
             var dateTo = new DateTime(2023, 5, 1);
 
-            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null));
+            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null, false));
         }
 
     }

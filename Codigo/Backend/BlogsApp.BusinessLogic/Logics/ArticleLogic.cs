@@ -31,6 +31,7 @@ namespace BlogsApp.BusinessLogic.Logics
                 if (offensiveWordsFound.Count() > 0)
                 {
                     article.State = Domain.Enums.ContentState.InReview;
+                    article.HadOffensiveWords = true;
                     article.OffensiveWords = _offensiveWordsValidator.mapToOffensiveWordsType(offensiveWordsFound);
                     _offensiveWordsValidator.NotifyAdminsAndModerators();
                 }
@@ -49,13 +50,16 @@ namespace BlogsApp.BusinessLogic.Logics
             Article article = _articleRepository.Get(ArticleById(articleId, loggedUser));
             if(loggedUser.Id == article.UserId)
             {
-                foreach (Comment comment in article.Comments)
+                if (article.Comments != null)
                 {
-                    _commentLogic.DeleteComment(comment.Id, loggedUser);
+                    foreach (Comment comment in article.Comments)
+                    {
+                        _commentLogic.DeleteComment(comment.Id, loggedUser);
+                    }
                 }
                 article.DateDeleted = DateTime.Now;
                 article.State = Domain.Enums.ContentState.Deleted;
-                this._articleRepository.Update(article);
+                _articleRepository.Update(article);
             } else
             {
                 throw new UnauthorizedAccessException("Sólo el creador del artículo puede eliminarlo");
@@ -121,6 +125,7 @@ namespace BlogsApp.BusinessLogic.Logics
             if (offensiveWordsFound.Count() > 0)
             {
                 article.State = Domain.Enums.ContentState.InReview;
+                article.HadOffensiveWords = true;
                 _offensiveWordsValidator.NotifyAdminsAndModerators();
             }
             else if (article.State == Domain.Enums.ContentState.InReview || article.State == Domain.Enums.ContentState.Visible)
