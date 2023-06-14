@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Xml.Linq;
 using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.IDataAccess.Interfaces;
@@ -125,7 +126,8 @@ namespace BlogsApp.BusinessLogic.Logics
             {
                 Comment foundComment = GetCommentById(id, loggedUser);
                 foundComment.State = Domain.Enums.ContentState.Visible;
-                return UpdateComment(id, foundComment, loggedUser);
+                this._commentRepository.Update(foundComment);
+                return foundComment;
             }
             else
             {
