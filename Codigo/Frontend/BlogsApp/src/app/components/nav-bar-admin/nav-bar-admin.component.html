@@ -1,0 +1,12 @@
+<mat-toolbar color="second" routerLinkActive="activate-link">
+      <button mat-button [routerLink]="['/logs']" routerLinkActive="active-link">Logs</button>
+      <button mat-button [routerLink]="['/stats']" routerLinkActive="active-link">Estadísticas</button>
+      <button mat-button [routerLink]="['/ranking']" routerLinkActive="active-link">Ranking de Usuarios</button>
+      <button mat-button [routerLink]="['/#']" routerLinkActive="active-link">Palabras Ofensivas</button>
+      <button mat-button [routerLink]="['/#']" routerLinkActive="active-link">Artículos en Revisión</button>
+      <button mat-button [routerLink]="['/#']" routerLinkActive="active-link">Comentarios en Revisión</button>
+      <button mat-button [routerLink]="['/editUsers']" routerLinkActive="active-link">Editar Usuarios</button>
+</mat-toolbar>
+<router-outlet></router-outlet>
+
+  

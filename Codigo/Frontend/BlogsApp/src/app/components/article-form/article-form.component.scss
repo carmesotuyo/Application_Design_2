@@ -1,0 +1,32 @@
+.article-form-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;  /* Asegura que el contenedor ocupe toda la altura de la vista. */
+}
+
+.form-title {
+  margin-bottom: 20px;
+}
+
+.form-field {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Centra los elementos del formulario horizontalmente. */
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.custom-button {
+  margin: 10px;
+}

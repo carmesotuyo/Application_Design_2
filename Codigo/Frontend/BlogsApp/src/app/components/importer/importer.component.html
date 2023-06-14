@@ -1,0 +1,21 @@
+<app-navbar></app-navbar>
+<div class="importer-container">
+    <h1 class="title">Importar Artículo</h1>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Selecciona el importador</mat-label>
+            <mat-select [(value)]="selectedImporter">
+              <mat-option *ngFor="let importer of importers" [value]="importer">{{importer}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        
+          <mat-form-field appearance="fill">
+            <mat-label>Selecciona el archivo a importar</mat-label>
+            <input matInput type="text" [(ngModel)]="path" placeholder="Path del archivo">
+          </mat-form-field>
+    </div>
+    
+  
+    <button mat-raised-button color="primary" (click)="postImporter()">Importar</button>
+  </div>
+  

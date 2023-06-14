@@ -1,0 +1,48 @@
+<app-navbar></app-navbar>
+<app-nav-bar-admin></app-nav-bar-admin>
+<div class="user-ranking-container">
+    <br>
+    <h1 class="title">Ranking de usuarios</h1>
+    <mat-form-field appearance="fill">
+      <mat-label>Fecha de inicio</mat-label>
+      <input matInput [matDatepicker]="picker1" [formControl]="fromDate">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Fecha de fin</mat-label>
+      <input matInput [matDatepicker]="picker2" [formControl]="toDate">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Ranking</mat-label>
+      <input matInput [(ngModel)]="ranking" type="number">
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" (click)="getNormalRanking()">Ranking normal</button>
+    <button mat-raised-button color="accent" (click)="getOffensiveWordsRanking()">Ranking con palabras ofensivas</button>
+  
+    <table mat-table [dataSource]="users" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let user"> {{user.id}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Username </th>
+        <td mat-cell *matCellDef="let user"> {{user.username}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="ranking">
+        <th mat-header-cell *matHeaderCellDef> Ranking </th>
+        <td mat-cell *matCellDef="let user"> {{user.ranking}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  

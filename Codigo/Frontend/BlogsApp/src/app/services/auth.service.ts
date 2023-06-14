@@ -11,6 +11,7 @@ export class AuthService {
   private _userRoleKey = 'userRole';
   private _userName = 'userName';
   private _userTokenKey = 'userToken';
+  private _userId = 'userId';
 
   constructor() { }
 
@@ -34,9 +35,21 @@ export class AuthService {
   }
 
   public logout(): void {
-    //this.tokenSubject.next('');
     this.removeToken();
+    this.removeUserId();
     // También puedes realizar otras acciones al cerrar sesión, como limpiar el almacenamiento local
+  }
+
+  public getUserId(): string | null {
+    return sessionStorage.getItem(this._userId);
+  }
+
+  public setUserId(userId: string): void {
+    sessionStorage.setItem(this._userId, userId);
+  }
+
+  public removeUserId(): void {
+    sessionStorage.removeItem(this._userId);
   }
 
   public getUsername(): string | null {
