@@ -4,6 +4,7 @@ import { CommentService } from 'src/app/services/comment.service';
 import { OffensivewordsService } from 'src/app/services/offensivewords.service';
 import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/models/article.model';
+import { Content } from 'src/app/models/content.model';
 
 
 @Component({
@@ -12,10 +13,11 @@ import { Article } from 'src/app/models/article.model';
   styleUrls: ['./content-to-revision.component.scss']
 })
 export class ContentToRevisionComponent implements OnInit {
-  contents: any[] = [];
+  contents: Content[] = [];
   form!: FormGroup;
   editMode: boolean[] = [];
   articleToEdit: Article = new Article('', '', false, 0, '');
+  editingContentId: number = 0;
 
   constructor(
     private offensivewordsService: OffensivewordsService,
@@ -38,8 +40,9 @@ export class ContentToRevisionComponent implements OnInit {
     });
   }
 
-  editContent(index: number) {
+  editContent(index: number, contentId: number) {
     this.editMode[index] = true;
+    this.editingContentId = contentId;
     if (this.contents[index].type === 0) {
       (this.form.controls['title'] as FormControl).setValue(this.contents[index].articleName);
     }
@@ -54,13 +57,18 @@ export class ContentToRevisionComponent implements OnInit {
         articleName: this.contents[index].type === 0 ? this.form.value.title : null
       };
       if (this.contents[index].type === 0) {
-        this.getArticle(this.contents[index].id);
-        this.articleToEdit.body = this.form.value.body;
-        this.articleToEdit.name = this.form.value.title;
-        this.articleService.putArticle(this.articleToEdit).subscribe(() => {
-          this.editMode[index] = false;
-          this.getContents();
+        
+
+        this.articleService.getArticle(this.contents[index].id).subscribe(article => {
+          this.articleToEdit = article;
+          this.articleToEdit.body = this.form.value.body;
+          this.articleToEdit.name = this.form.value.title;
+          this.articleService.putArticle(this.articleToEdit).subscribe(() => {
+            this.editMode[index] = false;
+            this.getContents();
+          });
         });
+        
       } else {
         this.commentService.updateComment(updatedContent.body, updatedContent.id).subscribe(() => {
           this.editMode[index] = false;
@@ -70,11 +78,7 @@ export class ContentToRevisionComponent implements OnInit {
     }
   }
 
-  getArticle(id: number) {
-    this.articleService.getArticle(id).subscribe(article => {
-      this.articleToEdit = article;
-    });
-  }
+  
 
   deleteContent(index: number) {
     if (this.contents[index].type === 0) {

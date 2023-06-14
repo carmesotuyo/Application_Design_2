@@ -34,8 +34,9 @@ export class CommentService {
     return this.http.post<CommentDto>(url, comment);
   }
 
-  updateComment(comment: CommentContent, id: number): Observable<CommentBasic> {
+  updateComment(body: string, id: number): Observable<CommentBasic> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.put<CommentBasic>(url, comment);
+    const aBody = { body };
+    return this.http.put<CommentBasic>(url, aBody);
   }
 }
