@@ -49,7 +49,7 @@ namespace BlogsApp.WebAPI.Controllers
         public IActionResult DeleteArticle([FromRoute] int id, [FromHeader] string token)
         {
             articleLogic.DeleteArticle(id, base.GetLoggedUser(token));
-            return new OkObjectResult(new { message = "Articulo eliminado correctamente" });
+            return new OkObjectResult(new { message = "Articulo eliminado" });
         }
 
         [HttpPost]
