@@ -65,13 +65,16 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             validateAuthorizedUser(loggedUser, UserId);
             validateUserExists(UserId);
-
             User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
             user.DateDeleted = DateTime.Now;
-            foreach (Article article in user.Articles)
+            if (user.Articles != null)
             {
-                _articleLogic.DeleteArticle(article.Id, user);
+                foreach (Article article in user.Articles)
+                {
+                    _articleLogic.DeleteArticle(article.Id, user);
+                }
             }
+            
             _userRepository.Update(user);
             return user;
         }
