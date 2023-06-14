@@ -6,6 +6,7 @@ export class Article {
     private: boolean;
     template: number;
     image?: string;
+    userId?: number;
 
     constructor(name: string, body: string, isPrivate: boolean, template: number, image: string, id: number, username: string) {
         this.id = id;
