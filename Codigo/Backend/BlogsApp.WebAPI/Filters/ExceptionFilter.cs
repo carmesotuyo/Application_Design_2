@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using BlogsApp.Domain.Exceptions;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 using BlogsApp.Logging.Logic.Services.Services;
+using Microsoft.Data.SqlClient;
 
 namespace BlogsApp.WebAPI.Filters
 {
@@ -69,6 +70,14 @@ namespace BlogsApp.WebAPI.Filters
                 {
                     StatusCode = 400,
                     Content = "Invalid data -- " + ex.Message
+                };
+            }
+            catch (SqlException ex)
+            {
+                context.Result = new ContentResult()
+                {
+                    StatusCode = 500,
+                    Content = "Error de conexión con la base de datos -- " + ex.Message
                 };
             }
             catch (Exception)

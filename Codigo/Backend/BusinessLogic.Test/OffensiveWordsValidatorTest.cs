@@ -166,14 +166,6 @@ namespace BusinessLogic.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundDbException))]
-        public void GetArticlesToReviewWithoutFlagEnabled()
-        {
-            moderator.HasContentToReview = false;
-            IEnumerable<Article> result = offensiveWordsValidator.GetArticlesToReview(moderator);
-        }
-
-        [TestMethod]
         public void GetCommentsToReviewOk()
         {
             List<Comment> comments = new List<Comment>() { comment };
@@ -190,14 +182,6 @@ namespace BusinessLogic.Test
         public void GetCommentsToReviewWithoutPermission()
         {
             IEnumerable<Comment> result = offensiveWordsValidator.GetCommentsToReview(commonUser);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(NotFoundDbException))]
-        public void GetCommentsToReviewWithoutFlagEnabled()
-        {
-            moderator.HasContentToReview = false;
-            IEnumerable<Comment> result = offensiveWordsValidator.GetCommentsToReview(moderator);
         }
 
         [TestMethod]

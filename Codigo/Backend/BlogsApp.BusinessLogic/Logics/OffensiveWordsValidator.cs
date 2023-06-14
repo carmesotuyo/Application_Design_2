@@ -103,14 +103,12 @@ namespace BlogsApp.BusinessLogic.Logics
         public ICollection<Article> GetArticlesToReview(User loggedUser)
         {
             validateAuthorizedUser(loggedUser);
-            checkUserHasContentToReview(loggedUser);
             return _articleRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
         }
 
         public ICollection<Comment> GetCommentsToReview(User loggedUser)
         {
             validateAuthorizedUser(loggedUser);
-            checkUserHasContentToReview(loggedUser);
             return _commentRepository.GetAll(a => a.DateDeleted == null && a.State == Domain.Enums.ContentState.InReview);
         }
 
@@ -120,10 +118,9 @@ namespace BlogsApp.BusinessLogic.Logics
                 throw new UnauthorizedAccessException("No tiene permiso para revisar el contenido");
         }
 
-        private void checkUserHasContentToReview(User loggedUser)
+        public bool checkUserHasContentToReview(User loggedUser)
         {
-            if (!loggedUser.HasContentToReview)
-                throw new NotFoundDbException("No tienes contenido para revisar");
+            return loggedUser.HasContentToReview;
         }
 
         public void UnflagReviewContentForUser(User loggedUser, User userToUnflag)
