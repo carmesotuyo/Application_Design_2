@@ -22,19 +22,11 @@ export class NavbarComponent {
   logout() {  
     this.loginService.logout().subscribe({
       next: () => {
-        // Lógica adicional después del logout
-        console.log('Logout correcto');
         this.authService.logout();
         this.router.navigateByUrl('/login');
       },
       error: (error) => {
         // Manejo de errores
-      }, 
-      complete: () => {
-        // Finalización del observable
-        console.log('Logout correcto');
-        this.authService.logout();
-        this.router.navigateByUrl('/login');
       }
     });
   }

@@ -42,6 +42,7 @@ import { StatsComponent } from './components/stats/stats.component';
 import { EditarUsuarioComponent } from './components/editar-usuario/editar-usuario.component';
 import { EditAllUsersComponent } from './components/edit-all-users/edit-all-users.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OffensiveWordsComponent } from './components/offensive-words/offensive-words.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     RankingComponent,
     StatsComponent,
     EditarUsuarioComponent,
-    EditAllUsersComponent
+    EditAllUsersComponent,
+    OffensiveWordsComponent
   ],
   imports: [
     BrowserModule,
