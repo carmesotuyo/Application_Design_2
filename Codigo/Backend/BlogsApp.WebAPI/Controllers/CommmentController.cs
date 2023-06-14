@@ -1,4 +1,5 @@
-﻿using BlogsApp.Domain.Entities;
+﻿using BlogsApp.BusinessLogic.Logics;
+using BlogsApp.Domain.Entities;
 using BlogsApp.IBusinessLogic.Interfaces;
 using BlogsApp.WebAPI.DTOs;
 using BlogsApp.WebAPI.Filters;
@@ -57,6 +58,13 @@ namespace BlogsApp.WebAPI.Controllers
         {
             Comment commentApproved = commentLogic.ApproveComment(id, base.GetLoggedUser(token));
             return new OkObjectResult(CommentConverter.toBasicDto(commentApproved));
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteComment([FromRoute] int id, [FromHeader] string token)
+        {
+            commentLogic.DeleteComment(id, base.GetLoggedUser(token));
+            return new OkObjectResult(new { message = "Comentario eliminado" });
         }
     }
 }
