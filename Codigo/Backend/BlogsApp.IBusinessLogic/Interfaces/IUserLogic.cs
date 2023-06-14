@@ -10,7 +10,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top, bool? offensiveContent);
         User GetUserById(int userId);
         IEnumerable<User> GetUsers(User loggedUser);
-        User? UpdateUser(User loggedUser, User user);
+        User? UpdateUser(User loggedUser, User userWithDataToUpdate);
         bool IsAdmin(User loggedUser);
         bool IsModerator(User loggedUser);
         bool IsBlogger(User loggedUser);

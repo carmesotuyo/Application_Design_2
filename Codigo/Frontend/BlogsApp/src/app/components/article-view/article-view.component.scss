@@ -1,0 +1,90 @@
+// .article-view-container {
+//   padding: 20px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// }
+
+// .in-line {
+//   display: inline;
+// }
+
+// .add-comment {
+//   width: 100%;
+//   max-width: 500px;
+//   margin-bottom: 20px;
+// }
+
+// .comment-card {
+//   margin-bottom: 20px;
+// }
+
+// .comment-header {
+//   margin-bottom: 10px;
+// }
+
+// .sub-comments {
+//   margin-left: 10px;
+// }
+
+// .custom-button {
+//   margin: 10px;
+// }
+
+.article-view-container {
+  width: 95%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.article-view-header {
+  display: flex;
+  justify-content: center;
+}
+
+mat-card-image {
+  //width: 95%;
+  height: 50px;
+  //object-fit: cover;
+  padding: 100px;
+}
+
+.comment-section {
+  margin-top: 15px;
+}
+
+.comment-card {
+  margin-top: 10px;
+}
+
+.add-comment {
+  width: 100%;
+  margin-top: 10px;
+}
+
+img {
+  width: 95%;
+  height: 100px;
+  object-fit: cover;
+  padding: 2%;
+}
+
+.in-line {
+  display: inline;
+  width: 20%;
+  height: auto;
+}
+
+.template4 {
+  display: flex;
+  align-items: flex-start; /* Alinear elementos a la parte superior */
+}
+
+.template4 img {
+  padding: 0%;
+  margin-right: 20px; /* Añadir algún espacio entre la imagen y el texto */
+}
+
+.custom-button {
+  margin: 10px;
+}

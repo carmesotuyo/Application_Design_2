@@ -1,0 +1,27 @@
+<app-navbar></app-navbar>
+<app-nav-bar-admin></app-nav-bar-admin>
+<div class="statistics-container">
+    <br>
+    <h1 class="title">Estadisticas</h1>
+    <mat-form-field class="year-field">
+      <mat-label>Año</mat-label>
+      <input matInput type="number" min="2000" [formControl]="year">
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" (click)="getStatistics()">Obtener estadísticas</button>
+  <br>
+    <table mat-table [dataSource]="statistics" class="mat-elevation-z8">
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef> Mes </th>
+        <td mat-cell *matCellDef="let row"> {{row.month}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef> Cantidad de Articulos </th>
+        <td mat-cell *matCellDef="let row"> {{row.count}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>

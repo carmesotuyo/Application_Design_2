@@ -62,13 +62,16 @@ namespace BlogsApp.BusinessLogic.Logics
         {
             validateAuthorizedUser(loggedUser, UserId);
             validateUserExists(UserId);
-
             User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
             user.DateDeleted = DateTime.Now;
-            foreach (Article article in user.Articles)
+            if (user.Articles != null)
             {
-                _articleLogic.DeleteArticle(article.Id, user);
+                foreach (Article article in user.Articles)
+                {
+                    _articleLogic.DeleteArticle(article.Id, user);
+                }
             }
+            
             _userRepository.Update(user);
             return user;
         }
@@ -107,35 +110,33 @@ namespace BlogsApp.BusinessLogic.Logics
             }
             return true;
         }
-
         public User? UpdateUser(User loggedUser, User userWithDataToUpdate)
         {
-            validateAuthorizedUser(loggedUser, userWithDataToUpdate.Id);
-            validateUserExists(userWithDataToUpdate.Id);
-
-            User userFromDB = _userRepository.Get(m => m.DateDeleted == null && m.Id == userWithDataToUpdate.Id);
-            bool cambioAdmin = userFromDB.Admin != userWithDataToUpdate.Admin;
-            bool cambioModerador = userFromDB.Moderador != userWithDataToUpdate.Moderador;
-            bool esAdmin = loggedUser.Admin;
-
-            //si es admin permite todos los cambios para actualizar
-            if (esAdmin)
+            User userFromDB = GetUserById(userWithDataToUpdate.Id);
+            Console.WriteLine(userWithDataToUpdate.Id);
+            if ((!IsAdmin(loggedUser)) && (loggedUser.Id == userWithDataToUpdate.Id))
             {
-                _userRepository.Update(userWithDataToUpdate);
-                return userWithDataToUpdate;
+                if ((userFromDB.Admin != userWithDataToUpdate.Admin) || (userFromDB.Moderador != userWithDataToUpdate.Moderador))
+                {
+                    throw new UnauthorizedAccessException(loggedUser.Name + " No te puedes asignar nuevos roles");
+                }
+                else
+                {
+                    _userRepository.Update(userWithDataToUpdate);
+                    return userWithDataToUpdate;
+                }
             }
-            //si no es admin y hay cambios en los roles no permite la accion
-            else if (cambioModerador || cambioAdmin)
-            {
-                throw new UnauthorizedAccessException("No está autorizado para realizar cambios en los roles");
-            }
-            // si no es admin y no hay cambios en los roles le concede la actualizacion de usuario
             else
             {
-                _userRepository.Update(userWithDataToUpdate);
-                return userWithDataToUpdate;
+                if (IsAdmin(loggedUser))
+                {
+                    _userRepository.Update(userWithDataToUpdate);
+                    return userWithDataToUpdate;
+                }
+                else { throw new UnauthorizedAccessException("No está autorizado para modificar los datos de otro usuario."); }
             }
         }
+
 
         private void validateAuthorizedUser(User loggedUser, int userWithDataToUpdateID)
         {

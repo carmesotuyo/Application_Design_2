@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Article } from '../../models/article.model';
 import { ArticleService } from '../../services/article.service';
 import { Observer, catchError, of, take } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { CommentService } from 'src/app/services/comment.service';
+import { CommentsModalComponent } from '../comments-modal/comments-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -15,11 +18,22 @@ export class HomeComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(
-    private articleService: ArticleService,
+    private articleService: ArticleService, public dialog: MatDialog, private commentService: CommentService
   ) {}
 
   ngOnInit() {
     this.getArticles(this.token);
+    const offlineComments = this.commentService.getOfflineComments();
+  if (offlineComments && offlineComments.length > 0) {
+    const dialogRef = this.dialog.open(CommentsModalComponent, {
+      width: '800px',
+      data: { comments: offlineComments }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
   }
 
   getArticles(token: string, search?: string) {
@@ -73,5 +87,6 @@ export class HomeComponent implements OnInit {
     if(!articles) this.articles = [];
     else this.articles = articles;
   };
+
 }
 
