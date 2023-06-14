@@ -11,7 +11,6 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         void NotifyAdminsAndModerators();
         void AddOffensiveWord(User loggedUser, string word);
         void RemoveOffensiveWord(User loggedUser, string word);
-        ICollection<Content> GetContentToReview(User loggedUser);
         ICollection<Article> GetArticlesToReview(User loggedUser);
         ICollection<Comment> GetCommentsToReview(User loggedUser);
         void UnflagReviewContentForUser(User loggedUser, User userToUnflag);
