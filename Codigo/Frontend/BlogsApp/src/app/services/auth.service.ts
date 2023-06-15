@@ -12,6 +12,10 @@ export class AuthService {
   private _userName = 'userName';
   private _userTokenKey = 'userToken';
   private _userId = 'userId';
+  private _bloggerKey = 'blogger';
+  private _adminKey = 'admin';
+  private _moderatorKey = 'moderator';
+
 
   constructor() { }
 
@@ -60,17 +64,39 @@ export class AuthService {
     sessionStorage.setItem(this._userName, username);
   }
 
-  public getUserRole(): string | null {
-    return sessionStorage.getItem(this._userRoleKey);
+
+
+  
+
+
+  public setBlogger(blogger: boolean): void {
+    sessionStorage.setItem(this._bloggerKey, String(blogger));
   }
 
-  public setUserRole(userRole: string): void {
-    sessionStorage.setItem(this._userRoleKey, userRole);
+  public getBlogger(): boolean {
+    const blogger = sessionStorage.getItem(this._bloggerKey);
+    return blogger === 'true';
   }
 
-  public removeUserRole(): void {
-    sessionStorage.removeItem(this._userRoleKey);
+  public setAdmin(admin: boolean): void {
+    sessionStorage.setItem(this._adminKey, String(admin));
   }
+
+  public getAdmin(): boolean {
+    const admin = sessionStorage.getItem(this._adminKey);
+    return admin === 'true';
+  }
+
+  public setModerator(moderator: boolean): void {
+    sessionStorage.setItem(this._moderatorKey, String(moderator));
+  }
+
+  public getModerator(): boolean {
+    const moderator = sessionStorage.getItem(this._moderatorKey);
+    return moderator === 'true';
+  }
+
+
 
   public isAuthenticated(): boolean {
     const token = this.getToken();
@@ -80,11 +106,15 @@ export class AuthService {
     return true;
   }
 
-  public isAuthorized(role: string): boolean {
-    const userRole = this.getUserRole();
-    if(!userRole || userRole?.toLowerCase() !== role?.toLowerCase()) {
-      return false;
-    }
-    return true;
+  public isAuthorizedMod(): boolean {
+    return this.getAdmin() || this.getModerator();
+  }
+  
+  public isAuthorizedAdmin(): boolean {
+    return this.getAdmin();
+  }
+  
+  public isAuthorizedBlogger(): boolean {
+    return this.getBlogger();
   }
 }

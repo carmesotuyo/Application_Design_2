@@ -58,7 +58,6 @@ export class ArticleFormComponent implements OnInit {
 
   public ngOnInit(): void {
     const id = this.route.snapshot.params?.['id'];
-    //const id = 15;
     if (!!id && !isNaN(Number(id))) {
       this.isEditing = true;
       this.articleId = id;

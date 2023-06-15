@@ -15,6 +15,9 @@ import { NotificationService } from 'src/app/services/notification.service';
 export class NavbarComponent {
   username: string | null = '';
   hayNotificaciones!: boolean;
+  esBlogger = this.authService.isAuthorizedBlogger();
+  esAdmin = this.authService.isAuthorizedAdmin();
+  esModerador = this.authService.isAuthorizedMod();
 
   constructor(
     private authService: AuthService,
@@ -27,7 +30,13 @@ export class NavbarComponent {
   ngOnInit() {
     this.username = this.authService.getUsername();
     this.getNotification();
-    interval(2000) // Genera un evento cada 10 segundos
+    
+    console.log('es blogger: ' + this.esBlogger);
+    console.log('es moderador: ' + this.esModerador);
+    console.log('es admin: ' + this.authService.getAdmin());
+
+    if(this.esAdmin || this.esModerador) {
+      interval(2000) // Genera un evento cada 10 segundos
       .pipe(switchMap(() => this.offensivewordsService.notificationViewer()))
       .subscribe((response: any) => {
         if (response) {
@@ -39,6 +48,7 @@ export class NavbarComponent {
         }
         console.log(response);
       });
+    }
   }
 
   getNotification() {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { OffensivewordsService } from 'src/app/services/offensivewords.service';
 
@@ -8,7 +9,11 @@ import { OffensivewordsService } from 'src/app/services/offensivewords.service';
   styleUrls: ['./nav-bar-admin.component.scss']
 })
 export class NavBarAdminComponent {
-  constructor(private offensivewordsService: OffensivewordsService, private notificationService: NotificationService) { }
+  esBlogger = this.authService.isAuthorizedBlogger();
+  esAdmin = this.authService.isAuthorizedAdmin();
+  esModerador = this.authService.isAuthorizedMod();
+
+  constructor(private offensivewordsService: OffensivewordsService, private notificationService: NotificationService, private authService: AuthService) { }
 
   hayNotificaciones: boolean = this.notificationService.hayNotificaciones;
 
