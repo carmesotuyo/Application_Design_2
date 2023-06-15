@@ -1,0 +1,26 @@
+<app-navbar></app-navbar>
+<app-nav-bar-admin></app-nav-bar-admin>
+<div class="words-container">'
+    <br>
+    <h1 class="title">Palabras ofensivas</h1>
+
+    <form [formGroup]="form" class="form-field" (ngSubmit)="addWord()">
+        <mat-form-field appearance="fill">
+            <mat-label>Agregar palabra</mat-label>
+            <input matInput formControlName="word" required>
+            <mat-error *ngIf="form.controls['word'].invalid">
+                Ingresa una palabra.
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Agregar palabra</button>
+    </form>
+    <mat-card *ngFor="let word of words" class="word-card">
+        <mat-card-content>
+            {{word}}
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-button color="warn" (click)="deleteWord(word)">Eliminar</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

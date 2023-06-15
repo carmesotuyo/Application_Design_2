@@ -1,4 +1,5 @@
-﻿using BlogsApp.BusinessLogic.Logics;
+﻿using System.Buffers.Text;
+using BlogsApp.BusinessLogic.Logics;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
 using BlogsApp.DataAccess.Repositories;
 using BlogsApp.Domain.Entities;
@@ -36,8 +37,8 @@ namespace BusinessLogic.Test
             userLogic = new UserLogic(userRepositoryMock.Object, articleLogicMock.Object);
 
             adminUser = new User { Id = 1, Username = "admin", Admin = true };
-            normalUser = new User { Id = 2, Username = "user", Blogger = true };
-            normalUser2 = new User { Id = 3, Username = "blogger", Blogger = true };
+            normalUser = new User { Id = 2, Username = "user", Blogger = true, Admin = false, Moderador = false };
+            normalUser2 = new User { Id = 3, Username = "blogger", Blogger = true, Admin = false, Moderador = false };
             article1 = new Article { Id = 1, UserId = 2 };
             article2 = new Article { Id = 2, UserId = 2 };
             normalUser.Articles = new List<Article> { article1, article2 };
@@ -78,7 +79,6 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void UpdateName()
         {
-            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
             userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
 
             normalUser.Name = "Jonathan";
@@ -92,7 +92,6 @@ namespace BusinessLogic.Test
         [TestMethod]
         public void UpdateUserName()
         {
-            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
             userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
 
             normalUser.Username = "Jonathan";
@@ -110,6 +109,50 @@ namespace BusinessLogic.Test
             userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(false);
 
             userLogic.UpdateUser(normalUser, user);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UserCantMakeItselfAdmin()
+        {
+            normalUser.Admin = false;
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Admin = true };
+
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            userLogic.UpdateUser(normalUser, userWithDataToUpdate);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void UserCantMakeItselfModerador()
+        {
+            normalUser.Moderador = false;
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Moderador = true };
+
+            userRepositoryMock.Setup(r => r.Exists(It.IsAny<Func<User, bool>>())).Returns(true);
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            userLogic.UpdateUser(normalUser, userWithDataToUpdate);
+        }
+
+
+        [TestMethod]
+        public void AdminUpdatesOtherUser()
+        {
+            userRepositoryMock.Setup(r => r.Get(It.IsAny<Func<User, bool>>())).Returns(normalUser);
+            userRepositoryMock.Setup(r => r.Update(It.IsAny<User>()));
+
+            User userWithDataToUpdate = new User() { Id = normalUser.Id, Admin = true, Moderador = true };
+
+            normalUser = userLogic.UpdateUser(adminUser, userWithDataToUpdate);
+
+            userRepositoryMock.VerifyAll();
+            Assert.AreEqual(true, normalUser.Admin);
+            Assert.AreEqual(true, normalUser.Moderador);
         }
 
 
@@ -186,7 +229,19 @@ namespace BusinessLogic.Test
             userRepositoryMock.Setup(x => x.GetAll(It.IsAny<Func<User, bool>>()))
                    .Returns<Func<User, bool>>(filter => users.Where(filter).ToList());
 
-            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null);
+            userRepositoryMock.Setup(x => x.GetUserContentCount(It.IsAny<Func<User, bool>>(), It.IsAny<Func<Content, bool>>()))
+                    .Returns((Func<User, bool> userFunc, Func<Content, bool> contentFunc) =>
+                     {
+                         User user = users.FirstOrDefault(userFunc);
+                         if(user == null) throw new NotFoundDbException("No se encontró el usuario");
+
+                         int articlesCount = user.Articles.Count(contentFunc);
+                         int commentsCount = user.Comments.Count(contentFunc);
+
+                         return articlesCount + commentsCount;
+                     });
+
+            var result = userLogic.GetUsersRanking(adminUser, dateFrom, dateTo, null, false);
 
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(1, result.First().Id);
@@ -199,7 +254,7 @@ namespace BusinessLogic.Test
             var dateFrom = new DateTime(2023, 1, 1);
             var dateTo = new DateTime(2023, 5, 1);
 
-            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null));
+            Assert.ThrowsException<UnauthorizedAccessException>(() => userLogic.GetUsersRanking(normalUser, dateFrom, dateTo, null, false));
         }
 
     }

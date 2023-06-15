@@ -1,0 +1,13 @@
+<mat-toolbar color="second" routerLinkActive="activate-link">
+      <button mat-button [routerLink]="['/logs']" routerLinkActive="active-link" *ngIf="esAdmin">Logs</button>
+      <button mat-button [routerLink]="['/stats']" routerLinkActive="active-link"*ngIf="esAdmin">Estadísticas</button>
+      <button mat-button [routerLink]="['/ranking']" routerLinkActive="active-link"*ngIf="esAdmin">Ranking de Usuarios</button>
+      <button mat-button [routerLink]="['/offensiveWords']" routerLinkActive="active-link"*ngIf="esModerador">Palabras Ofensivas</button>
+      <button mat-button [routerLink]="['/revision']" routerLinkActive="active-link" (click)="notificationDismisser()"*ngIf="esModerador">Contenido en Revisión
+            <span class="notification" *ngIf="hayNotificaciones"></span>
+      </button>
+      <button mat-button [routerLink]="['/editUsers']" routerLinkActive="active-link"*ngIf="esAdmin">Editar Usuarios</button>
+</mat-toolbar>
+<router-outlet></router-outlet>
+
+  

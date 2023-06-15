@@ -1,0 +1,60 @@
+/* users.component.scss */
+
+.users-container {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+    
+    h1 {
+      margin-bottom: 20px;
+    }
+  }
+  
+  .create-user-container,
+  .edit-user-container {
+    background: #f5f5f5;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .users-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    h2 {
+      margin-bottom: 10px;
+    }
+  
+    .user-item {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  
+    .user-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      
+      h3 {
+        margin: 0;
+      }
+  
+      button {
+        margin-left: 10px;
+      }
+  
+      &:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+      }
+    }
+  }
+  .botonCrear {
+    margin: 10px;
+  }
+  

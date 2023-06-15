@@ -7,7 +7,7 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         bool IsValidToken(string token);
         Guid Login(string username, string password);
         User GetUserFromToken(Guid aToken);
-        void Logout(int sessionId, User loggedUser);
+        void Logout(User loggedUser);
         IEnumerable<Comment> GetCommentsWhileLoggedOut(User user);
     }
 }

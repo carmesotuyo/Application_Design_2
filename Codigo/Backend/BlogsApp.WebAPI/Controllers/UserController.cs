@@ -15,12 +15,11 @@ namespace BlogsApp.WebAPI.Controllers
     {
         private readonly IUserLogic userLogic;
         private readonly IArticleLogic articleLogic;
-        private readonly ISessionLogic sessionLogic;
-        public UserController(IUserLogic userLogic, IArticleLogic articleLogic, ISessionLogic sessionLogic) 
+
+        public UserController(IUserLogic userLogic, IArticleLogic articleLogic, ISessionLogic sessionLogic) : base(sessionLogic)
         {
             this.userLogic = userLogic;
             this.articleLogic = articleLogic;
-            this.sessionLogic = sessionLogic;
         }
 
         [HttpPost]
@@ -32,45 +31,53 @@ namespace BlogsApp.WebAPI.Controllers
 
 
         [HttpPatch("{id}")]
-        public IActionResult PatchUser([FromRoute] int id, [FromBody] UpdateUserRequestDTO userDTO, [FromHeader] string token)
+        public IActionResult PatchUser([FromRoute] int id, [FromBody] UserDto userDTO, [FromHeader] string token)
         {
             var user = userLogic.GetUserById(id);
             if (user == null)
             {
                 return NotFound();
             }
-            user = userDTO.ApplyChangesToUser(user);
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-
-            return new OkObjectResult(userLogic.UpdateUser(loggedUser, user));
+            User updateUser = UserConverter.ToUser(userDTO, id, user);
+            User userlogged = (base.GetLoggedUser(token));
+            User updatedUser = userLogic.UpdateUser(userlogged, updateUser);
+            return new OkObjectResult(updatedUser);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-
-            return new OkObjectResult(userLogic.DeleteUser(loggedUser, id));
+            return new OkObjectResult(userLogic.DeleteUser(base.GetLoggedUser(token), id));
         }
 
         [HttpGet("ranking")]
-        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromHeader] string token)
+        public IActionResult GetRanking([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] int? top, [FromQuery] bool? withOffensiveWords, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            return new OkObjectResult(userLogic.GetUsersRanking(loggedUser, dateFrom, dateTo, top));
+            ICollection<User> ranking = userLogic.GetUsersRanking(base.GetLoggedUser(token), dateFrom, dateTo, top, withOffensiveWords);
+            ICollection<UserRankingDto> rankingResponse = UserRankingConverter.ToRankingList(ranking);
+            return new OkObjectResult(rankingResponse);
 
         }
 
         [HttpGet("{id}/articles")]
         public IActionResult GetUserArticles([FromRoute] int id, [FromHeader] string token)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, loggedUser));
+            IEnumerable<BasicArticleDto> basicArticleDtos = ArticleConverter.ToDtoList(articleLogic.GetArticlesByUser(id, base.GetLoggedUser(token)));
             return new OkObjectResult(basicArticleDtos);
+        }
+
+        [HttpGet]
+        public IActionResult GetUsers([FromHeader] string token)
+        {
+            IEnumerable<UserDto> userDtos = UserConverter.ToDtoList(userLogic.GetUsers(base.GetLoggedUser(token)));
+            return new OkObjectResult(userDtos);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetUserById([FromHeader] string token, [FromRoute] int id)
+        {
+            UserDto userDto = UserConverter.ToDto(userLogic.GetUserById(id));
+            return new OkObjectResult(userDto);
         }
     }
 }

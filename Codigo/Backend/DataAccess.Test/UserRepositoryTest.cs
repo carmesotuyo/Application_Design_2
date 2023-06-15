@@ -33,6 +33,7 @@ namespace DataAccess.Test
                "Juan",
                "Perez",
                 true,
+                false,
                 false
            );
             users = new List<User>() { aValidBlogger };

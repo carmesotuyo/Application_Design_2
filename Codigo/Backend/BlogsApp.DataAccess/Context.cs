@@ -1,5 +1,4 @@
-﻿using System;
-using BlogsApp.Domain.Entities;
+﻿using BlogsApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using BlogsApp.Logging.Entities;
@@ -11,9 +10,9 @@ namespace BlogsApp.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Reply> Replies { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<OffensiveWord> OffensiveWords { get; set; }
 
 
         public Context(DbContextOptions options) : base(options) { }

@@ -1,21 +1,18 @@
 ﻿using BlogsApp.Domain.Exceptions;
+using BlogsApp.Domain.Enums;
 
 namespace BlogsApp.Domain.Entities
 {
-    public class Article
+    public class Article : Content
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Body { get; set; }
         public bool Private { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateModified { get; set; }
-        public DateTime? DateDeleted { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public int Template { get; set; }
         public string? Image { get; set; }
+        public ICollection<OffensiveWord> OffensiveWords { get; set; }
 
 
         public Article(string name, string body, int template, User user)
@@ -28,6 +25,7 @@ namespace BlogsApp.Domain.Entities
             UserId = user.Id;
             Comments = new List<Comment>();
             Template = template;
+            OffensiveWords = new List<OffensiveWord>();
         }
 
         public Article() { }

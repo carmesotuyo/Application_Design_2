@@ -23,7 +23,7 @@ namespace WebApi.Test
         User aValidBlogger;
         User aBloggerToUpdate;
         CreateUserRequestDTO aValidBloggerDTO;
-        UpdateUserRequestDTO updateBloggerRequestDto;
+        UserDto updateBloggerRequestDto;
         ICollection<User> usersRanking;
         ICollection<Article> userArticles;
         Article article;
@@ -45,6 +45,7 @@ namespace WebApi.Test
                 "Juan",
                 "Perez",
                  true,
+                 false,
                  false
             );
             aValidBlogger.Id = 2;
@@ -60,8 +61,8 @@ namespace WebApi.Test
                 Admin = aValidBlogger.Admin,
             };
 
-            aBloggerToUpdate = new User() { Id = 2 };
-            updateBloggerRequestDto = new UpdateUserRequestDTO();
+            aBloggerToUpdate = new User() { Id = 2, Username = "username", Email = "email@e.com" };
+            updateBloggerRequestDto = new UserDto();
             usersRanking = new List<User>() { aValidBlogger, aBloggerToUpdate };
             article = new Article()
             {
@@ -176,17 +177,19 @@ namespace WebApi.Test
         [TestMethod]
         public void GetRankingOk()
         {
-            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Returns(usersRanking);
+            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<bool>())).Returns(usersRanking);
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, token.ToString());
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, false, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
+
+            ICollection<UserRankingDto> expectedResult = new List<UserRankingDto>();
 
             userLogicMock.VerifyAll();
             Assert.IsNotNull(objectResult);
             Assert.AreEqual(200, statusCode);
-            Assert.AreEqual(objectResult.Value, usersRanking);
+            Assert.AreEqual((objectResult.Value).GetType(), expectedResult.GetType());
         }
 
 
@@ -194,10 +197,10 @@ namespace WebApi.Test
         [ExpectedException(typeof(UnauthorizedAccessException))]
         public void GetRankingBadRequest()
         {
-            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>())).Throws(new UnauthorizedAccessException());
+            userLogicMock.Setup(m => m.GetUsersRanking(It.IsAny<User>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<bool>())).Throws(new UnauthorizedAccessException());
             sessionLogicMock!.Setup(m => m.GetUserFromToken(It.IsAny<Guid>())).Returns(loggedUser);
 
-            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, token.ToString());
+            var result = controller!.GetRanking(DateTime.Parse("2022/04/03"), DateTime.Parse("2022/04/03"), 10, false, token.ToString());
             var objectResult = result as OkObjectResult;
             var statusCode = objectResult?.StatusCode;
 

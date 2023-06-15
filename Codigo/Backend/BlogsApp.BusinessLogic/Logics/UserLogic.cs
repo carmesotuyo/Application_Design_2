@@ -30,50 +30,73 @@ namespace BlogsApp.BusinessLogic.Logics
             return _userRepository.Get(m => m.DateDeleted == null && m.Id == userId);
         }
 
-        public User DeleteUser(User loggedUser, int UserId)
+        public IEnumerable<User> GetUsers(User loggedUser)
         {
-            if (authorizedUser(loggedUser, UserId))
+            if ((loggedUser != null) && (IsAdmin(loggedUser)))
             {
-                if (_userRepository.Exists(m => m.Id == UserId))
-                {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
-                    user.DateDeleted = DateTime.Now;
-                    foreach (Article article in user.Articles)
-                    {
-                        _articleLogic.DeleteArticle(article.Id, user);
-                    }
-                    _userRepository.Update(user);
-                    return user;
-                }
-                else
-                {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
-                }
+                return _userRepository.GetAll(m => m.DateDeleted == null)
+                                 .OrderByDescending(m => m.Name);
             }
-            else 
+            else
             {
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
         }
 
-        public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top)
+        public bool IsAdmin(User loggedUser)
+        {
+            return loggedUser.Admin;
+        }
+
+        public bool IsModerator(User loggedUser)
+        {
+            return loggedUser.Moderador;
+        }
+
+        public bool IsBlogger(User loggedUser)
+        {
+            return loggedUser.Blogger;
+        }
+
+        public User DeleteUser(User loggedUser, int UserId)
+        {
+            validateAuthorizedUser(loggedUser, UserId);
+            validateUserExists(UserId);
+            User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == UserId);
+            user.DateDeleted = DateTime.Now;
+            if (user.Articles != null)
+            {
+                foreach (Article article in user.Articles)
+                {
+                    _articleLogic.DeleteArticle(article.Id, user);
+                }
+            }
+            
+            _userRepository.Update(user);
+            return user;
+        }
+
+        public ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top, bool? offensiveContent = false)
         {
             if(loggedUser != null && loggedUser.Admin)
             {
-                return _userRepository.GetAll(m => m.DateDeleted == null)
-                                                .Select(m => new
-                                                {
-                                                    User = m,
-                                                    Points = m.Articles.Count(a => a.DateCreated >= dateFrom && a.DateCreated <= dateTo)
-                                                              + m.Comments.Count(c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo)
-                                                })
-                                                .Where(m => m.Points > 0)
-                                                .OrderByDescending(m => m.Points)
-                                                .ThenBy(m => m.User.Id)
-                                                .Take(top ?? 10)
-                                                .Select(m => m.User)
-                                                .ToList();
-            } else
+                Func<Content, bool> filterContent = c => c.DateCreated >= dateFrom && c.DateCreated <= dateTo && c.State != Domain.Enums.ContentState.InReview;
+                if (offensiveContent != null && offensiveContent == true) filterContent = c => c.HadOffensiveWords && c.DateCreated >= dateFrom && c.DateCreated <= dateTo && c.State != Domain.Enums.ContentState.InReview;
+
+                return _userRepository.GetAll(u => u.DateDeleted == null)
+                                            .Select(u => new 
+                                            {
+                                                User = u,
+                                                Points = _userRepository.GetUserContentCount((m => m.DateDeleted == null && m.Id == u.Id), filterContent)
+                                            })
+                                            .Where(m => m.Points > 0)
+                                            .OrderByDescending(m => m.Points)
+                                            .ThenBy(m => m.User.Id)
+                                            .Take(top ?? 10)
+                                            .Select(m => m.User)
+                                            .ToList();
+            }
+            else
             {
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
             }
@@ -87,39 +110,43 @@ namespace BlogsApp.BusinessLogic.Logics
             }
             return true;
         }
-
-        public User? UpdateUser(User loggedUser, User anUser)
+        public User? UpdateUser(User loggedUser, User userWithDataToUpdate)
         {
-            if (authorizedUser(loggedUser, anUser.Id))
+            User userFromDB = GetUserById(userWithDataToUpdate.Id);
+            if ((!IsAdmin(loggedUser)) && (loggedUser.Id == userWithDataToUpdate.Id))
             {
-                if (_userRepository.Exists(m => m.Id == anUser.Id))
+                if ((userFromDB.Admin != userWithDataToUpdate.Admin) || (userFromDB.Moderador != userWithDataToUpdate.Moderador))
                 {
-                    User user = _userRepository.Get(m => m.DateDeleted == null && m.Id == anUser.Id);
-                    user = anUser;
-                    _userRepository.Update(user);
-                    return user;
+                    throw new UnauthorizedAccessException(loggedUser.Name + " No te puedes asignar nuevos roles");
                 }
                 else
                 {
-                    throw new NotFoundDbException("No existe un usuario con ese id.");
+                    _userRepository.Update(userWithDataToUpdate);
+                    return userWithDataToUpdate;
                 }
             }
             else
             {
+                if (IsAdmin(loggedUser))
+                {
+                    _userRepository.Update(userWithDataToUpdate);
+                    return userWithDataToUpdate;
+                }
+                else { throw new UnauthorizedAccessException("No está autorizado para modificar los datos de otro usuario."); }
+            }
+        }
+
+
+        private void validateAuthorizedUser(User loggedUser, int userWithDataToUpdateID)
+        {
+            if (loggedUser == null || (!loggedUser.Admin && loggedUser.Id != userWithDataToUpdateID))
                 throw new UnauthorizedAccessException("No está autorizado para realizar esta acción.");
-            }
         }
 
-        private bool authorizedUser(User loggedUser, int userId) 
-        { 
-            if (loggedUser != null && (loggedUser.Admin || loggedUser.Id == userId))
-            {
-                return true;
-            } else
-            {
-               return false;
-            }
+        private void validateUserExists(int userId)
+        {
+            if (!_userRepository.Exists(m => m.Id == userId))
+                throw new NotFoundDbException("No existe un usuario con ese id.");
         }
-
     }
 }

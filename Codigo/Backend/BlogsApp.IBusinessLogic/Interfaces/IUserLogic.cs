@@ -7,8 +7,13 @@ namespace BlogsApp.IBusinessLogic.Interfaces
     {
         User? CreateUser(User? user);
         User DeleteUser(User loggedUser, int UserId);
-        ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top);
+        ICollection<User> GetUsersRanking(User loggedUser, DateTime dateFrom, DateTime dateTo, int? top, bool? offensiveContent);
         User GetUserById(int userId);
-        User? UpdateUser(User loggedUser, User user);
+        IEnumerable<User> GetUsers(User loggedUser);
+        User? UpdateUser(User loggedUser, User userWithDataToUpdate);
+        bool IsAdmin(User loggedUser);
+        bool IsModerator(User loggedUser);
+        bool IsBlogger(User loggedUser);
+
     }
 }

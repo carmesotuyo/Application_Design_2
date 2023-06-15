@@ -10,6 +10,7 @@ namespace BlogsApp.WebAPI.DTOs
             public string LastName { get; set; }
             public bool Blogger { get; set; }
             public bool Admin { get; set; }
+            public bool Moderador { get; set; }
 
         public CreateUserRequestDTO() { }
 
@@ -22,7 +23,8 @@ namespace BlogsApp.WebAPI.DTOs
                     this.Name,
                     this.LastName,
                     this.Blogger,
-                    this.Admin
+                    this.Admin,
+                    this.Moderador
                 );
             }
         }

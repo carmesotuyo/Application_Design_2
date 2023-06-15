@@ -7,6 +7,9 @@ namespace BlogsApp.IBusinessLogic.Interfaces
         Comment CreateComment(Comment comment, User loggedUser);
         void DeleteComment(int commentId, User loggedUser);
         IEnumerable<Comment> GetCommentsSince(User loggedUser, DateTime? lastLogout);
-        Reply AddReply(Comment comment, Reply reply, User loggedUser);
+        Comment ReplyToComment(Comment parentComment, Comment newComment, User loggedUser);
+        Comment GetCommentById(int id, User loggedUser);
+        Comment UpdateComment(int id, Comment commentWithDataToUpdate, User loggedUser);
+        Comment ApproveComment(int id, User loggedUser);
     }
 }

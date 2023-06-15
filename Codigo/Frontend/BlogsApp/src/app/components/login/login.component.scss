@@ -1,0 +1,29 @@
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 5rem auto;
+}
+
+mat-card {
+  margin-top: 2em;
+  padding: 2em;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2em;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1em;
+  font-weight: 600;
+  font-size: xx-large;
+  color: #673ab7;
+}
+
+mat-form-field {
+  width: 100%;
+}

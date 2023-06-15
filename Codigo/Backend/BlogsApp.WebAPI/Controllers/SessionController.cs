@@ -16,7 +16,7 @@ namespace BlogsApp.WebAPI.Controllers
         private readonly ISessionLogic sessionLogic;
         private readonly ILoggerService _loggerService;
 
-        public SessionController(ISessionLogic sessionLogic, ILoggerService loggerService)
+        public SessionController(ISessionLogic sessionLogic, ILoggerService loggerService) : base(sessionLogic)
         {
             this.sessionLogic = sessionLogic;
             _loggerService = loggerService;
@@ -28,22 +28,30 @@ namespace BlogsApp.WebAPI.Controllers
             Guid token = sessionLogic.Login(credentials.Username, credentials.Password);
             User user = sessionLogic.GetUserFromToken(token);
             _loggerService.LogLogin(user.Id);
-            IEnumerable<Comment> comments = sessionLogic.GetCommentsWhileLoggedOut(user);
 
-            var response = new LoginResponseDTO(token, comments);
+            var response = new LoginResponseDTO(user.Id, token, GetAndConvertCommentsToNotify(user));
 
             return Ok(response);
         }
 
-        [ServiceFilter(typeof(AuthorizationFilter))]
-        [HttpPatch("{id}")]
-        public IActionResult Logout([FromRoute] int id, [FromHeader] string token)
+        private IEnumerable<NotificationCommentDto> GetAndConvertCommentsToNotify(User user)
         {
-            Guid tokenGuid = Guid.Parse(token);
-            User loggedUser = sessionLogic.GetUserFromToken(tokenGuid);
-            sessionLogic.Logout(id, loggedUser);
+            List<NotificationCommentDto> comments = new List<NotificationCommentDto>();
 
-            return new OkObjectResult("Usuario deslogueado correctamente");
+            foreach (Comment comment in sessionLogic.GetCommentsWhileLoggedOut(user))
+            {
+                comments.Add(CommentConverter.toNotificationDto(comment));
+            }
+            return comments;
+        }
+
+        [ServiceFilter(typeof(AuthorizationFilter))]
+        [HttpPatch]
+        public IActionResult Logout([FromHeader] string token)
+        {
+            sessionLogic.Logout(base.GetLoggedUser(token));
+
+            return new OkObjectResult(new { message = "Usuario deslogueado correctamente" });
         }
 
     }

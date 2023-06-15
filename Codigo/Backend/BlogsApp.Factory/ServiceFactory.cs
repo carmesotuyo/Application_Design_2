@@ -27,17 +27,18 @@ namespace BlogsApp.Factory
             services.AddScoped<IArticleLogic, ArticleLogic>();
             services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<ISessionLogic, SessionLogic>();
+            services.AddScoped<IImporterLogic, ImporterLogic>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ICommentLogic, CommentLogic>();
-            services.AddScoped<IReplyRepository, ReplyRepository>();
-            services.AddScoped<IReplyLogic, ReplyLogic>();
             services.AddScoped<ILogEntryRepository, LogEntryRepository>();
             services.AddScoped<ILoggerService, DbLoggerService>();
+            services.AddScoped<IOffensiveWordRepository, OffensiveWordRepository>();
+            services.AddScoped<IOffensiveWordsValidator, OffensiveWordsValidator>();
         }
 
-        public void AddDbContextService() //string connectionString
+        public void AddDbContextService()
         {
-            services.AddDbContext<DbContext, Context>(); //options => options.UseSqlServer(connectionString)
+            services.AddDbContext<DbContext, Context>();
         }
     }
 }

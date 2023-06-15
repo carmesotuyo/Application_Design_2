@@ -1,4 +1,5 @@
 ﻿using BlogsApp.Domain.Entities;
+using BlogsApp.IBusinessLogic.Interfaces;
 
 namespace BlogsApp.WebAPI.DTOs
 {
@@ -13,13 +14,14 @@ namespace BlogsApp.WebAPI.DTOs
                 ArticleId = comment.Article.Id,
                 Body = comment.Body,
                 DateCreated = comment.DateCreated,
-                DateDeleted = comment.DateDeleted
+                DateDeleted = comment.DateDeleted,
+                SubComments = new List<CommentDTO>(),
+                State = comment.State
             };
 
-            if (comment.Reply != null)
+            foreach(Comment subcomment in comment.SubComments)
             {
-                ReplyDTO replyDto = ReplyConverter.toDto(comment.Reply, comment.Reply.User);
-                commentDto.Reply = replyDto;
+                commentDto.SubComments.Add(toDto(subcomment));
             }
 
 
@@ -28,10 +30,29 @@ namespace BlogsApp.WebAPI.DTOs
 
         public static BasicCommentDTO toBasicDto(Comment comment)
         {
-            return new BasicCommentDTO()
+            BasicCommentDTO dto = new BasicCommentDTO()
             {
                 Body = comment.Body,
-                ArticleId = comment.Article.Id
+                ArticleId = comment.Article.Id,
+                State = comment.State
+            };
+            if (dto.State == Domain.Enums.ContentState.InReview && comment.OffensiveWords != null)
+            {
+                dto.Message = "Tu Comentario contiene palabras ofensivas, no se mostrará hasta que salga de revisión por un Moderador";
+                dto.OffensiveWords = OffensiveWordsValidatorUtils.mapToStrings(comment.OffensiveWords);
+            }
+            return dto;
+        }
+
+        public static NotificationCommentDto toNotificationDto(Comment comment)
+        {
+            return new NotificationCommentDto()
+            {
+                Body = comment.Body,
+                ArticleId = comment.Article.Id,
+                ArticleName = comment.Article.Name,
+                Username = comment.User.Name,
+                CommentId = comment.Id
             };
         }
 

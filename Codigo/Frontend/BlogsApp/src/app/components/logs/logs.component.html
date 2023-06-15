@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+<app-nav-bar-admin></app-nav-bar-admin>
+<div class="logs-container">
+    <br>
+    <h1 class="title">Registros</h1>
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha de inicio</mat-label>
+    <input matInput [matDatepicker]="picker1" [formControl]="fromDate">
+    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+    <mat-datepicker #picker1></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha de fin</mat-label>
+    <input matInput [matDatepicker]="picker2" [formControl]="toDate">
+    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+    <mat-datepicker #picker2></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="getLogs()">Obtener registros</button>
+
+  <table mat-table [dataSource]="logs" class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let log"> {{log.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userId">
+      <th mat-header-cell *matHeaderCellDef> User ID </th>
+      <td mat-cell *matCellDef="let log"> {{log.userId}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actionType">
+      <th mat-header-cell *matHeaderCellDef> Action Type </th>
+      <td mat-cell *matCellDef="let log"> {{log.actionType}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="searchQuery">
+      <th mat-header-cell *matHeaderCellDef> Search Query </th>
+      <td mat-cell *matCellDef="let log"> {{log.searchQuery}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef> Timestamp </th>
+      <td mat-cell *matCellDef="let log"> {{log.timestamp}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

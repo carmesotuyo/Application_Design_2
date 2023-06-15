@@ -43,11 +43,12 @@ namespace BusinessLogic.Test
 
         private Mock<IArticleRepository> articleRepository;
         private Mock<ICommentLogic> commentLogic;
+        private Mock<IOffensiveWordsValidator> offensiveWordsValidator;
         private IArticleLogic articleLogic;
         private ICollection<Article> allArticles;
         private ICollection<Article> newArticle;
-        private readonly User userBlogger = new User("User1", "1234", "aaa@222.com", "User", "Seru", true, false);
-        private readonly User userAdmin = new User("User2", "1234", "aaa@222.com", "User", "Seru", false, true);
+        private readonly User userBlogger = new User("User1", "1234", "aaa@222.com", "User", "Seru", true, false, false);
+        private readonly User userAdmin = new User("User2", "1234", "aaa@222.com", "User", "Seru", false, true, false);
 
 
         [TestInitialize]
@@ -55,7 +56,8 @@ namespace BusinessLogic.Test
         {
             articleRepository = new Mock<IArticleRepository>(MockBehavior.Default);
             commentLogic = new Mock<ICommentLogic>(MockBehavior.Default);
-            articleLogic = new ArticleLogic(articleRepository.Object, commentLogic.Object);
+            offensiveWordsValidator = new Mock<IOffensiveWordsValidator>(MockBehavior.Strict);
+            articleLogic = new ArticleLogic(articleRepository.Object, commentLogic.Object, offensiveWordsValidator.Object);
             allArticles = new List<Article>() { Articulo1, Articulo2, Articulo3, Articulo4, Articulo5, Articulo6, Articulo7, Articulo8, Articulo9, Articulo10, Articulo11, Articulo12 };
             newArticle = new List<Article>() { Articulo11 };
         }
@@ -149,10 +151,11 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userAdmin);
+            IDictionary<string, int> result = articleLogic.GetStatsByYear(2022, userAdmin);
 
             articleRepository.VerifyAll();
-            Assert.IsTrue(result.Count() == 7);
+            Assert.IsTrue(result.Keys.Count() == 12); // el resultado debe mostrar los 12 meses
+            Assert.AreEqual(result["January"], 3);
         }
 
         [TestMethod]
@@ -161,13 +164,14 @@ namespace BusinessLogic.Test
         {
             articleRepository.Setup(x => x.GetAll(It.IsAny<Func<Article, bool>>())).Returns(allArticles);
 
-            IEnumerable<int> result = articleLogic.GetStatsByYear(2022, userBlogger);
+            IDictionary<string, int> result = articleLogic.GetStatsByYear(2022, userBlogger);
         }
 
         [TestMethod]
         public void CreateArticleTest()
         {
             articleRepository.Setup(x => x.Add(It.IsAny<Article>())).Returns(Articulo11);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             Article result = articleLogic.CreateArticle(Articulo11, user);
 
@@ -180,6 +184,7 @@ namespace BusinessLogic.Test
         public void CreateArticleWithoutPermissionsTest()
         {
             articleRepository.Setup(x => x.Add(It.IsAny<Article>())).Returns(Articulo11);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             articleLogic.CreateArticle(Articulo11, userAdmin);
         }
@@ -211,9 +216,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleNameTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
-            Article updatedArticle = new Article { Id = articleId, Name = "Test2", Body = "New body", UserId = user.Id, User = user, Template = 1 };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, OffensiveWords = new List<OffensiveWord>() };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test2", Body = "New body", UserId = user.Id, User = user, Template = 1, OffensiveWords = new List<OffensiveWord>() };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
+            offensiveWordsValidator.Setup(x => x.mapToOffensiveWordsType(It.IsAny<ICollection<string>>())).Returns(new List<OffensiveWord>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
@@ -230,6 +237,7 @@ namespace BusinessLogic.Test
             Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
             Article updatedArticle = new Article { Id = articleId, Name = "Test2", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
@@ -238,9 +246,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleBodyTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
-            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1 };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, OffensiveWords = new List<OffensiveWord>() };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, OffensiveWords = new List<OffensiveWord>() };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
+            offensiveWordsValidator.Setup(x => x.mapToOffensiveWordsType(It.IsAny<ICollection<string>>())).Returns(new List<OffensiveWord>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
@@ -256,6 +266,7 @@ namespace BusinessLogic.Test
             Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1 };
             Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1 };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
@@ -264,9 +275,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleImageTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
-            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg", OffensiveWords = new List<OffensiveWord>() };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg", OffensiveWords = new List<OffensiveWord>() };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
+            offensiveWordsValidator.Setup(x => x.mapToOffensiveWordsType(It.IsAny<ICollection<string>>())).Returns(new List<OffensiveWord>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
@@ -282,6 +295,7 @@ namespace BusinessLogic.Test
             Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
             Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }
@@ -290,9 +304,11 @@ namespace BusinessLogic.Test
         public void UpdateArticleDateModifiedTest()
         {
             int articleId = 1;
-            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
-            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
+            Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg", OffensiveWords = new List<OffensiveWord>() };
+            Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg", OffensiveWords = new List<OffensiveWord>() };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
+            offensiveWordsValidator.Setup(x => x.mapToOffensiveWordsType(It.IsAny<ICollection<string>>())).Returns(new List<OffensiveWord>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, user);
 
@@ -308,6 +324,7 @@ namespace BusinessLogic.Test
             Article existingArticle = new Article { Id = articleId, Name = "Test1", Body = "Old body", UserId = user.Id, User = user, Template = 1, Image = "OldImage.jpeg" };
             Article updatedArticle = new Article { Id = articleId, Name = "Test1", Body = "New body", UserId = user.Id, User = user, Template = 1, Image = "NewImage.jpeg" };
             articleRepository.Setup(repo => repo.Get(It.IsAny<Func<Article, bool>>())).Returns(existingArticle);
+            offensiveWordsValidator.Setup(x => x.reviewArticle(It.IsAny<Article>())).Returns(new List<string>());
 
             Article result = articleLogic.UpdateArticle(articleId, updatedArticle, userBlogger);
         }

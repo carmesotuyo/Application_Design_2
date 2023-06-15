@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using BlogsApp.Domain.Entities;
 using BlogsApp.DataAccess.Interfaces.Exceptions;
-using System.Linq;
 
 namespace BlogsApp.DataAccess.Repositories
 {
@@ -29,7 +28,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public Comment Get(Func<Comment, bool> func)
         {
-            Comment comment = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).FirstOrDefault(func);
+            Comment comment = Context.Set<Comment>().Include(c => c.User).Include(c => c.Article).Include(c => c.OffensiveWords).Where(a => a.DateDeleted == null).FirstOrDefault(func);
             if (comment == null)
                 throw new NotFoundDbException("No se encontraron comentarios");
             return comment;
@@ -37,7 +36,7 @@ namespace BlogsApp.DataAccess.Repositories
 
         public ICollection<Comment> GetAll(Func<Comment, bool> func)
         {
-            ICollection<Comment> comments = Context.Set<Comment>().Include("User").Include("Article").Where(a => a.DateDeleted == null).Where(func).ToArray();
+            ICollection<Comment> comments = Context.Set<Comment>().Include(c => c.User).Include(c => c.Article).Include(c => c.OffensiveWords).Where(a => a.DateDeleted == null).Where(func).ToArray();
             
             return comments;
         }

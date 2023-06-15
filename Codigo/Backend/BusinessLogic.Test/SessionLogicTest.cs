@@ -92,7 +92,7 @@ namespace BusinessLogic.Test
             sessionRepositoryMock!.Setup(x => x.Get(It.IsAny<Func<Session, bool>>())).Returns(session);
             sessionRepositoryMock!.Setup(x => x.Update(It.IsAny<Session>()));
 
-            sessionLogic!.Logout(session.Id, user);
+            sessionLogic!.Logout(user);
             sessionRepositoryMock.VerifyAll();
 
             Assert.IsNotNull(session.DateTimeLogout);
@@ -105,7 +105,7 @@ namespace BusinessLogic.Test
             sessionRepositoryMock!.Setup(x => x.Get(It.IsAny<Func<Session, bool>>())).Throws(new NotFoundDbException("Session not found"));
             sessionRepositoryMock!.Setup(x => x.Update(It.IsAny<Session>()));
 
-            sessionLogic!.Logout(session.Id, user);
+            sessionLogic!.Logout(user);
             sessionRepositoryMock.VerifyAll();
 
             Assert.IsNull(session.DateTimeLogout);

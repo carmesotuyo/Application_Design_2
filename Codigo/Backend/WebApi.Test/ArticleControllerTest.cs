@@ -26,7 +26,7 @@ namespace WebApi.Test
         private IEnumerable<Article> articles;
         private User userBlogger;
         private User userAdmin;
-        private List<int> yearlyStats;
+        private Dictionary<string, int> yearlyStats;
         private Guid token;
         private BasicArticleDto basicArticleDto;
         private UpdateArticleRequestDTO updateArticleDto;
@@ -43,7 +43,7 @@ namespace WebApi.Test
             article = new Article() { Id = 1, Name = "name", UserId = 1, User = userBlogger, Body = "body", Private = false, Template = 1, Image = "" };
             articles = new List<Article>() { article };
             userAdmin = new User() { Admin = true };
-            yearlyStats = new List<int>();
+            yearlyStats = new Dictionary<string, int>();
             token = Guid.NewGuid();
             basicArticleDto = ArticleConverter.ToDto(article);
             updateArticleDto = new UpdateArticleRequestDTO() { Body = "updated body" };

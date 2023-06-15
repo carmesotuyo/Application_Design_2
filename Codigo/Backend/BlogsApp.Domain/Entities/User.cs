@@ -10,15 +10,16 @@
         public string LastName { get; set; }
         public bool Blogger { get; set; }
         public bool Admin { get; set; }
+        public bool Moderador { get; set; }
+        public bool HasContentToReview { get; set; }
         public DateTime? DateDeleted { get; set; }
         public ICollection<Article> Articles { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<Reply> Replies { get; set; }
 
         private string _username;
         private string _email;
 
-        public User(string username, string password, string email, string name, string lastName, bool blogger, bool admin)    
+        public User(string username, string password, string email, string name, string lastName, bool blogger, bool admin, bool moderador)    
         {
             Username = username;
             Password = password;
@@ -27,9 +28,9 @@
             LastName = lastName;
             Blogger = blogger;
             Admin = admin;
+            Moderador = moderador;
             Articles = new List<Article>();
             Comments = new List<Comment>();
-            Replies = new List<Reply>();
         }
 
         public User() { }
