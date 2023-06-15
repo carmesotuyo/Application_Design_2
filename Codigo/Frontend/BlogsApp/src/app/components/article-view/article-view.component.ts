@@ -71,6 +71,10 @@ export class ArticleViewComponent implements OnInit {
     return '';
   }
 
+  handleImgError(event: any) {
+    event.target.style.display = 'none';
+}
+
   toggleCommentOptions(): void {
     //comment.showOptions = !comment.showOptions;
     this.showOptions = !this.showOptions;

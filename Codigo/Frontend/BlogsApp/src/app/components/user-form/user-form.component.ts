@@ -29,8 +29,7 @@ export class UserFormComponent implements OnInit {
     if (this.registerForm.valid) {
       const newUser = new User(this.registerForm.value.username, this.registerForm.value.password, this.registerForm.value.email, this.registerForm.value.name, this.registerForm.value.lastName);
       this.userService.postUser(newUser).subscribe(
-        response => this.toastr.success('Te has registrado con éxito'),
-        error => this.toastr.error(error.error.message, 'Error')
+        response => this.toastr.success('Te has registrado con éxito')
       );
       this.registerForm.reset();
       this.router.navigate(['/login']);

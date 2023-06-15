@@ -14,7 +14,7 @@
       <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
       <mat-card-subtitle>Estado: {{ estado }}</mat-card-subtitle>
     </mat-card-header>
-    <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+    <img *ngIf="article?.image" [src]="getFirstImage()" (error)="handleImgError($event)" alt="Imagen 1">
     <mat-card-content>
       <p>{{ article?.body }}</p>
     </mat-card-content>
@@ -29,7 +29,7 @@
     <mat-card-content>
       <p>{{ article?.body }}</p>
     </mat-card-content>
-    <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+    <img *ngIf="article?.image" [src]="getFirstImage()" (error)="handleImgError($event)" alt="Imagen 1">
   </mat-card>
 
   <mat-card *ngIf="article?.template === 2">
@@ -40,7 +40,7 @@
     </mat-card-header>
     <mat-card-content>
       <div class="template4">
-        <img *ngIf="article?.image" class="in-line" [src]="getFirstImage()" alt="Imagen 1">
+        <img *ngIf="article?.image" class="in-line" [src]="getFirstImage()" (error)="handleImgError($event)" alt="Imagen 1">
         <p>{{ article?.body }}</p>
       </div>
     </mat-card-content>
@@ -52,11 +52,11 @@
       <mat-card-subtitle>Autor: {{ article?.username }}</mat-card-subtitle>
       <mat-card-subtitle>Estado: {{ estado }}</mat-card-subtitle>
     </mat-card-header>
-    <img *ngIf="article?.image" [src]="getFirstImage()" alt="Imagen 1">
+    <img *ngIf="article?.image" [src]="getFirstImage()" (error)="handleImgError($event)" alt="Imagen 1">
     <mat-card-content>
       <p>{{ article?.body }}</p>
     </mat-card-content>
-    <img *ngIf="article?.image" [src]="getSecondImage()" alt="Imagen 2">
+    <img *ngIf="article?.image" [src]="getSecondImage()" (error)="handleImgError($event)" alt="Imagen 2">
   </mat-card>
   <br>
   <br>
