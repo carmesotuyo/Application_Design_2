@@ -6,20 +6,19 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard implements CanActivate {
+export class ModeratorGuard implements CanActivate {
   constructor(
     private _authService: AuthService,
     private _router: Router,
   ) {}
-
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const expectedRole = route.data['expectedRole'];
+  canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    const isModerator = this._authService.isAuthorizedMod();
     if (!this._authService.isAuthenticated()) {
       this._router.navigateByUrl(''); // deberían redireccionar al login
       return false;
     }
-    if (!this._authService.isAuthorized(expectedRole)) {
-      this._router.navigateByUrl('');
+    if (!isModerator) {
+      this._router.navigateByUrl('/home');
       return false;
     }
     return true;

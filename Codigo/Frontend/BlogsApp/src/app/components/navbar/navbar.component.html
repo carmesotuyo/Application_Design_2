@@ -7,22 +7,24 @@
   <span class="spacer"></span>
   <span>Bienvenido, {{ username }}</span>
   <span class="spacer"></span>
-  <button mat-button [routerLink]="['/logs']">Panel Administrador
+  <button mat-button [routerLink]="['/offensiveWords']" *ngIf="esModerador">Panel Administrador
     <span class="notification" *ngIf="hayNotificaciones"></span>
   </button>
 
-  <!-- Este es el botón que abrirá el menú -->
+  <div > 
+    <!-- Este es el botón que abrirá el menú -->
   <button mat-icon-button [matMenuTriggerFor]="userMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <!-- Aquí definimos el menú con dos opciones -->
   <mat-menu #userMenu="matMenu">
-    <button mat-menu-item (click)="toMyArticles()">Mis Artículos</button>
-    <button mat-menu-item routerLink="/add">Crear Artículo</button>
-    <button mat-menu-item routerLink="/importer">Importar Articulo</button>
+    <button mat-menu-item (click)="toMyArticles()" *ngIf="esBlogger">Mis Artículos</button>
+    <button mat-menu-item routerLink="/add" *ngIf="esBlogger">Crear Artículo</button>
+    <button mat-menu-item routerLink="/importer" *ngIf="esBlogger">Importar Articulo</button>
     <button mat-menu-item routerLink="/editUser">Editar Perfil</button>
     <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
   </mat-menu>
+  </div>
 </mat-toolbar>
 
 
