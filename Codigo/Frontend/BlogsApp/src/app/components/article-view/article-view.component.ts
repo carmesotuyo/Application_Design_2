@@ -76,7 +76,7 @@ export class ArticleViewComponent implements OnInit {
     this.showOptions = !this.showOptions;
   }
 
-  eplyToComment(comment: CommentDto, replyText: string): void {
+  replyToComment(comment: CommentDto, replyText: string): void {
     if(replyText) {
       this.commentService
         .postReply(

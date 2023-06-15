@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { User } from 'src/app/models/user.model';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-form',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 export class UserFormComponent implements OnInit {
   registerForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
@@ -28,8 +29,8 @@ export class UserFormComponent implements OnInit {
     if (this.registerForm.valid) {
       const newUser = new User(this.registerForm.value.username, this.registerForm.value.password, this.registerForm.value.email, this.registerForm.value.name, this.registerForm.value.lastName);
       this.userService.postUser(newUser).subscribe(
-        response => console.log('User created!', response),
-        error => console.error('There was an error!', error)
+        response => this.toastr.success('Te has registrado con éxito'),
+        error => this.toastr.error(error.error.message, 'Error')
       );
       this.registerForm.reset();
       this.router.navigate(['/login']);

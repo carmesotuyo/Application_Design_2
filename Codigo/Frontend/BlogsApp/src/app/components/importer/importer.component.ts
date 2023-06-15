@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ImporterService } from 'src/app/services/importer.service';
 import { IImporter } from 'src/app/models/importer.model';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-importer',
@@ -14,7 +15,7 @@ export class ImporterComponent implements OnInit {
   selectedImporter: string = '';
   path: string = '';
 
-  constructor(private importerService: ImporterService, private router: Router) { }
+  constructor(private importerService: ImporterService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getImporters();
@@ -34,10 +35,12 @@ export class ImporterComponent implements OnInit {
     console.log(importer);
     
     this.importerService.postImporter(this.selectedImporter, this.path).subscribe((res: any) => {
-      console.log(res);
-      alert('Se ha importado correctamente');
+      this.toastr.success('se han importado los articulos con éxito');
       this.router.navigate(['/home']);
-    });
+    }), (err: any) => {
+      this.toastr.error(err.response, 'Error');
+      console.log(err);
+    };
   }
 
 }
