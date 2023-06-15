@@ -3,7 +3,9 @@
       <button mat-button [routerLink]="['/stats']" routerLinkActive="active-link">Estadísticas</button>
       <button mat-button [routerLink]="['/ranking']" routerLinkActive="active-link">Ranking de Usuarios</button>
       <button mat-button [routerLink]="['/offensiveWords']" routerLinkActive="active-link">Palabras Ofensivas</button>
-      <button mat-button [routerLink]="['/revision']" routerLinkActive="active-link">Contenido en Revisión</button>
+      <button mat-button [routerLink]="['/revision']" routerLinkActive="active-link" (click)="notificationDismisser()">Contenido en Revisión
+            <span class="notification" *ngIf="hayNotificaciones"></span>
+      </button>
       <button mat-button [routerLink]="['/editUsers']" routerLinkActive="active-link">Editar Usuarios</button>
 </mat-toolbar>
 <router-outlet></router-outlet>

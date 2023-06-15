@@ -45,6 +45,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OffensiveWordsComponent } from './components/offensive-words/offensive-words.component';
 import { ContentToRevisionComponent } from './components/content-to-revision/content-to-revision.component';
 import {MatChipsModule} from '@angular/material/chips';
+import { OffensivewordsService } from './services/offensivewords.service';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import {MatChipsModule} from '@angular/material/chips';
     LoginService,
     AuthService,
     ArticleService,
+    OffensivewordsService,
     LogsService,
     {
       provide: HTTP_INTERCEPTORS,

@@ -33,6 +33,6 @@ export class OffensivewordsService {
   }
 
   notificationViewer(): Observable<any> {
-    return this.http.put<any>(this.apiUrl + '/notification-viewer', null);
+    return this.http.get<any>(this.apiUrl + '/notification-viewer');
   }
 }

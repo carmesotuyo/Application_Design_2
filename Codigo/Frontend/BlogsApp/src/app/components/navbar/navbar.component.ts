@@ -2,24 +2,60 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { OffensivewordsService } from 'src/app/services/offensivewords.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
   username: string | null = '';
+  hayNotificaciones!: boolean;
 
-  constructor(private authService: AuthService, private loginService: LoginService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private loginService: LoginService,
+    private router: Router,
+    private offensivewordsService: OffensivewordsService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
-    // Obtener el nombre de usuario del servicio de autenticación
     this.username = this.authService.getUsername();
+    this.getNotification();
+    interval(2000) // Genera un evento cada 10 segundos
+      .pipe(switchMap(() => this.offensivewordsService.notificationViewer()))
+      .subscribe((response: any) => {
+        if (response) {
+          this.hayNotificaciones = true;
+          this.notificationService.setHayNotificaciones(true);
+        } else {
+          this.hayNotificaciones = false;
+          this.notificationService.setHayNotificaciones(false);
+        }
+        console.log(response);
+      });
   }
 
-  logout() {  
+  getNotification() {
+    this.offensivewordsService
+      .notificationViewer()
+      .subscribe((response: any) => {
+        // Procesa la respuesta aquí
+        if (response) {
+          this.hayNotificaciones = true;
+        } else {
+          this.hayNotificaciones = false;
+        }
+        console.log(response);
+      });
+  }
+
+  logout() {
     this.loginService.logout().subscribe({
       next: () => {
         this.authService.logout();
@@ -27,7 +63,7 @@ export class NavbarComponent {
       },
       error: (error) => {
         // Manejo de errores
-      }
+      },
     });
   }
 
