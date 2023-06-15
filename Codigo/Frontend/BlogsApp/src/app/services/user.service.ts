@@ -33,13 +33,15 @@ export class UserService {
     );
   }
 
-  public getRanking(dateFrom: string, dateTo: string, top: number): Observable<UserRanking[]> {
+  public getRanking(dateFrom: string, dateTo: string, top: number, offensiveWords: boolean = false): Observable<UserRanking[]> {
     const url = `${this.apiUrl}/ranking`;
+  
     const params = new HttpParams()
       .set('dateFrom', dateFrom)
       .set('dateTo', dateTo)
-      .set('top', top.toString());
-
+      .set('top', top.toString())
+      .set('withOffensiveWords', offensiveWords.toString());
+  
     return this.http.get<UserRanking[]>(url, { params });
   }
 

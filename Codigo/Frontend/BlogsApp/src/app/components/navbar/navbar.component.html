@@ -7,7 +7,9 @@
   <span class="spacer"></span>
   <span>Bienvenido, {{ username }}</span>
   <span class="spacer"></span>
-  <button mat-button [routerLink]="['/logs']">Panel Administrador</button>
+  <button mat-button [routerLink]="['/logs']">Panel Administrador
+    <span class="notification" *ngIf="hayNotificaciones"></span>
+  </button>
 
   <!-- Este es el botón que abrirá el menú -->
   <button mat-icon-button [matMenuTriggerFor]="userMenu">

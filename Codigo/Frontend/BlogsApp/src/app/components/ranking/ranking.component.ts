@@ -10,7 +10,7 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./ranking.component.scss']
 })
 export class RankingComponent {
-  displayedColumns: string[] = ['id', 'username', 'ranking'];
+  displayedColumns: string[] = ['id', 'username'];
 
   fromDate = new FormControl(new Date());
   toDate = new FormControl(new Date());
@@ -35,7 +35,7 @@ export class RankingComponent {
     const from = formatDate(this.fromDate.value!, 'yyyy-MM-dd', 'en');
     const to = formatDate(this.toDate.value!, 'yyyy-MM-dd', 'en');
 
-    this.userService.getRanking(from, to, this.ranking).subscribe((users: UserRanking[]) => {
+    this.userService.getRanking(from, to, this.ranking, true).subscribe((users: UserRanking[]) => {
       this.users = users;
     });
   }
