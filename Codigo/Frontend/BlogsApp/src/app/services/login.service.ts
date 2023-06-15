@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = `${environment.API_HOST_URL}/api/sessions`; // Reemplaza 'ruta-de-tu-api' por la ruta adecuada en tu API
+  private apiUrl = `${environment.API_HOST_URL}/api/sessions`;
 
   constructor(private http: HttpClient) {}
 

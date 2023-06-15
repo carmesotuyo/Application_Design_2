@@ -7,12 +7,13 @@ import {
   CommentContent,
 } from '../models/comment.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommentService {
-  private apiUrl = 'http://localhost:5050/api/comments';
+  private apiUrl = environment.API_HOST_URL + '/api/comments';
 
   private offlineComments: CommentNotify[] = [];
 

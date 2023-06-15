@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
 import { User, UserRanking, UserComplete } from '../models/user.model';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  apiUrl = 'http://localhost:5050/api/users';
+  private apiUrl = environment.API_HOST_URL + '/api/users';
   constructor(private http: HttpClient) { }
 
   getArticlesByUser(userId: number): Observable<Article[]> {  

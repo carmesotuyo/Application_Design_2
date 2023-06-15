@@ -9,12 +9,14 @@ import { Observable, Subject, catchError, tap, throwError } from 'rxjs';
 import { Article } from '../models/article.model';
 import { IDeleteResponse } from '../interfaces/delete-response-interface';
 import { ArticleView } from '../models/articleView.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
-  private apiUrl = 'http://localhost:5050/api/articles'; // Reemplaza la URL con la ruta de tu API de artículos
+
+  private apiUrl = environment.API_HOST_URL + '/api/articles';
   articleDeleted = new Subject<Article>();
 
   constructor(private http: HttpClient) {}

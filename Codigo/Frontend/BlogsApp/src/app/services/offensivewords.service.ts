@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Content } from '../models/content.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OffensivewordsService {
-  apiUrl = 'http://localhost:5050/api/offensive-words';
+  private apiUrl = environment.API_HOST_URL + '/api/offensive-words';
   constructor(private http: HttpClient) {}
 
   getOfensiveWords(): Observable<string[]> {
