@@ -32,14 +32,12 @@ export class ImporterComponent implements OnInit {
       importerName: this.selectedImporter,
       path: this.path
     };
-    console.log(importer);
     
     this.importerService.postImporter(this.selectedImporter, this.path).subscribe((res: any) => {
       this.toastr.success('se han importado los articulos con éxito');
       this.router.navigate(['/home']);
     }), (err: any) => {
       this.toastr.error(err.response, 'Error');
-      console.log(err);
     };
   }
 

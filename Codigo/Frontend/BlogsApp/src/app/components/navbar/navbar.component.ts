@@ -36,10 +36,6 @@ export class NavbarComponent {
   ngOnInit() {
     this.username = this.authService.getUsername();
     this.getNotification();
-    
-    console.log('es blogger: ' + this.esBlogger);
-    console.log('es moderador: ' + this.esModerador);
-    console.log('es admin: ' + this.authService.getAdmin());
 
     if(this.esAdmin || this.esModerador) {
       this.notifSubscription = interval(2000) // Genera un evento cada 10 segundos
@@ -55,8 +51,7 @@ export class NavbarComponent {
           this.hayNotificaciones = false;
           this.notificationService.setHayNotificaciones(false);
         }
-        this.prevNotificaciones = this.hayNotificaciones; // Actualizas el valor de prevNotificaciones
-        console.log(response);
+        this.prevNotificaciones = this.hayNotificaciones;
       });
     }
   }
@@ -75,7 +70,6 @@ export class NavbarComponent {
         } else {
           this.hayNotificaciones = false;
         }
-        console.log(response);
       });
   }
 

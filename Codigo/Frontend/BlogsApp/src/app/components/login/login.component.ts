@@ -55,12 +55,10 @@ export class LoginComponent {
           this.getUserById(response.userId);
           this.toastr.success('Has iniciado sesión', 'Éxito');
         } else {
-          console.log('Inicio de sesión fallido:', response.message);
           this.toastr.error(response.message, 'Error');
         }
       },
       (error) => {
-        console.log('Error en la autenticación:', error);
         if (error.error) {
           this.toastr.error(error.error, 'Error');
         } else {

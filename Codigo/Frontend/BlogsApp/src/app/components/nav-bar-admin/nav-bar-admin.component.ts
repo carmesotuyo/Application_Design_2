@@ -22,7 +22,6 @@ export class NavBarAdminComponent {
       // Procesa la respuesta aquí
       this.hayNotificaciones = false;
       this.notificationService.setHayNotificaciones(false);
-      console.log(response);
     });
   }
 }

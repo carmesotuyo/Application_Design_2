@@ -6,7 +6,7 @@ import { CommentsModalComponent } from '../comments-modal/comments-modal.compone
 import { User } from 'src/app/models/user.model';
 import { UserService } from 'src/app/services/user.service';
 import { ActivatedRoute } from '@angular/router';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-user-articles',
   templateUrl: './user-articles.component.html',
@@ -20,11 +20,12 @@ export class UserArticlesComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private route: ActivatedRoute // Inyectar ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.userId = +this.route.snapshot.params['id']; // Obtener el id del usuario de los parámetros de la ruta
+    this.userId = +this.route.snapshot.params['id'];
     this.getUser();
     this.getArticles();
   }
@@ -36,10 +37,9 @@ export class UserArticlesComponent implements OnInit {
       },
       error: (error: any) => {
         // Manejo de errores
-        console.log('No se encontró el usuario', error);
+        this.toastr.error('No se encontró el usuario', 'Error');
       },
       complete: () => {
-        // Acciones completadas (opcional)
       },
     };
     this.userService.getUserById(this.userId).subscribe(observer);
@@ -57,8 +57,8 @@ export class UserArticlesComponent implements OnInit {
       },
       error: (error: any) => {
         // Manejo de errores
-        console.log('No se encontraron articulos', error);
         this.setArticles([]);
+        this.toastr.error('No se encontraron artículos', 'Error');
         this.errorMessage = 'No se encontraron artículos';
       },
       complete: () => {

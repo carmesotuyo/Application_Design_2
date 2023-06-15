@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommentNotify } from 'src/app/models/comment.model';
 import { CommentService } from 'src/app/services/comment.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-comments-modal',
@@ -14,7 +15,8 @@ export class CommentsModalComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -36,9 +38,9 @@ export class CommentsModalComponent implements OnInit {
           // Actualizar comentarios offline
           this.commentService.removeOfflineComment(comment.commentId);
         });
-      alert('Comentario enviado correctamente');
+        this.toastr.success('Comentario enviado correctamente');
     } else {
-      alert('Debe ingresar un texto para responder al comentario ' + comment.commentId);
+      this.toastr.error('Debe ingresar un texto para responder al comentario ' + comment.commentId);
     }
   }
 }

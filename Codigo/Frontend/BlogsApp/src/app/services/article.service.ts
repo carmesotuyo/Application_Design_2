@@ -28,11 +28,6 @@ export class ArticleService {
 
     return this.http.get<Article[]>(this.apiUrl, { params }).pipe(
       tap((articles: Article[]) => {
-        // Verificar si la respuesta es una lista vacía
-        if (articles.length === 0) {
-          console.log('No se encontraron artículos');
-          // Realizar acciones adicionales, como mostrar un mensaje en el componente
-        }
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 404) {

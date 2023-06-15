@@ -68,7 +68,6 @@ export class ArticleFormComponent implements OnInit {
         .pipe(
           take(1),
           catchError((err) => {
-            console.log({ err });
             this.toastr.error(err.message, 'Error');
             return of(err);
           })
@@ -79,7 +78,6 @@ export class ArticleFormComponent implements OnInit {
     }
     this.template?.valueChanges.subscribe((value) => {
       if (Number(value) === 3) {
-        console.log('template cambió a plantilla 3');
         this.mostrarImg2 = true;
       } else {
         this.mostrarImg2 = false;
@@ -116,7 +114,6 @@ export class ArticleFormComponent implements OnInit {
       .pipe(
         take(1),
         catchError((err) => {
-          console.log({ err });
           this.toastr.error(err.message, 'Error');
           return of(err);
         })
@@ -150,7 +147,6 @@ export class ArticleFormComponent implements OnInit {
         .pipe(
           take(1),
           catchError((err) => {
-            console.log({ err });
             this.toastr.error(err.message, 'Error');
             return of(err);
           })

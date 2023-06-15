@@ -16,7 +16,6 @@ export class ResponseInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((err: any) => {
         //poner errores globales como cuando se desconecta la base de datos
-        console.log({err});
         return of(err);
       })
     );

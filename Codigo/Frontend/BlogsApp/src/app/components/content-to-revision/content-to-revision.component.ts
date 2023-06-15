@@ -116,7 +116,6 @@ export class ContentToRevisionComponent implements OnInit {
         .subscribe(() => {
           this.toastr.success('Artículo aprobado con éxito', 'Éxito');
           this.getContents();
-          console.log('aproveArticle');
         });
     } else {
       this.commentService
