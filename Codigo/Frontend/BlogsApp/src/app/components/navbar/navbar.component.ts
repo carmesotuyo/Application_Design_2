@@ -64,7 +64,6 @@ export class NavbarComponent {
     this.offensivewordsService
       .notificationViewer()
       .subscribe((response: any) => {
-        // Procesa la respuesta aquí
         if (response) {
           this.hayNotificaciones = true;
         } else {

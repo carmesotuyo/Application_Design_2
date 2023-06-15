@@ -20,17 +20,14 @@ export class AuthService {
   constructor() { }
 
   public setToken(token: string): void {
-    //this.tokenSubject.next(token);
     sessionStorage.setItem(this._userTokenKey, token);
   }
 
   public getToken(): string | null {
-    //return this.tokenSubject.value;
     return sessionStorage.getItem(this._userTokenKey);
   }
 
   public removeToken(): void {
-    //this.tokenSubject.next('');
     sessionStorage.removeItem(this._userTokenKey);
   }
 
@@ -41,7 +38,6 @@ export class AuthService {
   public logout(): void {
     this.removeToken();
     this.removeUserId();
-    // También puedes realizar otras acciones al cerrar sesión, como limpiar el almacenamiento local
   }
 
   public getUserId(): string | null {

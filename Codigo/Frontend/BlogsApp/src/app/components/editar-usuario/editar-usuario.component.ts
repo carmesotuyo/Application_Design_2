@@ -40,7 +40,6 @@ export class EditarUsuarioComponent implements OnInit {
       this.editUserForm.patchValue({
         name: user.name,
         lastName: user.lastName,
-        // No set password for security reasons
       });
     });
   }
