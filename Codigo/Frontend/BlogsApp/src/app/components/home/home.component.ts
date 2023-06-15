@@ -47,6 +47,11 @@ export class HomeComponent implements OnInit {
       },
       error: (error: any) => {
         this.setArticles([]);
+        if (this.articles.length === 0 || this.articles === null) {
+          this.errorMessage = 'No se encontraron artículos';
+        } else {
+          this.errorMessage = '';
+        }
       },
       complete: () => {
         // Acciones completadas (opcional)
