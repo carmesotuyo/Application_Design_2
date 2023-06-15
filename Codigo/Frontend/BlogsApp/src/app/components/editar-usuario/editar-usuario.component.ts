@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { User, UserComplete } from 'src/app/models/user.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-editar-usuario',
@@ -17,7 +18,8 @@ export class EditarUsuarioComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) {
     this.editUserForm = this.fb.group({
       name: ['', Validators.required],
@@ -38,7 +40,6 @@ export class EditarUsuarioComponent implements OnInit {
       this.editUserForm.patchValue({
         name: user.name,
         lastName: user.lastName,
-        // No set password for security reasons
       });
     });
   }
@@ -48,7 +49,7 @@ export class EditarUsuarioComponent implements OnInit {
       this.userService
         .updateUser(this.editUserForm.value, this.id)
         .subscribe(() => {
-          alert('Changes saved successfully');
+          this.toastr.success('Los cambios han sido guardados correctamente');
         });
     }
   }

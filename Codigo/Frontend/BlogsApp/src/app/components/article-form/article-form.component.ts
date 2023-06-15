@@ -6,6 +6,7 @@ import { ICreateArticle } from 'src/app/interfaces/create-article.interface';
 import { Article } from 'src/app/models/article.model';
 import { ArticleService } from 'src/app/services/article.service';
 import { ValidateString } from 'src/app/validators/string.validator';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-article-form',
@@ -20,13 +21,14 @@ export class ArticleFormComponent implements OnInit {
     isPrivate: new FormControl(false, Validators.required),
     template: new FormControl(0, Validators.required),
     image1: new FormControl(''),
-    image2: new FormControl('')
+    image2: new FormControl(''),
   });
 
   public isEditing = false;
   private articleId?: number;
 
   constructor(
+    private toastr: ToastrService,
     private articleService: ArticleService,
     private router: Router,
     private route: ActivatedRoute
@@ -66,7 +68,7 @@ export class ArticleFormComponent implements OnInit {
         .pipe(
           take(1),
           catchError((err) => {
-            console.log({ err });
+            this.toastr.error(err.message, 'Error');
             return of(err);
           })
         )
@@ -76,7 +78,6 @@ export class ArticleFormComponent implements OnInit {
     }
     this.template?.valueChanges.subscribe((value) => {
       if (Number(value) === 3) {
-        console.log('template cambió a plantilla 3')
         this.mostrarImg2 = true;
       } else {
         this.mostrarImg2 = false;
@@ -95,7 +96,9 @@ export class ArticleFormComponent implements OnInit {
   }
 
   private createArticle(): void {
-    const image = `${this.articleForm.value.image1 ?? ''} ${this.articleForm.value.image2 ?? ''}`
+    const image = `${this.articleForm.value.image1 ?? ''} ${
+      this.articleForm.value.image2 ?? ''
+    }`;
     const article: Article = {
       id: 0,
       name: this.articleForm.value.name ?? '',
@@ -106,19 +109,18 @@ export class ArticleFormComponent implements OnInit {
       image: image,
     };
 
-
     this.articleService
       .postArticle(article)
       .pipe(
         take(1),
         catchError((err) => {
-          console.log({ err });
+          this.toastr.error(err.message, 'Error');
           return of(err);
         })
       )
       .subscribe((article: Article) => {
         if (!!article?.id) {
-          alert('Artículo creado!!');
+          this.toastr.success('Artículo creado con éxito', 'Éxito');
           this.cleanForm();
           this.router.navigateByUrl('/home');
         }
@@ -127,7 +129,9 @@ export class ArticleFormComponent implements OnInit {
 
   private updateArticle(): void {
     if (!!this.articleId) {
-      const image = `${this.articleForm.value.image1 ?? ''} ${this.articleForm.value.image2 ?? ''}`
+      const image = `${this.articleForm.value.image1 ?? ''} ${
+        this.articleForm.value.image2 ?? ''
+      }`;
       const article: Article = {
         username: 'FerSpi',
         id: this.articleId as number,
@@ -143,13 +147,13 @@ export class ArticleFormComponent implements OnInit {
         .pipe(
           take(1),
           catchError((err) => {
-            console.log({ err });
+            this.toastr.error(err.message, 'Error');
             return of(err);
           })
         )
         .subscribe((article: Article) => {
           if (!!article?.id) {
-            alert('Artículo modificado!!');
+            this.toastr.success('Artículo modificado con éxito', 'Éxito');
             this.router.navigateByUrl('/home');
           }
         });

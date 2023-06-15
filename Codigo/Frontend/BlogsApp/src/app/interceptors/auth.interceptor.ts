@@ -15,8 +15,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this._authService.getToken();
-    // en el login success guardo token haciendo this._authService.setToken('TOKEN');
-    // al hacer logout debería hacer this._authService.removeToken();
     let newRequest = request;
     if(!!token) {
       const headers = request.headers.set('token', token);

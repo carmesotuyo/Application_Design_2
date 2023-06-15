@@ -5,6 +5,7 @@ import { OffensivewordsService } from 'src/app/services/offensivewords.service';
 import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/models/article.model';
 import { Content } from 'src/app/models/content.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-content-to-revision',
@@ -21,7 +22,8 @@ export class ContentToRevisionComponent implements OnInit {
   constructor(
     private offensivewordsService: OffensivewordsService,
     private commentService: CommentService,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -70,6 +72,9 @@ export class ContentToRevisionComponent implements OnInit {
             this.articleService.putArticle(this.articleToEdit).subscribe(() => {
               this.editMode[index] = false;
               this.getContents();
+              this.toastr.success('Artículo actualizado con éxito', 'Éxito');
+            }, error => {
+              this.toastr.error(error.error, 'Error');
             });
           });
       } else {
@@ -78,6 +83,9 @@ export class ContentToRevisionComponent implements OnInit {
           .subscribe(() => {
             this.editMode[index] = false;
             this.getContents();
+            this.toastr.success('Comentario actualizado con éxito', 'Éxito');
+          }, error => {
+            this.toastr.error(error.error, 'Error');
           });
       }
     }
@@ -88,12 +96,14 @@ export class ContentToRevisionComponent implements OnInit {
       this.articleService
         .deleteArticle(this.contents[index].id)
         .subscribe(() => {
+          this.toastr.success('Artículo eliminado con éxito', 'Éxito');
           this.getContents();
         });
     } else {
       this.commentService
         .deleteComment(this.contents[index].id)
         .subscribe(() => {
+          this.toastr.success('Comentario eliminado con éxito', 'Éxito');
           this.getContents();
         });
     }
@@ -104,13 +114,14 @@ export class ContentToRevisionComponent implements OnInit {
       this.articleService
         .aproveArticle(this.contents[index].id)
         .subscribe(() => {
+          this.toastr.success('Artículo aprobado con éxito', 'Éxito');
           this.getContents();
-          console.log('aproveArticle');
         });
     } else {
       this.commentService
         .aproveComment(this.contents[index].id)
         .subscribe(() => {
+          this.toastr.success('Comentario aprobado con éxito', 'Éxito');
           this.getContents();
         });
     }

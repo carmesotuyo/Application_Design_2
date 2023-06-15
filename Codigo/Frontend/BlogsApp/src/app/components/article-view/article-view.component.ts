@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ArticleView } from '../../models/articleView.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../services/article.service';
 import { CommentDto } from 'src/app/models/comment.model';
 import { CommentService } from 'src/app/services/comment.service';
 import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-article-view',
@@ -23,12 +24,12 @@ export class ArticleViewComponent implements OnInit {
   estados = ['Publico', 'En revisión', 'Editado', 'Eliminado']
   
   constructor(
+    private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
     private articleService: ArticleService,
     private commentService: CommentService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +71,10 @@ export class ArticleViewComponent implements OnInit {
     return '';
   }
 
+  handleImgError(event: any) {
+    event.target.style.display = 'none';
+}
+
   toggleCommentOptions(): void {
     //comment.showOptions = !comment.showOptions;
     this.showOptions = !this.showOptions;
@@ -85,14 +90,14 @@ export class ArticleViewComponent implements OnInit {
         .subscribe(() => {
           this.newComments[comment.id] = '';
           this.getArticle();
+          this.toastr.success('Respuesta creada con éxito', 'Éxito');
+        }, error => {
+          this.toastr.error(error.error, 'Error');
         });
-      // Código para mostrar una notificación en lugar de alert
-      alert('Respuesta creada con éxito');
     } else {
-      // Código para mostrar una notificación en lugar de alert
-      alert('Parace que hubo un error al crear la respuesta');
+      this.toastr.error('No se proporcionó texto para la respuesta', 'Error');
     }
-  }
+}
 
   addComment(): void {
     this.commentService
@@ -109,16 +114,16 @@ export class ArticleViewComponent implements OnInit {
       this.articleService.deleteArticle(this.article.id).subscribe(
         () => {
           this.articleService.articleDeleted.next(articleToDelete);
-          alert('Artículo eliminado');
+          this.toastr.success('Artículo eliminado', 'Éxito');
           this.router.navigateByUrl('/home');
         },
         (error) => {
           console.error('Error al eliminar el artículo', error);
-          // Manejar el error de eliminación
+          this.toastr.error(error.error, 'Error');
         }
       );
     }
-  }
+}
 
   editArticle(): void {
     if (this.article) {

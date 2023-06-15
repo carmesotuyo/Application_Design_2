@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
   }
   }
@@ -47,10 +46,7 @@ export class HomeComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        // Manejo de errores
-        console.log('No se encontraron articulos', error);
         this.setArticles([]);
-        this.errorMessage = 'No se encontraron artículos';
       },
       complete: () => {
         // Acciones completadas (opcional)
@@ -64,7 +60,6 @@ export class HomeComponent implements OnInit {
     this.articleService.getArticles(this.token, this.searchKeyword).pipe(
       take(1),
       catchError((err) => {
-        console.log({err});
         return of(err);
       }),
     )

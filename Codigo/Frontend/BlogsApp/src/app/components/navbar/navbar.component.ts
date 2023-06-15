@@ -6,6 +6,8 @@ import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { OffensivewordsService } from 'src/app/services/offensivewords.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -15,53 +17,58 @@ import { NotificationService } from 'src/app/services/notification.service';
 export class NavbarComponent {
   username: string | null = '';
   hayNotificaciones!: boolean;
+  estaLogueado = this.authService.isAuthenticated();
   esBlogger = this.authService.isAuthorizedBlogger();
   esAdmin = this.authService.isAuthorizedAdmin();
   esModerador = this.authService.isAuthorizedMod();
+  prevNotificaciones = false;
+  private notifSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
     private loginService: LoginService,
     private router: Router,
     private offensivewordsService: OffensivewordsService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
     this.username = this.authService.getUsername();
     this.getNotification();
-    
-    console.log('es blogger: ' + this.esBlogger);
-    console.log('es moderador: ' + this.esModerador);
-    console.log('es admin: ' + this.authService.getAdmin());
 
     if(this.esAdmin || this.esModerador) {
-      interval(2000) // Genera un evento cada 10 segundos
+      this.notifSubscription = interval(2000) // Genera un evento cada 10 segundos
       .pipe(switchMap(() => this.offensivewordsService.notificationViewer()))
       .subscribe((response: any) => {
         if (response) {
           this.hayNotificaciones = true;
           this.notificationService.setHayNotificaciones(true);
+          if (!this.prevNotificaciones) { // Si prevNotificaciones era false
+            this.toastr.info("Tienes nuevo contenido para revisar");
+          }
         } else {
           this.hayNotificaciones = false;
           this.notificationService.setHayNotificaciones(false);
         }
-        console.log(response);
+        this.prevNotificaciones = this.hayNotificaciones;
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.notifSubscription?.unsubscribe();
   }
 
   getNotification() {
     this.offensivewordsService
       .notificationViewer()
       .subscribe((response: any) => {
-        // Procesa la respuesta aquí
         if (response) {
           this.hayNotificaciones = true;
         } else {
           this.hayNotificaciones = false;
         }
-        console.log(response);
       });
   }
 
