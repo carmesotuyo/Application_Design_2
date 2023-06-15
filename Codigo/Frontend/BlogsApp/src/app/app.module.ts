@@ -46,6 +46,7 @@ import { OffensiveWordsComponent } from './components/offensive-words/offensive-
 import { ContentToRevisionComponent } from './components/content-to-revision/content-to-revision.component';
 import {MatChipsModule} from '@angular/material/chips';
 import { OffensivewordsService } from './services/offensivewords.service';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { OffensivewordsService } from './services/offensivewords.service';
     MatTableModule,
     MatNativeDateModule,
     MatSnackBarModule,
-    MatChipsModule
+    MatChipsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     LoginService,

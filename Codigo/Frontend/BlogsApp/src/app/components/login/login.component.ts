@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +35,8 @@ export class LoginComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private commentService: CommentService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService,
   ) {}
 
   login() {
@@ -51,12 +53,19 @@ export class LoginComponent {
           this.commentService.setOfflineComments(response.comments);
           this.authService.setUserId(response.userId);
           this.getUserById(response.userId);
+          this.toastr.success('Has iniciado sesión', 'Éxito');
         } else {
           console.log('Inicio de sesión fallido:', response.message);
+          this.toastr.error(response.message, 'Error');
         }
       },
       (error) => {
         console.log('Error en la autenticación:', error);
+        if (error.error) {
+          this.toastr.error(error.error, 'Error');
+        } else {
+          this.toastr.error('Ha ocurrido un error desconocido durante la autenticación', 'Error');
+        }
       }
     );
   }
